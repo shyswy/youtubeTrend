@@ -59,6 +59,42 @@ def get_popular_videos(country_code, category_id='0'):
         print(f"An HTTP error {e.resp.status} occurred: {e.content}")
         return None
 
+def get_weekly_popular_videos(country_code):
+    """
+    특정 국가의 주간 인기 동영상을 가져옵니다.
+    country_code: 국가 코드 (예: 'KR' - 한국, 'US' - 미국)
+    """
+    try:
+        request = youtube.videos().list(
+            part="snippet,statistics",
+            chart="mostPopular",
+            regionCode=country_code,
+            maxResults=50
+        )
+        response = request.execute()
+        
+        videos = []
+        for item in response['items']:
+            video = {
+                'video_id': item['id'],
+                'title': item['snippet']['title'],
+                'channel': item['snippet']['channelTitle'],
+                'category': item['snippet'].get('categoryId', '0'),
+                'views': int(item['statistics']['viewCount']),
+                'likes': int(item['statistics'].get('likeCount', 0)),
+                'description': item['snippet'].get('description', ''),
+                'url': f"https://www.youtube.com/watch?v={item['id']}",
+                'published_at': item['snippet']['publishedAt'],
+                'country': country_code
+            }
+            videos.append(video)
+        
+        return pd.DataFrame(videos)
+    
+    except HttpError as e:
+        print(f"An HTTP error {e.resp.status} occurred: {e.content}")
+        return None
+
 # 카테고리 매핑
 categories = {
     'all': '0',
@@ -97,6 +133,15 @@ for country_name, country_code in countries.items():
             filename = f"{output_dir}/{country_name}_{category_name}_videos.csv"
             df.to_csv(filename, index=False, encoding='utf-8-sig')
             print(f"Saved to {filename}")
+    
+    # 주간 인기 동영상 데이터 수집
+    print(f"Fetching weekly popular videos for {country_name}...")
+    weekly_df = get_weekly_popular_videos(country_code)
+    if weekly_df is not None:
+        weekly_filename = f"{output_dir}/{country_name}_weekly_videos.csv"
+        weekly_df.to_csv(weekly_filename, index=False, encoding='utf-8-sig')
+        print(f"Saved weekly videos to {weekly_filename}")
+    
     results[country_name] = country_results
 
 # 결과 출력
