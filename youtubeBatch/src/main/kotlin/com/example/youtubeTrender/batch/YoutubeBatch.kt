@@ -12,6 +12,8 @@ import java.time.format.DateTimeFormatter
 class YoutubeBatch(
     private val youtubeService: YoutubeService,
     private val csvService: CsvService
+//    private val csvService: CsvServiceSymbolic
+
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -30,10 +32,12 @@ class YoutubeBatch(
         val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmm"))
 
         popularVideoMap.forEach { (key, videos) ->
-            val videoFileName = "${key}_video_$timestamp"
+            val videoFileName = "${key}_video"
+//            val videoFileName = "${key}_video_$timestamp"
             csvService.writeDtoListToCsv(videos, videoFileName)
             println("✅ 저장 완료: $videoFileName.csv (${videos.size}개 영상)")
 
+            log.info("getComments from $key")
             val allComments = videos.flatMap { video ->
                 try {
                     youtubeService.getComments(video.id)
@@ -43,7 +47,8 @@ class YoutubeBatch(
                 }
             }
 
-            val commentFileName = "${key}_comments_$timestamp"
+//            val commentFileName = "${key}_comments_$timestamp"
+            val commentFileName = "${key}_comments"
             csvService.writeDtoListToCsv(allComments, commentFileName)
             println("💬 댓글 저장 완료: $commentFileName.csv (${allComments.size}개 댓글)")
         }

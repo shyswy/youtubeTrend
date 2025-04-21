@@ -1,10 +1,12 @@
 package com.example.youtubeTrender.service
 
 import com.example.youtubeTrender.dto.CommentDto
+import kotlinx.serialization.SerialName
 import org.springframework.stereotype.Service
 import java.io.File
 import java.io.FileWriter
 import kotlin.reflect.KProperty1
+import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
 
 @Service
@@ -30,8 +32,12 @@ class CsvService {
             // 해당 클래스의 모든 프로퍼티(필드)들을 리플렉션으로 가져옴
             val properties = clazz.memberProperties.map { it as KProperty1<T, *> }
 
-            // CSV 헤더 작성: 각 프로퍼티 이름을 쉼표로 구분해서 출력
-            writer.appendLine(properties.joinToString(",") { it.name })
+            // CSV 헤더 작성: @SerialName 값이 있으면 그 값을 사용하고, 없으면 프로퍼티 이름을 사용
+            val headers = properties.map { prop ->
+                prop.findAnnotation<SerialName>()?.value ?: prop.name
+            }
+            // 헤더를 쉼표로 구분해서 출력
+            writer.appendLine(headers.joinToString(","))
 
             // DTO 리스트에 있는 각 객체에 대해 CSV 데이터 작성
             for (dto in dtoList) {
@@ -49,5 +55,4 @@ class CsvService {
             }
         }
     }
-
 }

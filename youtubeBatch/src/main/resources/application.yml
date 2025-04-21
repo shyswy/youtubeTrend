@@ -1,6 +1,6 @@
 spring:
   application:
-    name: kotlin-spring-kafka-sample
+    name: youtube-trender
   kafka:
     bootstrap-servers: localhost:9092
 #    bootstrap-servers: kafka:29092
