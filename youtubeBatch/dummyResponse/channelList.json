@@ -1,0 +1,292 @@
+{
+  "kind": "youtube#searchListResponse",
+  "etag": "Qwe5xPSA21OZcTA983IkLLNwdvg",
+  "nextPageToken": "CAoQAA",
+  "regionCode": "KR",
+  "pageInfo": {
+    "totalResults": 508554,
+    "resultsPerPage": 10
+  },
+  "items": [
+    {
+      "kind": "youtube#searchResult",
+      "etag": "fbzy0acTGWG442AWu_AV9CfnctQ",
+      "id": {
+        "kind": "youtube#channel",
+        "channelId": "UCyzvijoyOl_51z0589prxpA"
+      },
+      "snippet": {
+        "publishedAt": "2025-01-12T17:40:42Z",
+        "channelId": "UCyzvijoyOl_51z0589prxpA",
+        "title": "Cho$ky - Topic",
+        "description": "",
+        "thumbnails": {
+          "default": {
+            "url": "https://yt3.ggpht.com/Ugyq6rCvIzg9ZcGsPJZe7fn_Wrkntqqc3v84IdAv5pRZX-MI6l2cc1xt2vIJV5nTvry3Eihg=s88-c-k-c0xffffffff-no-rj-mo"
+          },
+          "medium": {
+            "url": "https://yt3.ggpht.com/Ugyq6rCvIzg9ZcGsPJZe7fn_Wrkntqqc3v84IdAv5pRZX-MI6l2cc1xt2vIJV5nTvry3Eihg=s240-c-k-c0xffffffff-no-rj-mo"
+          },
+          "high": {
+            "url": "https://yt3.ggpht.com/Ugyq6rCvIzg9ZcGsPJZe7fn_Wrkntqqc3v84IdAv5pRZX-MI6l2cc1xt2vIJV5nTvry3Eihg=s800-c-k-c0xffffffff-no-rj-mo"
+          }
+        },
+        "channelTitle": "Cho$ky - Topic",
+        "liveBroadcastContent": "none",
+        "publishTime": "2025-01-12T17:40:42Z"
+      }
+    },
+    {
+      "kind": "youtube#searchResult",
+      "etag": "K06UMUEYMK-Ls3MAIb3WBtos_J4",
+      "id": {
+        "kind": "youtube#channel",
+        "channelId": "UCCr3R11fndNkI9VNeaVG-bA"
+      },
+      "snippet": {
+        "publishedAt": "2024-08-02T20:53:39Z",
+        "channelId": "UCCr3R11fndNkI9VNeaVG-bA",
+        "title": "Wocket Launcher - Topic",
+        "description": "",
+        "thumbnails": {
+          "default": {
+            "url": "https://yt3.ggpht.com/U-weB9pEW-T41SiwdvpH8tkZfkrKPzYqVNUmWgAq0jwKsYE-da0vHzSXcFOADWckxLaVRN9x=s88-c-k-c0xffffffff-no-rj-mo"
+          },
+          "medium": {
+            "url": "https://yt3.ggpht.com/U-weB9pEW-T41SiwdvpH8tkZfkrKPzYqVNUmWgAq0jwKsYE-da0vHzSXcFOADWckxLaVRN9x=s240-c-k-c0xffffffff-no-rj-mo"
+          },
+          "high": {
+            "url": "https://yt3.ggpht.com/U-weB9pEW-T41SiwdvpH8tkZfkrKPzYqVNUmWgAq0jwKsYE-da0vHzSXcFOADWckxLaVRN9x=s800-c-k-c0xffffffff-no-rj-mo"
+          }
+        },
+        "channelTitle": "Wocket Launcher - Topic",
+        "liveBroadcastContent": "none",
+        "publishTime": "2024-08-02T20:53:39Z"
+      }
+    },
+    {
+      "kind": "youtube#searchResult",
+      "etag": "JMuR_155IFzWkSgR-b5iWbwh1Vs",
+      "id": {
+        "kind": "youtube#channel",
+        "channelId": "UCH53KXK39DWtLqGJ43lDIxA"
+      },
+      "snippet": {
+        "publishedAt": "2024-12-19T09:01:37Z",
+        "channelId": "UCH53KXK39DWtLqGJ43lDIxA",
+        "title": "행운 음원 - Topic",
+        "description": "",
+        "thumbnails": {
+          "default": {
+            "url": "https://yt3.ggpht.com/XX7_tlgfjHuomZUgyRaj2g24Ckg18M5E41F1R2Rd5IYvL9LxKNW0yHbiPq90iDM5rYhJM7i-_ek=s88-c-k-c0xffffffff-no-rj-mo"
+          },
+          "medium": {
+            "url": "https://yt3.ggpht.com/XX7_tlgfjHuomZUgyRaj2g24Ckg18M5E41F1R2Rd5IYvL9LxKNW0yHbiPq90iDM5rYhJM7i-_ek=s240-c-k-c0xffffffff-no-rj-mo"
+          },
+          "high": {
+            "url": "https://yt3.ggpht.com/XX7_tlgfjHuomZUgyRaj2g24Ckg18M5E41F1R2Rd5IYvL9LxKNW0yHbiPq90iDM5rYhJM7i-_ek=s800-c-k-c0xffffffff-no-rj-mo"
+          }
+        },
+        "channelTitle": "행운 음원 - Topic",
+        "liveBroadcastContent": "none",
+        "publishTime": "2024-12-19T09:01:37Z"
+      }
+    },
+    {
+      "kind": "youtube#searchResult",
+      "etag": "2hpPkiqkCRx7qfHXuWlK0ZsGqgg",
+      "id": {
+        "kind": "youtube#channel",
+        "channelId": "UC-MCRiy2NRisdVkD62Fxrpg"
+      },
+      "snippet": {
+        "publishedAt": "2025-04-10T08:58:41Z",
+        "channelId": "UC-MCRiy2NRisdVkD62Fxrpg",
+        "title": "Rasa Yang Sama",
+        "description": "",
+        "thumbnails": {
+          "default": {
+            "url": "https://yt3.ggpht.com/PFMOPq75we6ck23TkOEhAaHoxupgriWsgiejCh28bQ_uIY7zEBm4dd2TI3YuBYSX8ehosq9kEg=s88-c-k-c0xffffffff-no-rj-mo"
+          },
+          "medium": {
+            "url": "https://yt3.ggpht.com/PFMOPq75we6ck23TkOEhAaHoxupgriWsgiejCh28bQ_uIY7zEBm4dd2TI3YuBYSX8ehosq9kEg=s240-c-k-c0xffffffff-no-rj-mo"
+          },
+          "high": {
+            "url": "https://yt3.ggpht.com/PFMOPq75we6ck23TkOEhAaHoxupgriWsgiejCh28bQ_uIY7zEBm4dd2TI3YuBYSX8ehosq9kEg=s800-c-k-c0xffffffff-no-rj-mo"
+          }
+        },
+        "channelTitle": "Rasa Yang Sama",
+        "liveBroadcastContent": "none",
+        "publishTime": "2025-04-10T08:58:41Z"
+      }
+    },
+    {
+      "kind": "youtube#searchResult",
+      "etag": "2GsK_DYKE9ubD2xn7KqQhY5lx0c",
+      "id": {
+        "kind": "youtube#channel",
+        "channelId": "UCuPmat10v5b6JDtP67qToeA"
+      },
+      "snippet": {
+        "publishedAt": "2024-12-11T03:27:09Z",
+        "channelId": "UCuPmat10v5b6JDtP67qToeA",
+        "title": "matt matt - Topic",
+        "description": "",
+        "thumbnails": {
+          "default": {
+            "url": "https://yt3.ggpht.com/z2Pb7M5QXQ-jRoe8dW3JPRuOG2FgSnLak_q97jSO8a0yFXLz3QJ2be_JvgDcV4VXuS64YtGyNRo=s88-c-k-c0xffffffff-no-rj-mo"
+          },
+          "medium": {
+            "url": "https://yt3.ggpht.com/z2Pb7M5QXQ-jRoe8dW3JPRuOG2FgSnLak_q97jSO8a0yFXLz3QJ2be_JvgDcV4VXuS64YtGyNRo=s240-c-k-c0xffffffff-no-rj-mo"
+          },
+          "high": {
+            "url": "https://yt3.ggpht.com/z2Pb7M5QXQ-jRoe8dW3JPRuOG2FgSnLak_q97jSO8a0yFXLz3QJ2be_JvgDcV4VXuS64YtGyNRo=s800-c-k-c0xffffffff-no-rj-mo"
+          }
+        },
+        "channelTitle": "matt matt - Topic",
+        "liveBroadcastContent": "none",
+        "publishTime": "2024-12-11T03:27:09Z"
+      }
+    },
+    {
+      "kind": "youtube#searchResult",
+      "etag": "13JgHSZqKvmsdSnVwZOs0GLyaLc",
+      "id": {
+        "kind": "youtube#channel",
+        "channelId": "UCX-0vJiDid3qDI_dZEg2i_Q"
+      },
+      "snippet": {
+        "publishedAt": "2025-03-07T12:09:39Z",
+        "channelId": "UCX-0vJiDid3qDI_dZEg2i_Q",
+        "title": "ColorCocoa - Topic",
+        "description": "",
+        "thumbnails": {
+          "default": {
+            "url": "https://yt3.ggpht.com/jR3q9A7iZOszw-ZirRkM1SUPOZG3RXV6VBvwrx2lEJwJYfbbyR5xVhgq7zcfV1SDBA3CCrZx=s88-c-k-c0xffffffff-no-rj-mo"
+          },
+          "medium": {
+            "url": "https://yt3.ggpht.com/jR3q9A7iZOszw-ZirRkM1SUPOZG3RXV6VBvwrx2lEJwJYfbbyR5xVhgq7zcfV1SDBA3CCrZx=s240-c-k-c0xffffffff-no-rj-mo"
+          },
+          "high": {
+            "url": "https://yt3.ggpht.com/jR3q9A7iZOszw-ZirRkM1SUPOZG3RXV6VBvwrx2lEJwJYfbbyR5xVhgq7zcfV1SDBA3CCrZx=s800-c-k-c0xffffffff-no-rj-mo"
+          }
+        },
+        "channelTitle": "ColorCocoa - Topic",
+        "liveBroadcastContent": "none",
+        "publishTime": "2025-03-07T12:09:39Z"
+      }
+    },
+    {
+      "kind": "youtube#searchResult",
+      "etag": "JN6kvGgH52mMhfixwJo0PdA8Xqs",
+      "id": {
+        "kind": "youtube#channel",
+        "channelId": "UC8hhtqMMCH4UROLLVuP1F5g"
+      },
+      "snippet": {
+        "publishedAt": "2025-03-07T00:39:02Z",
+        "channelId": "UC8hhtqMMCH4UROLLVuP1F5g",
+        "title": "Highfeve７ - Topic",
+        "description": "",
+        "thumbnails": {
+          "default": {
+            "url": "https://yt3.ggpht.com/VxtePnfJ_Eru_xbIeoBfhiNoFl28XbEABPN4IidETPycLKBrRYVdRuebuo4xss04pJ-WG5qcKg=s88-c-k-c0xffffffff-no-rj-mo"
+          },
+          "medium": {
+            "url": "https://yt3.ggpht.com/VxtePnfJ_Eru_xbIeoBfhiNoFl28XbEABPN4IidETPycLKBrRYVdRuebuo4xss04pJ-WG5qcKg=s240-c-k-c0xffffffff-no-rj-mo"
+          },
+          "high": {
+            "url": "https://yt3.ggpht.com/VxtePnfJ_Eru_xbIeoBfhiNoFl28XbEABPN4IidETPycLKBrRYVdRuebuo4xss04pJ-WG5qcKg=s800-c-k-c0xffffffff-no-rj-mo"
+          }
+        },
+        "channelTitle": "Highfeve７ - Topic",
+        "liveBroadcastContent": "none",
+        "publishTime": "2025-03-07T00:39:02Z"
+      }
+    },
+    {
+      "kind": "youtube#searchResult",
+      "etag": "5reinkMk179pfXxC5ZjR9XmOn78",
+      "id": {
+        "kind": "youtube#channel",
+        "channelId": "UCH2kabtQ2ZCZ_pmviGPDnCw"
+      },
+      "snippet": {
+        "publishedAt": "2025-02-28T16:31:14Z",
+        "channelId": "UCH2kabtQ2ZCZ_pmviGPDnCw",
+        "title": "Edellyn - Topic",
+        "description": "",
+        "thumbnails": {
+          "default": {
+            "url": "https://yt3.ggpht.com/QEs0kdDFYgzMZwVYf9eVMQgb4MKg-ka7wx6o-bujlw1A4JimU6DN4wnT0yX1f3NSk5-KUIGUGA=s88-c-k-c0xffffffff-no-rj-mo"
+          },
+          "medium": {
+            "url": "https://yt3.ggpht.com/QEs0kdDFYgzMZwVYf9eVMQgb4MKg-ka7wx6o-bujlw1A4JimU6DN4wnT0yX1f3NSk5-KUIGUGA=s240-c-k-c0xffffffff-no-rj-mo"
+          },
+          "high": {
+            "url": "https://yt3.ggpht.com/QEs0kdDFYgzMZwVYf9eVMQgb4MKg-ka7wx6o-bujlw1A4JimU6DN4wnT0yX1f3NSk5-KUIGUGA=s800-c-k-c0xffffffff-no-rj-mo"
+          }
+        },
+        "channelTitle": "Edellyn - Topic",
+        "liveBroadcastContent": "none",
+        "publishTime": "2025-02-28T16:31:14Z"
+      }
+    },
+    {
+      "kind": "youtube#searchResult",
+      "etag": "wHZ-PofrNF2jr6Ms1KjGNIbKS1w",
+      "id": {
+        "kind": "youtube#channel",
+        "channelId": "UC_TKK19GDDSx_VLLNK7S5uw"
+      },
+      "snippet": {
+        "publishedAt": "2025-02-14T05:22:28Z",
+        "channelId": "UC_TKK19GDDSx_VLLNK7S5uw",
+        "title": "해보자 - Topic",
+        "description": "",
+        "thumbnails": {
+          "default": {
+            "url": "https://yt3.ggpht.com/8f5GyH82vMVfWyZLZ7ElsyyFKmVrNfbjJVsMu4JUpeFvPvpJmrgw3qwUh4kzjSUbJXbmhAlq=s88-c-k-c0xffffffff-no-rj-mo"
+          },
+          "medium": {
+            "url": "https://yt3.ggpht.com/8f5GyH82vMVfWyZLZ7ElsyyFKmVrNfbjJVsMu4JUpeFvPvpJmrgw3qwUh4kzjSUbJXbmhAlq=s240-c-k-c0xffffffff-no-rj-mo"
+          },
+          "high": {
+            "url": "https://yt3.ggpht.com/8f5GyH82vMVfWyZLZ7ElsyyFKmVrNfbjJVsMu4JUpeFvPvpJmrgw3qwUh4kzjSUbJXbmhAlq=s800-c-k-c0xffffffff-no-rj-mo"
+          }
+        },
+        "channelTitle": "해보자 - Topic",
+        "liveBroadcastContent": "none",
+        "publishTime": "2025-02-14T05:22:28Z"
+      }
+    },
+    {
+      "kind": "youtube#searchResult",
+      "etag": "y_WRZHETcO2inXd2S6WBrv7FuKU",
+      "id": {
+        "kind": "youtube#channel",
+        "channelId": "UCkaVU3qnlavBkcLlh_WALcA"
+      },
+      "snippet": {
+        "publishedAt": "2025-03-30T16:26:04Z",
+        "channelId": "UCkaVU3qnlavBkcLlh_WALcA",
+        "title": "Luhtray - Topic",
+        "description": "",
+        "thumbnails": {
+          "default": {
+            "url": "https://yt3.ggpht.com/v3XNpXoRaoBZAXB8SMYctHmeQWvnInKGvMrfMk8HmgJ-iGXinfiOJym1VK1IkpyZ4fDBjAME=s88-c-k-c0xffffffff-no-rj-mo"
+          },
+          "medium": {
+            "url": "https://yt3.ggpht.com/v3XNpXoRaoBZAXB8SMYctHmeQWvnInKGvMrfMk8HmgJ-iGXinfiOJym1VK1IkpyZ4fDBjAME=s240-c-k-c0xffffffff-no-rj-mo"
+          },
+          "high": {
+            "url": "https://yt3.ggpht.com/v3XNpXoRaoBZAXB8SMYctHmeQWvnInKGvMrfMk8HmgJ-iGXinfiOJym1VK1IkpyZ4fDBjAME=s800-c-k-c0xffffffff-no-rj-mo"
+          }
+        },
+        "channelTitle": "Luhtray - Topic",
+        "liveBroadcastContent": "none",
+        "publishTime": "2025-03-30T16:26:04Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,182 @@
+{
+  "kind": "youtube#searchListResponse",
+  "etag": "ZsBEqp_VYFestyc9GgOSDhweqbE",
+  "nextPageToken": "CAUQAA",
+  "regionCode": "KR",
+  "pageInfo": {
+    "totalResults": 1000000,
+    "resultsPerPage": 5
+  },
+  "items": [
+    {
+      "kind": "youtube#searchResult",
+      "etag": "FRw_V2Fg34prFx4flsnD7PQnT9M",
+      "id": {
+        "kind": "youtube#video",
+        "videoId": "jWQx2f-CErU"
+      },
+      "snippet": {
+        "publishedAt": "2024-10-21T09:00:42Z",
+        "channelId": "UCEf_Bc-KVd7onSeifS3py9g",
+        "title": "aespa 에스파 &#39;Whiplash&#39; MV",
+        "description": "aespa's 5th mini album \"Whiplash\" is out! Listen and download on your favorite platform: https://aespa.lnk.to/Whiplash ...",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/jWQx2f-CErU/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/jWQx2f-CErU/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/jWQx2f-CErU/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          }
+        },
+        "channelTitle": "SMTOWN",
+        "liveBroadcastContent": "none",
+        "publishTime": "2024-10-21T09:00:42Z"
+      }
+    },
+    {
+      "kind": "youtube#searchResult",
+      "etag": "GxsOWysG9aKgC2iUfjYZIe0viho",
+      "id": {
+        "kind": "youtube#video",
+        "videoId": "JSFG-IE8n_c"
+      },
+      "snippet": {
+        "publishedAt": "2025-03-07T05:00:06Z",
+        "channelId": "UCN9_L9lA9kqJbGANLRus_1A",
+        "title": "JENNIE - like JENNIE (Official Video)",
+        "description": "Official music video for “like JENNIE” from the album 'Ruby' out now: https://jennie.lnk.to/ruby Directed by HANBAGO (HAN ...",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/JSFG-IE8n_c/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/JSFG-IE8n_c/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/JSFG-IE8n_c/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          }
+        },
+        "channelTitle": "JennieRubyJaneVEVO",
+        "liveBroadcastContent": "none",
+        "publishTime": "2025-03-07T05:00:06Z"
+      }
+    },
+    {
+      "kind": "youtube#searchResult",
+      "etag": "JqJwKWsHhcSQOp4lEWRiDWmM_D4",
+      "id": {
+        "kind": "youtube#video",
+        "videoId": "r9AEGPB6qIU"
+      },
+      "snippet": {
+        "publishedAt": "2025-03-14T03:58:07Z",
+        "channelId": "UC3IZKseVpdzPSBaWxBxundA",
+        "title": "LE SSERAFIM (르세라핌) &#39;HOT&#39; OFFICIAL MV",
+        "description": "LE SSERAFIM (르세라핌) 'HOT' OFFICIAL MV https://le-sserafim.lnk.to/HOT Visual Creative Team Leader : Yoon Cho Content ...",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/r9AEGPB6qIU/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/r9AEGPB6qIU/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/r9AEGPB6qIU/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          }
+        },
+        "channelTitle": "HYBE LABELS",
+        "liveBroadcastContent": "none",
+        "publishTime": "2025-03-14T03:58:07Z"
+      }
+    },
+    {
+      "kind": "youtube#searchResult",
+      "etag": "E4_5T1i1_KOB5PE7V5oGegxIenA",
+      "id": {
+        "kind": "youtube#video",
+        "videoId": "fqiJ-CxSXd8"
+      },
+      "snippet": {
+        "publishedAt": "2025-03-24T03:05:20Z",
+        "channelId": "UCLX5YUUjBUOY1oic0GXYvcA",
+        "title": "‧₊˚🎧 kpop 2025 gg playlist | new/popular hits ᯓ★",
+        "description": "disclaimer ! i don't own any of these songs nor do i claim i do. this video is just for entertainment purposes only :) —— kpop playlist ...",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/fqiJ-CxSXd8/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/fqiJ-CxSXd8/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/fqiJ-CxSXd8/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          }
+        },
+        "channelTitle": "ohmygguki",
+        "liveBroadcastContent": "none",
+        "publishTime": "2025-03-24T03:05:20Z"
+      }
+    },
+    {
+      "kind": "youtube#searchResult",
+      "etag": "zcSu7pc1fpMEoHJvQlYrxZ7t_pA",
+      "id": {
+        "kind": "youtube#video",
+        "videoId": "Zp-Jhuhq0bQ"
+      },
+      "snippet": {
+        "publishedAt": "2024-11-01T04:00:06Z",
+        "channelId": "UCqwUnggBBct-AY2lAdI88jQ",
+        "title": "BABYMONSTER - &#39;DRIP&#39; M/V",
+        "description": "DRIP When I dress I don't think so much I could be the GOAT I don't need too much I'mma set a goal I'mma eat that lunch Baby so ...",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/Zp-Jhuhq0bQ/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/Zp-Jhuhq0bQ/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/Zp-Jhuhq0bQ/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          }
+        },
+        "channelTitle": "BABYMONSTER",
+        "liveBroadcastContent": "none",
+        "publishTime": "2024-11-01T04:00:06Z"
+      }
+    }
+  ]
+}

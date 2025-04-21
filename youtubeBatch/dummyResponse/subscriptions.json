@@ -1,0 +1,13 @@
+{
+  "error": {
+    "code": 403,
+    "message": "The requester is not allowed to access the requested subscriptions.",
+    "errors": [
+      {
+        "message": "The requester is not allowed to access the requested subscriptions.",
+        "domain": "youtube.subscription",
+        "reason": "subscriptionForbidden"
+      }
+    ]
+  }
+}

@@ -1,0 +1,211 @@
+{
+  "kind": "youtube#activityListResponse",
+  "etag": "CukbYTghQCtnyxSxGu1kXC4dIuM",
+  "items": [
+    {
+      "kind": "youtube#activity",
+      "etag": "-hBl3up8TAVNL6M9g-DrSDFIIG8",
+      "id": "MTUxNzQ0ODQ0NDA0MTc0NDg0NDQwNDAwMDkzNg",
+      "snippet": {
+        "publishedAt": "2025-04-16T23:00:04+00:00",
+        "channelId": "UC_x5XG1OV2P6uZZ5FSM9Ttw",
+        "title": "Getting started with Agent Development Kit",
+        "description": "Ready to build your first AI agent with ADK? This video simplifies the process using Google's open-source Agent Development Kit (ADK). Follow along as we guide you through the initial steps, demonstrating ADK's intuitive code-first framework. Learn the fundamentals of agent definition, essential concepts like the Runner and Services, and how easily you can run and debug your agent locally using the built-in web UI (adk web) or CLI (adk run). We'll build a sample YouTube Shorts agent to get you started quickly.\n\nChapters: \n0:00 - Intro \n0:26 - What is ADK?\n1:17 - Sample agent architecture \n2:28 - LLM Agent \n6:30 - Different ways to run the ADK Agent \n7:11 - ADK run\n7:50 - ADK web \n9:33 - Different types of Agents \n10:50 - Loop Agent: \n12:06 - Testing Loop Agent:  \n13:20 - Runner, Services and Event loop \n16:17 - Run your agent programmatically \n18:00 - Recap \n\nResources: \nGet Started → https://google.github.io/adk-docs\nSample Agents → https://goo.gle/3Rbdo4s \n\nSubscribe to Google for Developers → https://goo.gle/developers \n\nProducts mentioned: Agent Development Kit",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/44C8u0CDtSo/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/44C8u0CDtSo/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/44C8u0CDtSo/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          },
+          "standard": {
+            "url": "https://i.ytimg.com/vi/44C8u0CDtSo/sddefault.jpg",
+            "width": 640,
+            "height": 480
+          },
+          "maxres": {
+            "url": "https://i.ytimg.com/vi/44C8u0CDtSo/maxresdefault.jpg",
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "channelTitle": "Google for Developers",
+        "type": "upload"
+      }
+    },
+    {
+      "kind": "youtube#activity",
+      "etag": "cVgPnrXMDu_wSdCeh_ZuISUa_uM",
+      "id": "MTUxNzQ0ODM5NDE2MTc0NDgzOTQxNjAwMDA2NA",
+      "snippet": {
+        "publishedAt": "2025-04-16T21:36:56+00:00",
+        "channelId": "UC_x5XG1OV2P6uZZ5FSM9Ttw",
+        "title": "Build an agent-powered travel planning app with Generative AI",
+        "description": "Learn how to use Flutter and Firebase Genkit to build multi-platform apps that can seamlessly integrate with AI.\n\nResources:\n\nCheck out these solutions → https://goo.gle/4hTcpAT \n\nSubscribe to Google for Developers → https://goo.gle/developers\n\n\nSpeaker: Emma Twersky \nProducts Mentioned: Firebase, Google Cloud",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/vLHwDTNfxdE/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/vLHwDTNfxdE/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/vLHwDTNfxdE/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          },
+          "standard": {
+            "url": "https://i.ytimg.com/vi/vLHwDTNfxdE/sddefault.jpg",
+            "width": 640,
+            "height": 480
+          },
+          "maxres": {
+            "url": "https://i.ytimg.com/vi/vLHwDTNfxdE/maxresdefault.jpg",
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "channelTitle": "Google for Developers",
+        "type": "upload"
+      }
+    },
+    {
+      "kind": "youtube#activity",
+      "etag": "sG8FcnNlkO4nVVK_sXTirKfXwxU",
+      "id": "MTUxNzQ0ODE5MjA0MTc0NDgxOTIwNDAwMDk5MA",
+      "snippet": {
+        "publishedAt": "2025-04-16T16:00:04+00:00",
+        "channelId": "UC_x5XG1OV2P6uZZ5FSM9Ttw",
+        "title": "Building Agentic apps with Firebase and Google Cloud",
+        "description": "Learn how to build an agentic coffee ordering agent with Firebase and Google Cloud.\n\nResources:\n\nCheck out the solution → https://goo.gle/3QMpf8X \n\nSubscribe to Google for Developers → https://goo.gle/developers\n\nSpeaker: Emma Twersky \nProducts Mentioned: Firebase, Google Cloud",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/X_1zsJfYLMA/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/X_1zsJfYLMA/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/X_1zsJfYLMA/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          },
+          "standard": {
+            "url": "https://i.ytimg.com/vi/X_1zsJfYLMA/sddefault.jpg",
+            "width": 640,
+            "height": 480
+          },
+          "maxres": {
+            "url": "https://i.ytimg.com/vi/X_1zsJfYLMA/maxresdefault.jpg",
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "channelTitle": "Google for Developers",
+        "type": "upload"
+      }
+    },
+    {
+      "kind": "youtube#activity",
+      "etag": "VSz9i8GCJt6HJqKhJG8ZYjrJrUY",
+      "id": "MTUxNzQ0Nzc2MDQ5MTc0NDc3NjA0OTAwMDI1Mw",
+      "snippet": {
+        "publishedAt": "2025-04-16T04:00:49+00:00",
+        "channelId": "UC_x5XG1OV2P6uZZ5FSM9Ttw",
+        "title": "“Why is my website loading so slowly?”",
+        "description": "There are MANY reasons why your website may have high latency. Overcaching? Versioning?  See what solutions work for your website. \n\nSubscribe to Google for Developers → https://goo.gle/developers \n\nSpeakers: Meg Bauman",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/eGsKwMSA6Ic/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/eGsKwMSA6Ic/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/eGsKwMSA6Ic/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          },
+          "standard": {
+            "url": "https://i.ytimg.com/vi/eGsKwMSA6Ic/sddefault.jpg",
+            "width": 640,
+            "height": 480
+          },
+          "maxres": {
+            "url": "https://i.ytimg.com/vi/eGsKwMSA6Ic/maxresdefault.jpg",
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "channelTitle": "Google for Developers",
+        "type": "upload"
+      }
+    },
+    {
+      "kind": "youtube#activity",
+      "etag": "QFe8N8iqIALfFv8nYZPztzTJ1F8",
+      "id": "MTUxNzQ0Njg5NjA0MTc0NDY4OTYwNDAwMDkzNw",
+      "snippet": {
+        "publishedAt": "2025-04-15T04:00:04+00:00",
+        "channelId": "UC_x5XG1OV2P6uZZ5FSM9Ttw",
+        "title": "New Google Pay button for Flutter?",
+        "description": "The latest version on the Pay package for Flutter is here! See how you can increase conversions in your check out forms. \n\nSubscribe to Google for Developers → https://goo.gle/developers  \n\nSpeaker: Jose Ugia \nProducts Mentioned: Google Pay",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/5e13FdKeTsE/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/5e13FdKeTsE/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/5e13FdKeTsE/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          },
+          "standard": {
+            "url": "https://i.ytimg.com/vi/5e13FdKeTsE/sddefault.jpg",
+            "width": 640,
+            "height": 480
+          },
+          "maxres": {
+            "url": "https://i.ytimg.com/vi/5e13FdKeTsE/maxresdefault.jpg",
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "channelTitle": "Google for Developers",
+        "type": "upload"
+      }
+    }
+  ],
+  "nextPageToken": "CAUQAA",
+  "pageInfo": {
+    "totalResults": 20,
+    "resultsPerPage": 5
+  }
+}

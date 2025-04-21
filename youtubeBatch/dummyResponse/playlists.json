@@ -1,0 +1,221 @@
+{
+  "kind": "youtube#playlistListResponse",
+  "etag": "p-81xJTa1VX9hosNn40rbtcrAOo",
+  "nextPageToken": "CAUQAA",
+  "pageInfo": {
+    "totalResults": 173,
+    "resultsPerPage": 5
+  },
+  "items": [
+    {
+      "kind": "youtube#playlist",
+      "etag": "ACdDj3e7so1BHQ-_qsE29Q_lVkM",
+      "id": "PLOU2XLYxmsIIuDZXFpPEM85OReP_NV3tI",
+      "snippet": {
+        "publishedAt": "2025-04-02T20:09:39.267058Z",
+        "channelId": "UC_x5XG1OV2P6uZZ5FSM9Ttw",
+        "title": "Gemma 3: From zero to hero",
+        "description": "Google product experts demonstrate how you can build projects using Gemma 3, the latest state-of-the-art open models built from the same research and technology used to create the Gemini models.",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/UU13FN2Xpyw/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/UU13FN2Xpyw/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/UU13FN2Xpyw/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          },
+          "standard": {
+            "url": "https://i.ytimg.com/vi/UU13FN2Xpyw/sddefault.jpg",
+            "width": 640,
+            "height": 480
+          },
+          "maxres": {
+            "url": "https://i.ytimg.com/vi/UU13FN2Xpyw/maxresdefault.jpg",
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "channelTitle": "Google for Developers",
+        "localized": {
+          "title": "Gemma 3: From zero to hero",
+          "description": "Google product experts demonstrate how you can build projects using Gemma 3, the latest state-of-the-art open models built from the same research and technology used to create the Gemini models."
+        }
+      }
+    },
+    {
+      "kind": "youtube#playlist",
+      "etag": "R7a-_bgZRwLr6y9IblmdxbXYUA4",
+      "id": "PLOU2XLYxmsILOkAPDwRqvbiReWbIcLC4k",
+      "snippet": {
+        "publishedAt": "2025-04-01T18:05:46.810282Z",
+        "channelId": "UC_x5XG1OV2P6uZZ5FSM9Ttw",
+        "title": "Gemma Developer Day Paris",
+        "description": "",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/LdwSzzSnspM/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/LdwSzzSnspM/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/LdwSzzSnspM/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          },
+          "standard": {
+            "url": "https://i.ytimg.com/vi/LdwSzzSnspM/sddefault.jpg",
+            "width": 640,
+            "height": 480
+          },
+          "maxres": {
+            "url": "https://i.ytimg.com/vi/LdwSzzSnspM/maxresdefault.jpg",
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "channelTitle": "Google for Developers",
+        "localized": {
+          "title": "Gemma Developer Day Paris",
+          "description": ""
+        }
+      }
+    },
+    {
+      "kind": "youtube#playlist",
+      "etag": "xgj9pbu9QdsGjvXxvjs29LojNv0",
+      "id": "PLOU2XLYxmsIL7-SZlT0UHBWEG3DBwbaoA",
+      "snippet": {
+        "publishedAt": "2025-01-27T20:34:42.454861Z",
+        "channelId": "UC_x5XG1OV2P6uZZ5FSM9Ttw",
+        "title": "Google Summer of Code: Information",
+        "description": "Google Summer of Code (GSoC) is a global, online program focused on bringing new contributors into open source software development. GSoC Contributors work with an open source organization on a 12+ week programming project under the guidance of mentors.  View the videos and learn some tips and tricks for getting started with GSoC!",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/85vwk-Sqa5E/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/85vwk-Sqa5E/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/85vwk-Sqa5E/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          },
+          "standard": {
+            "url": "https://i.ytimg.com/vi/85vwk-Sqa5E/sddefault.jpg",
+            "width": 640,
+            "height": 480
+          }
+        },
+        "channelTitle": "Google for Developers",
+        "localized": {
+          "title": "Google Summer of Code: Information",
+          "description": "Google Summer of Code (GSoC) is a global, online program focused on bringing new contributors into open source software development. GSoC Contributors work with an open source organization on a 12+ week programming project under the guidance of mentors.  View the videos and learn some tips and tricks for getting started with GSoC!"
+        }
+      }
+    },
+    {
+      "kind": "youtube#playlist",
+      "etag": "Q3sfhcUFod11Sv2LH4ycxk1l-rw",
+      "id": "PLOU2XLYxmsIJ5kxKS2DO7y-X8EecbFT7g",
+      "snippet": {
+        "publishedAt": "2025-01-27T20:03:16.119138Z",
+        "channelId": "UC_x5XG1OV2P6uZZ5FSM9Ttw",
+        "title": "Google Summer of Code: Organizations",
+        "description": "Google Summer of Code (GSoC) is a global, online program focused on bringing new contributors into open source software development. GSoC Contributors work with an open source organization on a 12+ week programming project under the guidance of mentors.  View the videos and get to know our mentoring organizations!",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/p6xdQInKZh8/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/p6xdQInKZh8/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/p6xdQInKZh8/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          },
+          "standard": {
+            "url": "https://i.ytimg.com/vi/p6xdQInKZh8/sddefault.jpg",
+            "width": 640,
+            "height": 480
+          },
+          "maxres": {
+            "url": "https://i.ytimg.com/vi/p6xdQInKZh8/maxresdefault.jpg",
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "channelTitle": "Google for Developers",
+        "localized": {
+          "title": "Google Summer of Code: Organizations",
+          "description": "Google Summer of Code (GSoC) is a global, online program focused on bringing new contributors into open source software development. GSoC Contributors work with an open source organization on a 12+ week programming project under the guidance of mentors.  View the videos and get to know our mentoring organizations!"
+        }
+      }
+    },
+    {
+      "kind": "youtube#playlist",
+      "etag": "IZ71BQeoqnEEdzNotvu7usJN3H0",
+      "id": "PLOU2XLYxmsIKWMJkzjQJnZuORjXVXB2Ky",
+      "snippet": {
+        "publishedAt": "2024-12-20T20:02:37.560882Z",
+        "channelId": "UC_x5XG1OV2P6uZZ5FSM9Ttw",
+        "title": "Google Wallet Developer Livestreams",
+        "description": "Welcome to the official Google Wallet developer livestream playlist! Join us as we dive deep into the world of Google Wallet development. In these livestreams, we'll have engaging conversations with experts, unveil the latest features of the Google Wallet API, and showcase innovative ways to integrate them into your apps. Stay ahead of the curve and gain valuable insights to enhance your app development with Google Wallet.\n\nWhat you can expect:\n\n- In-depth discussions: We'll explore the intricacies of the Google Wallet API and discuss best practices for implementation.\n\n- Exclusive interviews: Hear from special guests, including industry leaders and Googlers, who will share their insights and expertise.\n\n- New feature reveals: Be the first to know about the latest additions to the Google Wallet API and learn how to leverage them to create compelling user experiences.\n\n- Creative use cases: Discover innovative ways to use Google Wallet features to engage your users and enhance their digital interactions.\n\nSave this playlist to stay up-to-date on the latest Google Wallet developments and unlock the full potential of your apps. Don't miss out on these valuable resources and the opportunity to connect with the Google Wallet developer community! Join us on this exciting journey and be a part of the future of digital payments with Google Wallet!\n\n#GoogleWallet #Developers #GoogleforDevelopers",
+        "thumbnails": {
+          "default": {
+            "url": "https://i.ytimg.com/vi/IqBMn3ey8XY/default.jpg",
+            "width": 120,
+            "height": 90
+          },
+          "medium": {
+            "url": "https://i.ytimg.com/vi/IqBMn3ey8XY/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "high": {
+            "url": "https://i.ytimg.com/vi/IqBMn3ey8XY/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          },
+          "standard": {
+            "url": "https://i.ytimg.com/vi/IqBMn3ey8XY/sddefault.jpg",
+            "width": 640,
+            "height": 480
+          },
+          "maxres": {
+            "url": "https://i.ytimg.com/vi/IqBMn3ey8XY/maxresdefault.jpg",
+            "width": 1280,
+            "height": 720
+          }
+        },
+        "channelTitle": "Google for Developers",
+        "localized": {
+          "title": "Google Wallet Developer Livestreams",
+          "description": "Welcome to the official Google Wallet developer livestream playlist! Join us as we dive deep into the world of Google Wallet development. In these livestreams, we'll have engaging conversations with experts, unveil the latest features of the Google Wallet API, and showcase innovative ways to integrate them into your apps. Stay ahead of the curve and gain valuable insights to enhance your app development with Google Wallet.\n\nWhat you can expect:\n\n- In-depth discussions: We'll explore the intricacies of the Google Wallet API and discuss best practices for implementation.\n\n- Exclusive interviews: Hear from special guests, including industry leaders and Googlers, who will share their insights and expertise.\n\n- New feature reveals: Be the first to know about the latest additions to the Google Wallet API and learn how to leverage them to create compelling user experiences.\n\n- Creative use cases: Discover innovative ways to use Google Wallet features to engage your users and enhance their digital interactions.\n\nSave this playlist to stay up-to-date on the latest Google Wallet developments and unlock the full potential of your apps. Don't miss out on these valuable resources and the opportunity to connect with the Google Wallet developer community! Join us on this exciting journey and be a part of the future of digital payments with Google Wallet!\n\n#GoogleWallet #Developers #GoogleforDevelopers"
+        }
+      }
+    }
+  ]
+}
