@@ -5,6 +5,7 @@ import com.example.youtubeTrender.dto.VideoDto
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.youtube.YouTube
+import com.google.api.services.youtube.model.Video
 import com.google.api.services.youtube.model.VideoListResponse
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -20,6 +21,7 @@ class YoutubeService {
         GsonFactory.getDefaultInstance(), // JacksonFactory -> GsonFactory
         null
     ).setApplicationName("YoutubeTrender").build()
+
 
 //    fun getAllPopularVideos(maxResults: Int = 50): List<VideoDto> {
 //        val response: VideoListResponse = youtube.videos().list("snippet")
@@ -38,15 +40,17 @@ class YoutubeService {
 
     fun fetchPopularVideosForAllRegionsAndCategories(): Map<String, List<VideoDto>> {
         val regions = listOf("KR", "US")
+//        val regions = listOf("KR")
+
         val categoryMap = mapOf(
             "all" to null,
             "music" to "10",
             "sports" to "17",
             "people_blogs" to "22",
-            "travel_style" to "19",
             "comedy" to "23",
             "entertainment" to "24",
             "news" to "25"
+            //            "travel_style" to "19",
         )
 
         val result = mutableMapOf<String, List<VideoDto>>()
@@ -55,7 +59,7 @@ class YoutubeService {
             for ((categoryName, categoryId) in categoryMap) {
                 val key = "${region}_${categoryName}"
                 println("Fetching for: $key")
-                val videos = getPopularVideosByRegionAndCategory(region, categoryId)
+                val videos = getPopularVideosByRegionAndCategory(region, categoryName, categoryId)
                 result[key] = videos
             }
         }
@@ -67,6 +71,7 @@ class YoutubeService {
 
     fun getPopularVideosByRegionAndCategory(
         regionCode: String,
+        categoryName: String?,
         videoCategoryId: String?,
         maxResults: Int = 50
     ): List<VideoDto> {
@@ -95,13 +100,22 @@ class YoutubeService {
                     title = title,
                     channelTitle = channelTitle,
                     categoryId = categoryId,
-                    viewCount = viewCount.toLong()
+                    category = categoryName, // 별도 API에서 category name 매핑 필요
+                    viewCount = viewCount.toLong(),
+                    likeCount = item.statistics.likeCount?.toLong(),
+                    description = snippet.description,
+                    tags = snippet.tags,
+                    url = "https://www.youtube.com/watch?v=$id",
+                    publishedAt = snippet.publishedAt?.toString() ?: "",
+                    commentCount = item.statistics.commentCount?.toLong(),
+                    country = regionCode
                 )
             } else {
                 null
             }
         }
     }
+
 
     fun getComments(videoId: String, maxComments: Int = 20): List<CommentDto> {
         return try {

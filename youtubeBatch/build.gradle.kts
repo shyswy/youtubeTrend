@@ -18,10 +18,13 @@ repositories {
 
 dependencies {
 
+
 	implementation("com.google.api-client:google-api-client:1.34.0")
 	implementation("com.google.http-client:google-http-client-gson:1.40.0")
 	implementation("com.fasterxml.jackson.core:jackson-databind:2.13.0")
 
+	// 직렬화, 역직렬화
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 
 //	implementation("com.google.apis:google-api-services-youtube:v3-rev222-1.25.0")
 //	implementation("com.google.apis:google-api-services-youtube:v3-rev305-1.25.0")
@@ -71,12 +74,6 @@ tasks.withType<KotlinCompile> {
 		jvmTarget = "17"
 	}
 }
-
-//tasks.withType<Jar> {
-//	manifest {
-//		attributes["Main-Class"] = "com.example.kafka.KopringProjectApplication"
-//	}
-//}
 
 tasks.withType<Test> {
 	useJUnitPlatform()
