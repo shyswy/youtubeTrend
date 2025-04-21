@@ -47,7 +47,6 @@ class YoutubeBatch(
             csvService.writeDtoListToCsv(allComments, commentFileName)
             println("💬 댓글 저장 완료: $commentFileName.csv (${allComments.size}개 댓글)")
         }
-
         log.info("🎉 Youtube 영상 및 댓글 수집 배치 종료: {}", LocalDateTime.now())
     }
 
