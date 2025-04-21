@@ -15,7 +15,7 @@ class CsvService {
         if (dtoList.isEmpty()) return
 
         // 현재 워킹 디렉토리 기준으로 csvCollection 폴더를 생성
-        val directory = File("csvCollection")
+        val directory = File("../csvCollection")
         // 만약 csvCollection 폴더가 없으면 생성
         if (!directory.exists()) {
             directory.mkdirs()
