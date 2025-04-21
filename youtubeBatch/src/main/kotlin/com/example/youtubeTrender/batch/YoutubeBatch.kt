@@ -23,11 +23,11 @@ class YoutubeBatch(
 
         // region_category 별 인기 영상 목록 조회
         val popularVideoMap = youtubeService.fetchPopularVideosForAllRegionsAndCategories()
-        popularVideoMap.forEach { (key, videos) ->
-            println(key)
-            println(videos)
-            println("@@@@@@@@@@@@@")
-        }
+//        popularVideoMap.forEach { (key, videos) ->
+//            println(key)
+//            println(videos)
+//            println("@@@@@@@@@@@@@")
+//        }
 
         val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmm"))
 

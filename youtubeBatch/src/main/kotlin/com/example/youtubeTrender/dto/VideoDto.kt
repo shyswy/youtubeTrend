@@ -32,37 +32,3 @@ data class VideoDto(
     @SerialName("country")
     val country: String
 )
-
-
-
-//data class VideoDto(
-//    val id: String,
-//    val title: String,
-//    val channelTitle: String,
-//    val categoryId: String,
-//    val category: String?, // 유튜브 Video Category API로 매핑 필요
-//    val viewCount: Long,
-//    val likeCount: Long?,
-//    val description: String?,
-//    val tags: List<String>?,
-//    val url: String,
-//    val publishedAt: String,
-//    val commentCount: Long?,
-//    val country: String
-//)
-
-
-// video_id,title,channel,category_id,category,views,likes,description,tags,url,published_at,comment_count,country
-//data class VideoDto(
-//    val id: String,
-//    val title: String,
-//    val channelTitle: String,
-//    val categoryId: String,
-//    val viewCount: Long
-//)
-
-
-//data class VideoDto(
-//    val videoId: String,
-//    val title: String
-//)
