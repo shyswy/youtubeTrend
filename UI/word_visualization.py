@@ -17,11 +17,6 @@ def generate_Title_WC(country="KR", category="all", image_Size = (800, 400), Max
         'comedy': 'comedy',
         'sports': 'sports',
     }
-    COUNTRY_TYPE = {
-        "KR": "KR",
-        "US": "US",
-    }
-
     # 현재 스크립트의 디렉토리 경로를 기준으로 경로 설정
     current_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.dirname(current_dir)  # 프로젝트 루트 디렉토리
@@ -33,17 +28,7 @@ def generate_Title_WC(country="KR", category="all", image_Size = (800, 400), Max
     print(f"CSV 디렉토리: {csv_dir}")
     print(f"폰트 경로: {font_path}")
     
-    # CSV 파일 경로 수정
-    pattern = os.path.join(csv_dir, f"{COUNTRY_TYPE[country]}_{CATEGORY_TYPE[category]}_data_*.csv")
-    matched_files = glob.glob(pattern)
-    
-    if not matched_files:
-        print(f"해당 국가({country}), 카테고리({category})에 맞는 CSV 파일이 없습니다.")
-        print(f"검색 패턴: {pattern}")
-        return None
-    
-    # 가장 최근 파일 선택
-    csv_path = max(matched_files, key=os.path.getmtime)
+    csv_path = f"./../csvCollection/{country}_{CATEGORY_TYPE[category]}_video.csv"
     print(f"선택된 CSV 파일: {csv_path}")
 
     try:
@@ -129,6 +114,30 @@ if __name__ == '__main__':
     # 현재 스크립트의 디렉토리 경로를 기준으로 csvCollection 디렉토리 경로 설정
     current_dir = os.path.dirname(os.path.abspath(__file__))
     comment_csv_path = os.path.join(current_dir, "..", "csvCollection", "KR_all_comments_20250421_1017.csv")
+    img_base64 = generate_Title_WC(country="KR", category="all", image_Size = (1200, 600), Max_words = 100)
+    if img_base64 and img_base64.startswith("data:image"):
+        img_base64_data = img_base64.split(",")[1]
+
+        # 2. base64 디코딩 → 이미지 바이트
+        image_data = base64.b64decode(img_base64_data)
+
+        # 3. BytesIO → PIL 이미지로 변환
+        image = Image.open(io.BytesIO(image_data))
+
+        # 4. matplotlib으로 출력
+        plt.imshow(image)
+        plt.axis("off")
+        plt.tight_layout()
+        plt.show()
+    else:
+        print("이미지 생성에 실패했습니다.")
+
+
+
+if __name__ == '__main__':
+    from PIL import Image
+    import matplotlib.pyplot as plt
+    comment_csv_path = "./../csvCollection\KR_all_comments_20250421_1017.csv"
     img_base64 = generate_Title_WC(country="KR", category="all", image_Size = (1200, 600), Max_words = 100)
     if img_base64 and img_base64.startswith("data:image"):
         img_base64_data = img_base64.split(",")[1]
