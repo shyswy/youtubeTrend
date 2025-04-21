@@ -32,7 +32,11 @@ def generate_Title_WC(country="KR", category="all", image_Size = (800, 400), Max
     print(f"선택된 CSV 파일: {csv_path}")
 
     try:
-        df = pd.read_csv(csv_path)
+        df = pd.read_csv(csv_path,
+                    engine='python',
+                    encoding='utf-8',
+                    on_bad_lines='skip'
+                    )
 
         if "title" not in df.columns or "viewCount" not in df.columns:
             print("CSV에 'title'과 'viewCount' 열이 필요합니다.")
