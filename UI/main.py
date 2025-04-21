@@ -518,37 +518,15 @@ def update_table_and_graph(selected_country, selected_category, page_current):
     category_text = category_names[selected_category]
     table_title = f"{selected_country} {category_text} 인기 동영상 순위"
     
-    # 산점도 생성 (전체 데이터 사용)
+    # 산점도 생성
     fig = px.scatter(
-        filtered_df,  # 상위 50개 제한 제거
+        filtered_df.head(50),
         x='views',
         y='likes',
         color='category',
         hover_data=['title', 'channel'],
         log_x=True,
-        log_y=True,
-        title='조회수 vs 좋아요 분석 (전체 카테고리)'
-    )
-    
-    # 차트 스타일링
-    fig.update_layout(
-        showlegend=True,
-        legend=dict(
-            orientation='h',
-            yanchor='bottom',
-            y=-0.5,
-            xanchor='center',
-            x=0.5,
-            bgcolor='rgba(255, 255, 255, 0.8)',
-            bordercolor='rgba(0, 0, 0, 0.1)',
-            borderwidth=2,
-            tracegroupgap=1
-        ),
-        margin=dict(t=40, b=60, l=0, r=0),
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        width=800,
-        height=500
+        log_y=True
     )
     
     return table_data.to_dict('records'), fig, table_title, selected_category
@@ -743,7 +721,7 @@ def update_weekly_videos(selected_country):
         )
         for _, row in filtered_df.head(3).iterrows()
     ]
-
 # 서버 실행
 if __name__ == '__main__':
     app.run_server(debug=True) 
+    
