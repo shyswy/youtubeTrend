@@ -28,7 +28,18 @@ def generate_Title_WC(country="KR", category="all", image_Size = (800, 400), Max
     print(f"CSV 디렉토리: {csv_dir}")
     print(f"폰트 경로: {font_path}")
     
-    csv_path = f"./../csvCollection/{country}_{CATEGORY_TYPE[category]}_video.csv"
+    # csv_path = f"./../csvCollection/{country}_{CATEGORY_TYPE[category]}_video.csv"
+    # print(f"선택된 CSV 파일: {csv_path}")
+    pattern = os.path.join(csv_dir, f"{country}_{CATEGORY_TYPE[category]}_video*.csv")
+    matched_files = glob.glob(pattern)
+
+    if not matched_files:
+        print(f"해당 국가({country}), 카테고리({category})에 맞는 CSV 파일이 없습니다.")
+        print(f"검색 패턴: {pattern}")
+        return None
+
+    # 가장 최근 파일 선택
+    csv_path = max(matched_files, key=os.path.getmtime)
     print(f"선택된 CSV 파일: {csv_path}")
 
     try:
@@ -141,7 +152,7 @@ if __name__ == '__main__':
 if __name__ == '__main__':
     from PIL import Image
     import matplotlib.pyplot as plt
-    comment_csv_path = "./../csvCollection\KR_all_comments_20250421_1017.csv"
+    comment_csv_path = "./../csvCollection/KR_all_comments_20250421_1017.csv"
     img_base64 = generate_Title_WC(country="KR", category="all", image_Size = (1200, 600), Max_words = 100)
     if img_base64 and img_base64.startswith("data:image"):
         img_base64_data = img_base64.split(",")[1]
