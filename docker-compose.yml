@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper:latest
+    container_name: zookeeper
+    ports:
+      - '2181:2181'
+    networks:
+      - infra-net
+
+  kafka:
+    image: wurstmeister/kafka:latest
+    container_name: kafka
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      # partition: 동시 처리, replica: 파티션 여분.
+      KAFKA_CREATE_TOPICS: 'test-topic:3:1, test-topic2:3:1' # Topic명:Partition개수:Replica개수
+    #      KAFKA_CREATE_TOPICS: 'device_notice:1:1, device_response:1:1, device_report:1:1, device_register:1:1, device_connection:1:1' # Topic명:Partition개수:Replica개수
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - '9092:9092'
+    depends_on:
+      - zookeeper
+    networks:
+      - infra-net
+  app:
+    container_name: app
+#    build:
+#      context: ./kafka
+#      dockerfile: Dockerfile # Dockerfile 경로를 지정하세요
+
+    build: #image를 DockerFile 기반으로 사용한다
+#      context: .   #DockerFile이 있는 디렉토리
+      dockerfile: Dockerfile
+#    volumes:
+#      - ./libs:/home/libs
+#      - ./package.json:/home/package.json
+    ports:
+      - '8080:8080' # 필요한 포트를 설정하세요
+    depends_on:
+      - kafka
+    environment:
+      - STAGE=local
+      - REGION=ap-northeast-2
+      # kafka
+    working_dir: /home/app
+    command: ['java', '-jar', '/app/app.jar']
+    networks:
+      - infra-net
+networks:
+  infra-net:
+    driver: bridge
+
+volumes:
+  libs:
