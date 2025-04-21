@@ -21,20 +21,49 @@ class YoutubeService {
         null
     ).setApplicationName("YoutubeTrender").build()
 
-    fun getAllPopularVideos(maxResults: Int = 50): List<VideoDto> {
-        val response: VideoListResponse = youtube.videos().list("snippet")
-            .setChart("mostPopular")
-            .setRegionCode("KR")
-            .setMaxResults(maxResults.toLong())
-            .setKey(apiKey)
-            .execute()
+//    fun getAllPopularVideos(maxResults: Int = 50): List<VideoDto> {
+//        val response: VideoListResponse = youtube.videos().list("snippet")
+//            .setChart("mostPopular")
+//            .setRegionCode("KR")
+//            .setMaxResults(maxResults.toLong())
+//            .setKey(apiKey)
+//            .execute()
+//
+//        return response.items.mapNotNull { item ->
+//            val id = item.id
+//            val title = item.snippet?.title
+//            if (id != null && title != null) VideoDto(id, title) else null
+//        }
+//    }
 
-        return response.items.mapNotNull { item ->
-            val id = item.id
-            val title = item.snippet?.title
-            if (id != null && title != null) VideoDto(id, title) else null
+    fun fetchPopularVideosForAllRegionsAndCategories(): Map<String, List<VideoDto>> {
+        val regions = listOf("KR", "US")
+        val categoryMap = mapOf(
+            "all" to null,
+            "music" to "10",
+            "sports" to "17",
+            "people_blogs" to "22",
+            "travel_style" to "19",
+            "comedy" to "23",
+            "entertainment" to "24",
+            "news" to "25"
+        )
+
+        val result = mutableMapOf<String, List<VideoDto>>()
+
+        for (region in regions) {
+            for ((categoryName, categoryId) in categoryMap) {
+                val key = "${region}_${categoryName}"
+                println("Fetching for: $key")
+                val videos = getPopularVideosByRegionAndCategory(region, categoryId)
+                result[key] = videos
+            }
         }
+
+        return result
     }
+
+
 
     fun getPopularVideosByRegionAndCategory(
         regionCode: String,
@@ -97,111 +126,45 @@ class YoutubeService {
                     )
                 }
         } catch (e: Exception) {
-            println("댓글 오류 ($videoId): ${e.message}")
+            if (e.message?.contains("commentsDisabled") == true) {
+//                println("댓글 비활성화됨 ($videoId): ${e.message}")
+                println("댓글 비활성화됨 videoId: ($videoId)")
+
+            } else {
+                println("댓글 오류 ($videoId): ${e.message}")
+            }
             emptyList()
         }
     }
-}
 
 
-//    fun getComments(videoId: String): List<CommentDto> {
-//        val comments = mutableListOf<CommentDto>()
-//        var nextPageToken: String? = null
-//        do {
+//    fun getComments(videoId: String, maxComments: Int = 20): List<CommentDto> {
+//        return try {
+//            println(" vid: $videoId")
 //            val request = youtube.commentThreads().list("snippet")
 //                .setVideoId(videoId)
-//                .setMaxResults(100L)
+//                .setMaxResults(100)
 //                .setTextFormat("plainText")
 //                .setKey(apiKey)
-//                .apply {
-//                    if (nextPageToken != null) setPageToken(nextPageToken)
-//                }
 //
 //            val response = request.execute()
 //
-//            response.items?.forEach { item ->
-//                val snippet = item.snippet
-//                val topLevelComment = snippet.topLevelComment.snippet
-//                val author = topLevelComment.authorDisplayName
-//                val text = topLevelComment.textDisplay
-//                comments.add(CommentDto(videoId, author, text))
-//            }
-//
-//            nextPageToken = response.nextPageToken
-//        } while (!nextPageToken.isNullOrEmpty())
-//
-//        return comments
-//    }
-//}
-
-
-
-
-//package com.example.youtubeTrender.service
-//
-//import com.example.youtubeTrender.dto.CommentDto
-//import com.example.youtubeTrender.dto.VideoDto
-//import org.springframework.beans.factory.annotation.Value
-//import org.springframework.stereotype.Service
-//import org.springframework.web.client.RestTemplate
-//import org.springframework.web.util.UriComponentsBuilder
-//
-//@Service
-//class YoutubeService {
-//    @Value("\${youtube.api-key}")
-//    private lateinit var apiKey: String
-//    private val restTemplate = RestTemplate()
-//
-//    fun getPopularVideos(maxResults: Int = 50): List<VideoDto> {
-//        val uri = UriComponentsBuilder.fromHttpUrl("https://www.googleapis.com/youtube/v3/videos")
-//            .queryParam("part", "snippet")
-//            .queryParam("chart", "mostPopular")
-//            .queryParam("regionCode", "KR")
-//            .queryParam("maxResults", maxResults)
-//            .queryParam("key", apiKey)
-//            .toUriString()
-//
-//        val response = restTemplate.getForObject(uri, Map::class.java)
-//        val items = response?.get("items") as? List<Map<String, Any>> ?: return emptyList()
-//
-//        return items.mapNotNull { item ->
-//            val id = item["id"] as? String
-//            val snippet = item["snippet"] as? Map<*, *>
-//            val title = snippet?.get("title") as? String
-//            if (id != null && title != null) VideoDto(id, title) else null
+//            response.items
+//                .sortedByDescending { it.snippet.topLevelComment.snippet.likeCount }
+//                .take(maxComments)
+//                .map {
+//                    val snippet = it.snippet.topLevelComment.snippet
+//                    CommentDto(
+//                        videoId = videoId,
+//                        text = snippet.textDisplay,
+//                        likeCount = snippet.likeCount ?: 0,
+//                        author = snippet.authorDisplayName
+//                    )
+//                }
+//        } catch (e: Exception) {
+//            println("댓글 오류 ($videoId): ${e.message}")
+//            emptyList()
 //        }
 //    }
-//
-//    fun getComments(videoId: String): List<CommentDto> {
-//        var comments = mutableListOf<CommentDto>()
-//        var nextPageToken: String? = null
-//
-//        do {
-//            val uri = UriComponentsBuilder.fromHttpUrl("https://www.googleapis.com/youtube/v3/commentThreads")
-//                .queryParam("part", "snippet")
-//                .queryParam("videoId", videoId)
-//                .queryParam("maxResults", 100)
-//                .queryParam("key", apiKey)
-//                .apply {
-//                    if (nextPageToken != null) queryParam("pageToken", nextPageToken)
-//                }
-//                .toUriString()
-//
-//            val response = restTemplate.getForObject(uri, Map::class.java)
-//            val items = response?.get("items") as? List<Map<String, Any>> ?: emptyList()
-//
-//            val newComments = items.mapNotNull { item ->
-//                val snippet = (item["snippet"] as? Map<*, *>)?.get("topLevelComment") as? Map<*, *>
-//                val snippetDetail = snippet?.get("snippet") as? Map<*, *>
-//                val author = snippetDetail?.get("authorDisplayName") as? String
-//                val text = snippetDetail?.get("textDisplay") as? String
-//                if (author != null && text != null) CommentDto(videoId, author, text) else null
-//            }
-//
-//            comments.addAll(newComments)
-//            nextPageToken = response?.get("nextPageToken") as? String
-//        } while (!nextPageToken.isNullOrEmpty())
-//
-//        return comments
-//    }
-//}
+}
+
