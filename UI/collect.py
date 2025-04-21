@@ -4,7 +4,7 @@ from googleapiclient.errors import HttpError
 import pandas as pd
 
 # YouTube API 키 설정
-API_KEY = "AIzaSyCc07sD8fJoVffWWZiIW0aKQzTTk7jMmI0"  # 실제 API 키로 교체 필요
+API_KEY = ""  # 실제 API 키로 교체 필요
 
 # YouTube API 클라이언트 생성
 youtube = build('youtube', 'v3', developerKey=API_KEY)

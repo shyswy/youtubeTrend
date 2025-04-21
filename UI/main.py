@@ -1,10 +1,12 @@
 import dash
 from dash import html, dcc, Input, Output, dash_table, State
 import plotly.express as px
+import plotly.graph_objects as go
 import pandas as pd
 import os
 import glob
 from web_crawl import get_youtuber_Ranking
+from word_visualization import generate_Title_WC
 
 # 카테고리 한글 이름 매핑
 category_names = {
@@ -379,15 +381,53 @@ app.layout = html.Div([
     
     # 하단 섹션
     html.Div([
-        # 조회수 vs 좋아요 분석
+        # 상단 그리드 (조회수 vs 좋아요 분석 + 워드클라우드)
         html.Div([
-            html.H3("조회수 vs 좋아요 분석", style={'textAlign': 'center'}),
-            dcc.Graph(id='scatter-plot')
-        ], style=styles['bottomSection']),
+            # 조회수 vs 좋아요 분석
+            html.Div([
+                html.H3("조회수 vs 좋아요 분석", style={'textAlign': 'center', 'marginBottom': '20px'}),
+                dcc.Graph(id='scatter-plot', style={'height': '500px'})
+            ], style={
+                'flex': '1',
+                'padding': '20px',
+                'backgroundColor': 'white',
+                'borderRadius': '15px',
+                'boxShadow': '0 4px 8px rgba(0,0,0,0.1)',
+                'marginRight': '20px'
+            }),
+            
+            # 워드클라우드
+            html.Div([
+                html.H3("동영상 제목 워드클라우드", style={'textAlign': 'center', 'marginBottom': '20px'}),
+                html.Div([
+                    html.Img(
+                        id='word-cloud-img',
+                        style={
+                            'width': '100%',
+                            'height': '500px',
+                            'objectFit': 'contain',
+                            'border': '2px solid #ccc',
+                            'boxShadow': '2px 2px 10px rgba(0,0,0,0.1)',
+                            'borderRadius': '10px'
+                        }
+                    )
+                ], style={'textAlign': 'center'})
+            ], style={
+                'flex': '1',
+                'padding': '20px',
+                'backgroundColor': 'white',
+                'borderRadius': '15px',
+                'boxShadow': '0 4px 8px rgba(0,0,0,0.1)'
+            })
+        ], style={
+            'display': 'flex',
+            'marginBottom': '30px',
+            'gap': '20px'
+        }),
         
         # 실시간 인기 유튜버
         html.Div([
-            html.H3("실시간 인기 유튜버", style={'textAlign': 'center'}),
+            html.H3("실시간 인기 유튜버", style={'textAlign': 'center', 'marginBottom': '20px'}),
             dash_table.DataTable(
                 id='youtuber-table',
                 columns=[
@@ -407,11 +447,9 @@ app.layout = html.Div([
                     'boxShadow': '0 4px 8px rgba(0,0,0,0.1)',
                     'background': 'linear-gradient(to bottom right, #ffffff, #f8f9fa)',
                     'height': '180px',
-                    'width': '400px',
+                    'width': '800px',
                     'overflowY': 'hidden',
-                    'marginTop': '20px',
-                    'marginLeft': 'auto',
-                    'marginRight': 'auto'
+                    'margin': '0 auto'
                 },
                 style_cell={
                     'textAlign': 'center',
@@ -474,8 +512,19 @@ app.layout = html.Div([
                 interval=1700,  # 1.7초마다 업데이트
                 n_intervals=0
             )
-        ], style={'textAlign': 'center'})
-    ])
+        ], style={
+            'padding': '20px',
+            'backgroundColor': 'white',
+            'borderRadius': '15px',
+            'boxShadow': '0 4px 8px rgba(0,0,0,0.1)',
+            'textAlign': 'center'
+        })
+    ], style={
+        'padding': '30px',
+        'backgroundColor': '#f8f9fa',
+        'borderRadius': '15px',
+        'marginTop': '30px'
+    })
 ], style=styles['container'])
 
 # 콜백 함수
@@ -721,6 +770,41 @@ def update_weekly_videos(selected_country):
         )
         for _, row in filtered_df.head(3).iterrows()
     ]
+
+# 워드클라우드 업데이트 콜백
+@app.callback(
+    Output('word-cloud-img', 'src'),
+    [Input('country-dropdown', 'value'),
+     Input('category-dropdown', 'value')]
+)
+def update_word_cloud(selected_country, selected_category):
+    # 국가와 카테고리 매핑
+    country_mapping = {
+        '한국': 'KR',
+        '미국': 'US',
+        '전체': 'KR'  # 기본값
+    }
+    
+    category_mapping = {
+        'all': 'all',
+        'entertainment': 'entertainment',
+        'news': 'news',
+        'people': 'people_blogs',
+        'music': 'music',
+        'comedy': 'comedy',
+        'sports': 'sports'
+    }
+    
+    country = country_mapping.get(selected_country, 'KR')
+    category = category_mapping.get(selected_category, 'all')
+    
+    # 워드클라우드 이미지 생성
+    img_base64 = generate_Title_WC(country, category)
+    if img_base64 is None:
+        return None
+    
+    return img_base64
+
 # 서버 실행
 if __name__ == '__main__':
     app.run_server(debug=True) 

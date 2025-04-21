@@ -7,7 +7,7 @@ from collections import Counter
 import glob
 import os
 
-def generate_Title_WC(country="korea", category="all", image_Size = (800, 400), Max_words = 200):
+def generate_Title_WC(country="KR", category="all", image_Size = (800, 400), Max_words = 200):
     CATEGORY_TYPE = {
         'all': 'all',
         'entertainment': 'entertainment',
@@ -18,11 +18,33 @@ def generate_Title_WC(country="korea", category="all", image_Size = (800, 400), 
         'sports': 'sports',
     }
     COUNTRY_TYPE = {
-        "korea": "KR",
-        "usa": "US",
+        "KR": "KR",
+        "US": "US",
     }
 
-    csv_path = find_latest_csv(f"{COUNTRY_TYPE[country]}_{CATEGORY_TYPE[category]}_data", folder="./../csvCollection")
+    # 현재 스크립트의 디렉토리 경로를 기준으로 경로 설정
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(current_dir)  # 프로젝트 루트 디렉토리
+    csv_dir = os.path.join(project_root, "csvCollection")
+    font_path = os.path.join(current_dir, "Font", "LGEITextTTF-Bold.ttf")
+    
+    print(f"현재 디렉토리: {current_dir}")
+    print(f"프로젝트 루트: {project_root}")
+    print(f"CSV 디렉토리: {csv_dir}")
+    print(f"폰트 경로: {font_path}")
+    
+    # CSV 파일 경로 수정
+    pattern = os.path.join(csv_dir, f"{COUNTRY_TYPE[country]}_{CATEGORY_TYPE[category]}_data_*.csv")
+    matched_files = glob.glob(pattern)
+    
+    if not matched_files:
+        print(f"해당 국가({country}), 카테고리({category})에 맞는 CSV 파일이 없습니다.")
+        print(f"검색 패턴: {pattern}")
+        return None
+    
+    # 가장 최근 파일 선택
+    csv_path = max(matched_files, key=os.path.getmtime)
+    print(f"선택된 CSV 파일: {csv_path}")
 
     try:
         df = pd.read_csv(csv_path)
@@ -32,7 +54,7 @@ def generate_Title_WC(country="korea", category="all", image_Size = (800, 400), 
             return None
 
         korean_stopwords = set([
-            "더보기", "보기", "입니다", "하는", "있습니다", "합니다", "라는", "하는",
+            "더보기", "보기", "입니다", "하는", "있습니다", "합니다", "라는",
             "영상", "노래", "제목", "공식", "티저", "쇼케이스", "기자회견", "있다", "이다", "자막"
         ])
         english_stopwords = set([
@@ -61,7 +83,7 @@ def generate_Title_WC(country="korea", category="all", image_Size = (800, 400), 
                     word_freq[token] += int(view * 0.001)
 
         wc = WordCloud(
-            font_path="./Font/LGEITextTTF-Bold.ttf",
+            font_path=font_path,
             width=image_Size[0],
             height=image_Size[1],
             background_color="white",
@@ -86,8 +108,14 @@ def generate_Title_WC(country="korea", category="all", image_Size = (800, 400), 
 
 
 def find_latest_csv(prefix, folder="."):
-    pattern = os.path.join(folder, f"{prefix}*.csv")
+    print(f"검색 패턴: {prefix}")
+    print(f"검색 디렉토리: {folder}")
+    
+    pattern = os.path.join(folder, f"{prefix}_*.csv")
+    print(f"전체 패턴: {pattern}")
+    
     matched_files = glob.glob(pattern)
+    print(f"찾은 파일들: {matched_files}")
 
     if not matched_files:
         print("해당 국가, 카테고리에 맞는 CSV 파일이 없습니다.")
@@ -97,8 +125,11 @@ def find_latest_csv(prefix, folder="."):
 if __name__ == '__main__':
     from PIL import Image
     import matplotlib.pyplot as plt
-    comment_csv_path = "./../csvCollection\KR_all_comments_20250421_1017.csv"
-    img_base64 = generate_Title_WC(country="korea", category="all", image_Size = (1200, 600), Max_words = 100)
+    
+    # 현재 스크립트의 디렉토리 경로를 기준으로 csvCollection 디렉토리 경로 설정
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    comment_csv_path = os.path.join(current_dir, "..", "csvCollection", "KR_all_comments_20250421_1017.csv")
+    img_base64 = generate_Title_WC(country="KR", category="all", image_Size = (1200, 600), Max_words = 100)
     if img_base64 and img_base64.startswith("data:image"):
         img_base64_data = img_base64.split(",")[1]
 
