@@ -12,6 +12,7 @@ category_names = {
     'music': '음악',
     'sports': '스포츠',
     'comedy': '코미디',
+    'people': 'v-log',
     'entertainment': '엔터테인먼트',
     'news': '뉴스'
 }
