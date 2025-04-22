@@ -33,7 +33,7 @@ class YoutubeService {
             "comedy" to "23",
             "entertainment" to "24",
             "news" to "25",
-            "travel" to "19",
+//            "travel" to "19",
         )
 
         val result = mutableMapOf<String, List<VideoDto>>()
