@@ -7,16 +7,6 @@ from collections import Counter
 import glob
 import os
 
-CATEGORY_TYPE = {
-    'all': 'all',
-    'entertainment': 'entertainment',
-    'news': 'popular',
-    'people_blogs': 'vlog',
-    'music': 'music',
-    'comedy': 'comedy',
-    'sports': 'sports',
-    'LGEI': 'LGEI'
-}
 KOREAN_STOPWORDS = set([
     "더보기", "보기", "입니다", "하는", "있습니다", "합니다", "라는",
     "영상", "노래", "제목", "공식", "티저", "쇼케이스", "기자회견", "있다", "이다", "자막",
@@ -34,34 +24,9 @@ ENGLISH_STOPWORDS = set([
     "omg", "lol", "wow", "yes", "no", "okay", "ok", "uh", "oh", "hi", "hey", "haha", "hahaha", "wa", "yea", "yeah", "yup", "huh", "eh"
 ])
 
-
-
 def generate_Title_WC(country="KR", category="all", image_Size = (800, 400), Max_words = 200):
-    # 현재 스크립트의 디렉토리 경로를 기준으로 경로 설정
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(current_dir)  # 프로젝트 루트 디렉토리
-    csv_dir = os.path.join(project_root, "csvCollection")
-    font_path = os.path.join(current_dir, "Font", "LGEITextTTF-Bold.ttf")
-    
-    print(f"현재 디렉토리: {current_dir}")
-    print(f"프로젝트 루트: {project_root}")
-    print(f"CSV 디렉토리: {csv_dir}")
-    print(f"폰트 경로: {font_path}")
-    
-    # csv_path = f"./../csvCollection/{country}_{CATEGORY_TYPE[category]}_video.csv"
-    # print(f"선택된 CSV 파일: {csv_path}")
-    pattern = os.path.join(csv_dir, f"{country}_{CATEGORY_TYPE[category]}_video*.csv")
-    matched_files = glob.glob(pattern)
 
-    if not matched_files:
-        print(f"해당 국가({country}), 카테고리({category})에 맞는 CSV 파일이 없습니다.")
-        print(f"검색 패턴: {pattern}")
-        return None
-
-    # 가장 최근 파일 선택
-    csv_path = max(matched_files, key=os.path.getmtime)
-    print(f"선택된 CSV 파일: {csv_path}")
-
+    csv_path, font_path = read_file(country, category, type = "video")
     try:
         df = pd.read_csv(csv_path,
                     engine='python',
@@ -115,28 +80,9 @@ def generate_Title_WC(country="KR", category="all", image_Size = (800, 400), Max
         print(f"에러 발생: {e}")
         return None
 
-
 def generate_Comments_WC(video_ID, country="KR", category="all", image_Size = (400, 800), Max_words = 200):
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(current_dir)
-    csv_dir = os.path.join(project_root, "csvCollection")
-    font_path = os.path.join(current_dir, "Font", "LGEITextTTF-Bold.ttf")
     
-    print(f"현재 디렉토리: {current_dir}")
-    print(f"프로젝트 루트: {project_root}")
-    print(f"CSV 디렉토리: {csv_dir}")
-    print(f"폰트 경로: {font_path}")
-    
-    pattern = os.path.join(csv_dir, f"{country}_{CATEGORY_TYPE[category]}_comments*.csv")
-    matched_files = glob.glob(pattern)
-
-    if not matched_files:
-        print(f"해당 국가({country}), 카테고리({category})에 맞는 CSV 파일이 없습니다.")
-        print(f"검색 패턴: {pattern}")
-        return None
-
-    csv_path = max(matched_files, key=os.path.getmtime)
-    print(f"선택된 CSV 파일: {csv_path}")
+    csv_path, font_path = read_file(country, category, type = "comments")
 
     try:
         df = pd.read_csv(csv_path,
@@ -190,23 +136,43 @@ def generate_Comments_WC(video_ID, country="KR", category="all", image_Size = (4
         print(f"에러 발생: {e}")
         return None
 
+def read_file(country, category, type = "comments"):
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(current_dir)
+    csv_dir = os.path.join(project_root, "csvCollection")
+    font_path = os.path.join(current_dir, "Font", "LGEITextTTF-Bold.ttf")
+    
+    print(f"현재 디렉토리: {current_dir}")
+    print(f"프로젝트 루트: {project_root}")
+    print(f"CSV 디렉토리: {csv_dir}")
+    print(f"폰트 경로: {font_path}")
+
+    pattern = os.path.join(csv_dir, f"{country}_{category}_{type}*.csv")
+    matched_files = glob.glob(pattern)
+
+    if not matched_files:
+        print(f"해당 국가({country}), 카테고리({category})에 맞는 CSV 파일이 없습니다.")
+        print(f"검색 패턴: {pattern}")
+        return None
+
+    csv_path = max(matched_files, key=os.path.getmtime)
+    print(f"선택된 CSV 파일: {csv_path}")
+
+    return csv_path, 
+
 
 
 
 if __name__ == '__main__':
     from PIL import Image
     import matplotlib.pyplot as plt
-    type = 0
-    if type == 1:
-        img_base64 = generate_Title_WC(country="KR", category="all", image_Size = (1200, 600), Max_words = 100)
-    else:
-        img_base64 = generate_Comments_WC("Qhz2L8WzgIw", country="KR", category="all", image_Size = (400, 800), Max_words = 100)
+    img_base64 = generate_Title_WC(country="KR", category="all", image_Size = (1200, 600), Max_words = 100)
+    #img_base64 = generate_Comments_WC("Qhz2L8WzgIw", country="KR", category="all", image_Size = (400, 800), Max_words = 100)
     
     if img_base64 and img_base64.startswith("data:image"):
         img_base64_data = img_base64.split(",")[1]
         image_data = base64.b64decode(img_base64_data)
         image = Image.open(io.BytesIO(image_data))
-        # 4. matplotlib으로 출력
         plt.imshow(image)
         plt.axis("off")
         plt.tight_layout()
