@@ -28,27 +28,61 @@ category_names = {
     # data_files = glob.glob(video_file_path+'*_video.csv')
 # 데이터 로드
 def load_data():
-    data_files = glob.glob('youtube_data/*.csv')
+    # 현재 스크립트의 디렉토리 경로를 가져옴
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    data_dir = os.path.join(current_dir, 'youtube_data')
+    
+    print(f"Looking for data files in: {data_dir}")
+    data_files = glob.glob(os.path.join(data_dir, '*_video.csv'))
+    print(f"Found {len(data_files)} data files")
+    
     all_data = []
     weekly_data = []
     
     for file in data_files:
-        df = pd.read_csv(file, encoding='utf-8-sig')
-        # 파일명에서 국가와 카테고리 추출
-        file_name = os.path.basename(file)  # 파일 이름만 추출
-        country = file_name.split('_')[0]  # KR 또는 US
-        category = file_name.split('_')[1] if len(file_name.split('_')) > 1 else 'weekly'
-        
-        if 'weekly' in file_name:
-            df['category_name'] = 'weekly'
-            df['country_name'] = '한국' if country == 'KR' else '미국'
-            weekly_data.append(df)
-        else:
-            df['category_name'] = category
-            df['country_name'] = '한국' if country == 'KR' else '미국'
-            all_data.append(df)
+        print(f"Processing file: {file}")
+        try:
+            df = pd.read_csv(file, encoding='utf-8-sig')
+            print(f"Successfully loaded {len(df)} rows from {file}")
+            
+            # 컬럼 이름 변경 및 매핑
+            df = df.rename(columns={
+                'id': 'video_id',
+                'channelTitle': 'channel',
+                'viewCount': 'views',
+                'likeCount': 'likes',
+                'publishedAt': 'published_at'
+            })
+            
+            # 필요한 컬럼만 선택
+            df = df[['video_id', 'title', 'channel', 'category', 'views', 'likes', 'description', 'url', 'published_at', 'country']]
+            
+            # 파일명에서 국가와 카테고리 추출
+            file_name = os.path.basename(file)  # 파일 이름만 추출
+            country = file_name.split('_')[0]  # KR 또는 US
+            category = file_name.split('_')[1] if len(file_name.split('_')) > 1 else 'weekly'
+            
+            if 'weekly' in file_name:
+                df['category_name'] = 'weekly'
+                df['country_name'] = '한국' if country == 'KR' else '미국'
+                weekly_data.append(df)
+                print(f"Added to weekly data: {len(df)} rows")
+            else:
+                df['category_name'] = category
+                df['country_name'] = '한국' if country == 'KR' else '미국'
+                all_data.append(df)
+                print(f"Added to all data: {len(df)} rows")
+                
+        except Exception as e:
+            print(f"Error processing file {file}: {str(e)}")
     
-    return pd.concat(all_data, ignore_index=True), pd.concat(weekly_data, ignore_index=True) if weekly_data else None
+    print(f"Total all_data rows: {sum(len(df) for df in all_data)}")
+    print(f"Total weekly_data rows: {sum(len(df) for df in weekly_data)}")
+    
+    if not all_data and not weekly_data:
+        raise ValueError("No data was loaded from any files")
+    
+    return pd.concat(all_data, ignore_index=True) if all_data else pd.DataFrame(), pd.concat(weekly_data, ignore_index=True) if weekly_data else pd.DataFrame()
 
 # 크롤링 데이터 로드 함수 추가
 def load_crawled_data():
@@ -686,42 +720,54 @@ def update_weekly_videos(selected_country):
      Input('category-dropdown', 'value')]
 )
 def update_word_cloud(selected_country, selected_category):
-    # 국가와 카테고리 매핑
-    country_mapping = {
-        '한국': 'KR',
-        '미국': 'US',
-        '전체': 'KR'  # 기본값
-    }
-    
-    category_mapping = {
-        'all': 'all',
-        'entertainment': 'entertainment',
-        'news': 'news',
-        'people': 'people_blogs',
-        'music': 'music',
-        'comedy': 'comedy',
-        'sports': 'sports'
-    }
-    
-    country = country_mapping.get(selected_country, 'KR')
-    category = category_mapping.get(selected_category, 'all')
-    
-    # 워드클라우드 이미지 생성
-    img_base64 = generate_Title_WC(country, category)
-    if img_base64 is None:
+    try:
+        # 국가와 카테고리 매핑
+        country_mapping = {
+            '한국': 'KR',
+            '미국': 'US',
+            '전체': 'KR'  # 기본값
+        }
+        
+        category_mapping = {
+            'all': 'all',
+            'entertainment': 'entertainment',
+            'news': 'news',
+            'people': 'people_blogs',
+            'music': 'music',
+            'comedy': 'comedy',
+            'sports': 'sports'
+        }
+        
+        country = country_mapping.get(selected_country, 'KR')
+        category = category_mapping.get(selected_category, 'all')
+        
+        print(f"Generating word cloud for country: {country}, category: {category}")
+        
+        # 워드클라우드 이미지 생성
+        img_base64 = generate_Title_WC(country, category)
+        if img_base64 is None:
+            print("Word cloud generation returned None")
+            return None
+        
+        print("Word cloud generated successfully")
+        return img_base64  # 이미 base64 URL이 포함되어 있으므로 그대로 반환
+    except Exception as e:
+        print(f"Error in update_word_cloud: {str(e)}")
         return None
-    
-    return img_base64
 
-# 워드클라우드 제목 업데이트 콜백 추가
+# 워드클라우드 제목 업데이트 콜백
 @app.callback(
     Output('wordcloud-title', 'children'),
     [Input('country-dropdown', 'value'),
      Input('category-dropdown', 'value')]
 )
 def update_wordcloud_title(selected_country, selected_category):
-    category_display = category_names.get(selected_category, selected_category)
-    return f"{selected_country} {category_display} 워드클라우드"
+    try:
+        category_display = category_names.get(selected_category, selected_category)
+        return f"{selected_country} {category_display} 워드클라우드"
+    except Exception as e:
+        print(f"Error in update_wordcloud_title: {str(e)}")
+        return "워드클라우드"
 
 @app.callback(
     Output('clicked-url', 'data'),

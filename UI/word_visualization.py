@@ -139,26 +139,29 @@ def generate_Comments_WC(video_ID, country="KR", category="all", image_Size = (4
         print(f"에러 발생: {e}")
         return None
 
-def read_file(country, category, type = "comments"):
+def read_file(country, category, type = "video"):
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(current_dir)
-    csv_dir = os.path.join(project_root, "csvCollection")
+    csv_dir = os.path.join(current_dir, "youtube_data")
     font_path = os.path.join(current_dir, "Font", "LGEITextTTF-Bold.ttf")
     
     print(f"현재 디렉토리: {current_dir}")
-    print(f"프로젝트 루트: {project_root}")
     print(f"CSV 디렉토리: {csv_dir}")
     print(f"폰트 경로: {font_path}")
 
-    pattern = os.path.join(csv_dir, f"{country}_{category}_{type}*.csv")
+    # 파일명 패턴 수정
+    if type == "video":
+        pattern = os.path.join(csv_dir, f"{country}_{category}_video.csv")
+    else:
+        pattern = os.path.join(csv_dir, f"{country}_{category}_comments.csv")
+    
+    print(f"검색 패턴: {pattern}")
     matched_files = glob.glob(pattern)
 
     if not matched_files:
         print(f"해당 국가({country}), 카테고리({category})에 맞는 CSV 파일이 없습니다.")
-        print(f"검색 패턴: {pattern}")
-        return None
+        return None, None
 
-    csv_path = max(matched_files, key=os.path.getmtime)
+    csv_path = matched_files[0]  # 첫 번째 매칭된 파일 사용
     print(f"선택된 CSV 파일: {csv_path}")
 
     return csv_path, font_path
