@@ -15,7 +15,8 @@ youtube_styles = {
         'backgroundColor': '#0f0f0f',
         'color': 'white',
         'minHeight': '100vh',
-        'padding': '20px'
+        'padding': '20px',
+        'fontFamily': "'Roboto', 'Noto Sans KR', sans-serif"
     },
     'header': {
         'backgroundColor': '#0f0f0f',
@@ -23,13 +24,19 @@ youtube_styles = {
         'borderBottom': '1px solid #303030',
         'display': 'flex',
         'alignItems': 'center',
-        'justifyContent': 'space-between'
+        'justifyContent': 'space-between',
+        'position': 'sticky',
+        'top': '0',
+        'zIndex': '1000',
+        'backdropFilter': 'blur(10px)',
+        'boxShadow': '0 2px 10px rgba(0,0,0,0.1)'
     },
     'title': {
         'color': 'white',
         'fontSize': '24px',
         'fontWeight': 'bold',
-        'margin': '0'
+        'margin': '0',
+        'textShadow': '0 2px 4px rgba(0,0,0,0.2)'
     },
     'videoContainer': {
         'maxWidth': '1200px',
@@ -38,34 +45,46 @@ youtube_styles = {
         'borderRadius': '12px',
         'overflow': 'hidden',
         'display': 'flex',
-        'gap': '20px'
+        'gap': '20px',
+        'boxShadow': '0 4px 20px rgba(0,0,0,0.2)'
     },
     'videoPlayer': {
         'flex': '1',
-        'minWidth': '0'
+        'minWidth': '0',
+        'borderRadius': '12px',
+        'overflow': 'hidden',
+        'boxShadow': '0 4px 20px rgba(0,0,0,0.2)'
     },
     'channelInfo': {
         'width': '300px',
         'backgroundColor': '#181818',
         'padding': '20px',
-        'borderRadius': '12px'
+        'borderRadius': '12px',
+        'boxShadow': '0 4px 20px rgba(0,0,0,0.2)'
     },
     'channelHeader': {
         'display': 'flex',
         'alignItems': 'center',
-        'marginBottom': '15px'
+        'marginBottom': '15px',
+        'padding': '10px',
+        'backgroundColor': '#272727',
+        'borderRadius': '8px'
     },
     'channelLogo': {
         'width': '60px',
         'height': '60px',
         'borderRadius': '50%',
-        'marginRight': '15px'
+        'marginRight': '15px',
+        'boxShadow': '0 2px 10px rgba(0,0,0,0.2)'
     },
     'channelName': {
         'color': 'white',
         'fontSize': '18px',
         'fontWeight': 'bold',
-        'marginBottom': '15px'
+        'marginBottom': '15px',
+        'padding': '10px',
+        'backgroundColor': '#272727',
+        'borderRadius': '8px'
     },
     'videoStats': {
         'color': '#aaaaaa',
@@ -73,39 +92,74 @@ youtube_styles = {
         'marginBottom': '10px',
         'display': 'flex',
         'alignItems': 'center',
-        'gap': '10px'
+        'gap': '10px',
+        'padding': '10px',
+        'backgroundColor': '#272727',
+        'borderRadius': '8px',
+        'transition': 'all 0.3s ease'
+    },
+    'videoStats:hover': {
+        'backgroundColor': '#303030',
+        'transform': 'translateY(-2px)'
     },
     'videoDescription': {
         'color': '#aaaaaa',
         'fontSize': '14px',
         'marginBottom': '10px',
-        'lineHeight': '1.5'
+        'lineHeight': '1.5',
+        'padding': '15px',
+        'backgroundColor': '#272727',
+        'borderRadius': '8px',
+        'maxHeight': '200px',
+        'overflowY': 'auto'
     },
     'videoTags': {
         'color': '#3ea6ff',
         'fontSize': '14px',
         'display': 'flex',
         'flexWrap': 'wrap',
-        'gap': '8px'
+        'gap': '8px',
+        'padding': '10px',
+        'backgroundColor': '#272727',
+        'borderRadius': '8px'
     },
     'tag': {
         'backgroundColor': '#272727',
-        'padding': '4px 8px',
-        'borderRadius': '4px',
-        'cursor': 'pointer'
+        'padding': '6px 12px',
+        'borderRadius': '20px',
+        'cursor': 'pointer',
+        'transition': 'all 0.3s ease',
+        'border': '1px solid #3ea6ff',
+        'color': '#3ea6ff',
+        'textDecoration': 'none',
+        'display': 'inline-block',
+        'margin': '2px'
+    },
+    'tag:hover': {
+        'backgroundColor': '#3ea6ff',
+        'color': 'white',
+        'transform': 'translateY(-2px)',
+        'boxShadow': '0 2px 10px rgba(62,166,255,0.3)'
     },
     'infoContainer': {
         'display': 'flex',
         'alignItems': 'center',
         'gap': '15px',
-        'marginTop': '10px'
+        'marginTop': '10px',
+        'flexWrap': 'wrap'
     },
     'infoBadge': {
         'backgroundColor': '#272727',
         'color': '#aaaaaa',
-        'padding': '5px 10px',
-        'borderRadius': '15px',
-        'fontSize': '14px'
+        'padding': '8px 16px',
+        'borderRadius': '20px',
+        'fontSize': '14px',
+        'border': '1px solid #303030',
+        'transition': 'all 0.3s ease'
+    },
+    'infoBadge:hover': {
+        'backgroundColor': '#303030',
+        'transform': 'translateY(-2px)'
     },
     'commentsTable': {
         'maxWidth': '1200px',
@@ -113,7 +167,8 @@ youtube_styles = {
         'backgroundColor': '#181818',
         'borderRadius': '12px',
         'padding': '20px',
-        'fontFamily': 'Roboto, Arial, sans-serif'
+        'fontFamily': "'Roboto', 'Noto Sans KR', sans-serif",
+        'boxShadow': '0 4px 20px rgba(0,0,0,0.2)'
     },
     'pagination': {
         'backgroundColor': '#272727',
@@ -121,11 +176,16 @@ youtube_styles = {
         'border': 'none',
         'padding': '8px 16px',
         'margin': '0 4px',
-        'borderRadius': '4px',
+        'borderRadius': '20px',
         'cursor': 'pointer',
-        'fontFamily': 'Roboto, Arial, sans-serif',
+        'fontFamily': "'Roboto', 'Noto Sans KR', sans-serif",
         'fontSize': '14px',
-        'fontWeight': '500'
+        'fontWeight': '500',
+        'transition': 'all 0.3s ease'
+    },
+    'pagination:hover': {
+        'backgroundColor': '#3ea6ff',
+        'transform': 'translateY(-2px)'
     },
     'paginationActive': {
         'backgroundColor': '#3ea6ff',
@@ -133,11 +193,12 @@ youtube_styles = {
         'border': 'none',
         'padding': '8px 16px',
         'margin': '0 4px',
-        'borderRadius': '4px',
+        'borderRadius': '20px',
         'cursor': 'pointer',
-        'fontFamily': 'Roboto, Arial, sans-serif',
+        'fontFamily': "'Roboto', 'Noto Sans KR', sans-serif",
         'fontSize': '14px',
-        'fontWeight': '500'
+        'fontWeight': '500',
+        'boxShadow': '0 2px 10px rgba(62,166,255,0.3)'
     }
 }
 
@@ -145,12 +206,12 @@ youtube_styles = {
 video_app.layout = html.Div([
     # 헤더
     html.Div([
-        html.H1("YouTube", style={'color': 'red', 'fontSize': '24px', 'margin': '0'}),
+        html.H1("YouTube", style={'color': 'red', 'fontSize': '24px', 'margin': '0', 'fontWeight': 'bold'}),
         html.Div([
             html.Span(id='country-value', style=youtube_styles['infoBadge']),
             html.Span(id='category-value', style=youtube_styles['infoBadge']),
             html.Div(id='video-title', style=youtube_styles['title'])
-        ], style={'display': 'flex', 'alignItems': 'center', 'gap': '15px'})
+        ], style={'display': 'flex', 'alignItems': 'center', 'gap': '15px', 'flexWrap': 'wrap'})
     ], style=youtube_styles['header']),
     
     # 메인 콘텐츠
@@ -163,7 +224,8 @@ video_app.layout = html.Div([
                     'width': '100%',
                     'height': '450px',
                     'border': 'none',
-                    'borderRadius': '12px'
+                    'borderRadius': '12px',
+                    'boxShadow': '0 4px 20px rgba(0,0,0,0.2)'
                 }
             )
         ], style=youtube_styles['videoPlayer']),
@@ -182,7 +244,14 @@ video_app.layout = html.Div([
     
     # 댓글 테이블
     html.Div([
-        html.H3("댓글", style={'color': 'white', 'marginBottom': '20px', 'fontFamily': 'Roboto, Arial, sans-serif'}),
+        html.H3("댓글", style={
+            'color': 'white', 
+            'marginBottom': '20px', 
+            'fontFamily': "'Roboto', 'Noto Sans KR', sans-serif",
+            'fontSize': '24px',
+            'fontWeight': 'bold',
+            'textShadow': '0 2px 4px rgba(0,0,0,0.2)'
+        }),
         html.Div([
             # 왼쪽: 댓글 테이블
             html.Div([
@@ -195,25 +264,26 @@ video_app.layout = html.Div([
                     ],
                     style_table={
                         'overflowX': 'auto',
-                        'borderRadius': '8px',
-                        'border': '1px solid #303030'
+                        'borderRadius': '12px',
+                        'border': '1px solid #303030',
+                        'boxShadow': '0 4px 20px rgba(0,0,0,0.2)'
                     },
                     style_cell={
                         'backgroundColor': '#181818',
                         'color': 'white',
                         'textAlign': 'left',
-                        'padding': '12px',
+                        'padding': '15px',
                         'border': '1px solid #303030',
-                        'fontFamily': 'Roboto, Arial, sans-serif',
+                        'fontFamily': "'Roboto', 'Noto Sans KR', sans-serif",
                         'fontSize': '14px'
                     },
                     style_header={
                         'backgroundColor': '#272727',
                         'fontWeight': '500',
                         'border': '1px solid #303030',
-                        'fontFamily': 'Roboto, Arial, sans-serif',
+                        'fontFamily': "'Roboto', 'Noto Sans KR', sans-serif",
                         'fontSize': '14px',
-                        'padding': '12px',
+                        'padding': '15px',
                         'textTransform': 'none',
                         'letterSpacing': 'normal'
                     },
@@ -227,6 +297,11 @@ video_app.layout = html.Div([
                         {
                             'if': {'row_index': 'odd'},
                             'backgroundColor': '#1a1a1a'
+                        },
+                        {
+                            'if': {'state': 'active'},
+                            'backgroundColor': '#272727',
+                            'border': '1px solid #3ea6ff'
                         }
                     ],
                     style_as_list_view=True,
@@ -235,37 +310,45 @@ video_app.layout = html.Div([
                     filter_action='native',
                     page_action='native',
                     style_cell_conditional=[
-                        {'if': {'column_id': 'text'}, 'width': '60%'},
-                        {'if': {'column_id': 'author'}, 'width': '20%'},
-                        {'if': {'column_id': 'likeCount'}, 'width': '20%'}
+                        {'if': {'column_id': 'comment_text'}, 'width': '60%'},
+                        {'if': {'column_id': 'comment_author'}, 'width': '20%'},
+                        {'if': {'column_id': 'comment_likes'}, 'width': '20%'}
                     ],
                     css=[{
                         'selector': '.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner td',
-                        'rule': 'font-family: Roboto, Arial, sans-serif !important;'
+                        'rule': 'font-family: "Roboto", "Noto Sans KR", sans-serif !important;'
                     }, {
                         'selector': '.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner th',
-                        'rule': 'font-family: Roboto, Arial, sans-serif !important; font-weight: 500 !important;'
+                        'rule': 'font-family: "Roboto", "Noto Sans KR", sans-serif !important; font-weight: 500 !important;'
                     }, {
                         'selector': '.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner .dash-spreadsheet-menu',
-                        'rule': 'font-family: Roboto, Arial, sans-serif !important;'
+                        'rule': 'font-family: "Roboto", "Noto Sans KR", sans-serif !important;'
                     }, {
                         'selector': '.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner .dash-spreadsheet-pagination',
-                        'rule': 'font-family: Roboto, Arial, sans-serif !important; font-size: 14px !important; color: white !important;'
+                        'rule': 'font-family: "Roboto", "Noto Sans KR", sans-serif !important; font-size: 14px !important; color: white !important;'
                     }]
                 )
             ], style={'width': '60%', 'display': 'inline-block', 'vertical-align': 'top', 'padding': '20px'}),
 
             # 오른쪽: 워드클라우드 공간
             html.Div([
-                html.H3("댓글 키워드", style={'color': 'white', 'marginBottom': '20px', 'fontFamily': 'Roboto, Arial, sans-serif'}),
+                html.H3("댓글 키워드", style={
+                    'color': 'white', 
+                    'marginBottom': '20px', 
+                    'fontFamily': "'Roboto', 'Noto Sans KR', sans-serif",
+                    'fontSize': '24px',
+                    'fontWeight': 'bold',
+                    'textShadow': '0 2px 4px rgba(0,0,0,0.2)'
+                }),
                 html.Div(
                     id='wordcloud-container',
                     style={
                         'height': '400px',
                         'backgroundColor': '#181818',
-                        'borderRadius': '8px',
+                        'borderRadius': '12px',
                         'border': '1px solid #303030',
-                        'padding': '20px'
+                        'padding': '20px',
+                        'boxShadow': '0 4px 20px rgba(0,0,0,0.2)'
                     }
                 )
             ], style={'width': '40%', 'display': 'inline-block', 'vertical-align': 'top', 'padding': '20px'})
@@ -319,9 +402,8 @@ def display_video(search):
 
             try:
                 # CSV 파일 경로 생성
-                parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-                video_file_path = os.path.join(parent_dir, 'csvCollection', f'KR_{mapped_category}_video.csv')
-                comments_file_path = os.path.join(parent_dir, 'csvCollection', f'KR_{mapped_category}_comments.csv')
+                video_file_path = os.path.join('youtube_data', f'KR_{mapped_category}_video.csv')
+                comments_file_path = os.path.join('youtube_data', f'KR_{mapped_category}_comments.csv')
                 
                 print(f"비디오 파일 경로: {video_file_path}")  # 디버깅용
                 print(f"댓글 파일 경로: {comments_file_path}")  # 디버깅용

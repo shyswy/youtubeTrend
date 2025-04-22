@@ -807,7 +807,7 @@ application = DispatcherMiddleware(app.server, {
 if __name__ == '__main__':
     print("[dash server] run")
     try:
-        run_simple('localhost', 8050, application, use_reloader=True) 
+        run_simple('0.0.0.0', 8050, application, use_reloader=True) 
     except Exception as e:
         print("[dash server] error")
         traceback.print_exc()
