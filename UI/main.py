@@ -1,5 +1,5 @@
 import dash
-from dash import html, dcc, Input, Output, dash_table, State
+from dash import html, dcc, Input, Output, dash_table, State, ctx
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
@@ -561,11 +561,12 @@ def update_table_and_graph(selected_country, selected_category, active_cell, pag
         log_y=True
     )
     
-    # 활성 셀 설정
-    new_active_cell = {'row': 0, 'column': 0} if not active_cell else active_cell
+    # 필터가 변경되면 active_cell 초기화
+    if ctx.triggered_id in ['country-dropdown', 'category-dropdown']:
+        active_cell = None
     
     return (table_data.to_dict('records'), fig, table_title, 
-            selected_category, new_active_cell)
+            selected_category, active_cell)
 
 # 유튜버 테이블 자동 순환 콜백
 @app.callback(
@@ -724,27 +725,33 @@ def update_wordcloud_title(selected_country, selected_category):
 
 @app.callback(
     Output('clicked-url', 'data'),
-    [Input('rank-table', 'active_cell'),
-     Input('country-dropdown', 'value'),
-     Input('category-dropdown', 'value')],
+    [Input('rank-table', 'active_cell')],
     [State('rank-table', 'data'),
-     State('table-title', 'children')],
+     State('country-dropdown', 'value'),
+     State('category-dropdown', 'value')],
     prevent_initial_call=True
 )
-def open_new_tab(active_cell, selected_country, selected_category, table_data, table_title):
-    if active_cell and 'row' in active_cell and active_cell['column'] == 1:
-        row = active_cell['row']
-        if row < len(table_data):
-            title = table_data[row].get('title')
-            
-            # 해당 title에 맞는 URL을 가져오되, 여러 값이 있을 경우 첫 번째 값만 선택
-            url_series = df[df['title'] == title]['url']
-            if not url_series.empty:
-                video_id = url_series.iloc[0].split('v=')[-1]
-                # 새 탭에서 열릴 Dash 앱의 URL을 생성
-                new_tab_url = f'/new_tab?video_id={video_id}&country={selected_country}&category={selected_category}&video_title={urllib.parse.quote(title)}'
-                return {'url': new_tab_url}
-    return dash.no_update
+def open_new_tab(active_cell, table_data, selected_country, selected_category):
+    if not active_cell or 'row' not in active_cell or active_cell['column'] != 1:
+        return dash.no_update
+        
+    row = active_cell['row']
+    if row >= len(table_data):
+        return dash.no_update
+        
+    title = table_data[row].get('title')
+    if not title:
+        return dash.no_update
+        
+    # 해당 title에 맞는 URL을 가져오되, 여러 값이 있을 경우 첫 번째 값만 선택
+    url_series = df[df['title'] == title]['url']
+    if url_series.empty:
+        return dash.no_update
+        
+    video_id = url_series.iloc[0].split('v=')[-1]
+    # 새 탭에서 열릴 Dash 앱의 URL을 생성
+    new_tab_url = f'/new_tab?video_id={video_id}&country={selected_country}&category={selected_category}&video_title={urllib.parse.quote(title)}'
+    return {'url': new_tab_url}
 
 # 서버 설정
 application = DispatcherMiddleware(app.server, {
