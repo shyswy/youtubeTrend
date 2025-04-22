@@ -296,6 +296,21 @@ def display_video(search):
         video_id = params.get('video_id')
         country = params.get('country', '전체')
         category = params.get('category', 'all')
+        
+        # 카테고리 매핑
+        category_mapping = {
+            'all': 'all',
+            'entertainment': 'entertainment',
+            'news': 'news',
+            'people': 'people_blogs',
+            'music': 'music',
+            'comedy': 'comedy',
+            'sports': 'sports'
+        }
+        
+        # 매핑된 카테고리 값 가져오기
+        mapped_category = category_mapping.get(category, 'all')
+        
         video_title = urllib.parse.unquote(params.get('video_title', ''))
 
         if video_id:
@@ -305,8 +320,8 @@ def display_video(search):
             try:
                 # CSV 파일 경로 생성
                 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-                video_file_path = os.path.join(parent_dir, 'csvCollection', f'KR_{category}_video.csv')
-                comments_file_path = os.path.join(parent_dir, 'csvCollection', f'KR_{category}_comments.csv')
+                video_file_path = os.path.join(parent_dir, 'csvCollection', f'KR_{mapped_category}_video.csv')
+                comments_file_path = os.path.join(parent_dir, 'csvCollection', f'KR_{mapped_category}_comments.csv')
                 
                 print(f"비디오 파일 경로: {video_file_path}")  # 디버깅용
                 print(f"댓글 파일 경로: {comments_file_path}")  # 디버깅용
