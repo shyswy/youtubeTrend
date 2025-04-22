@@ -11,6 +11,7 @@ def get_youtuber_Ranking(category = 'all', country = 'korea', ranking = "인기"
         'music': 'music',
         'comedy': 'comedy',
         'sports': 'sports',
+        'LGEI': 'LGEI'
     }
     # 순위 방식 맵핑
     RANKING_TYPE = {
