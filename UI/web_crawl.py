@@ -10,8 +10,7 @@ def get_youtuber_Ranking(category = 'all', country = 'korea', ranking = "인기"
         'people_blogs': 'vlog',
         'music': 'music',
         'comedy': 'comedy',
-        'sports': 'sports',
-        'LGEI': 'LGEI'
+        'sports': 'sports'
     }
     # 순위 방식 맵핑
     RANKING_TYPE = {
