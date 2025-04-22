@@ -127,10 +127,10 @@ class YoutubeService {
                 }
         } catch (e: Exception) {
             if (e.message?.contains("commentsDisabled") == true) {
-                println("댓글 비활성화됨 videoId: ($videoId)")
+                println("댓글 비활성화됨 videoId: $videoId")
 
             } else {
-                println("댓글 오류 ($videoId): ${e.message}")
+                println("댓글 오류 $videoId")
             }
             emptyList()
         }
