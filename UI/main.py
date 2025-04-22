@@ -11,6 +11,7 @@ from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from werkzeug.serving import run_simple
 from word_visualization import generate_Title_WC
 from new_tab import video_app
+import traceback
 
 # 카테고리 한글 이름 매핑
 category_names = {
@@ -741,4 +742,9 @@ application = DispatcherMiddleware(app.server, {
 })
 
 if __name__ == '__main__':
-    run_simple('localhost', 8050, application, use_reloader=True) 
+    print("[dash server] run")
+    try:
+        run_simple('localhost', 8050, application, use_reloader=True) 
+    except Exception as e:
+        print("[dash server] error")
+        traceback.print_exc()
