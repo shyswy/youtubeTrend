@@ -379,7 +379,7 @@ app.layout = html.Div([
             
             # 워드클라우드
             html.Div([
-                html.H3("동영상 제목 워드클라우드", style={'textAlign': 'center', 'marginBottom': '20px'}),
+                html.H3(id='wordcloud-title', style={'textAlign': 'center', 'marginBottom': '20px'}),
                 html.Div([
                     html.Img(
                         id='word-cloud-img',
@@ -711,6 +711,16 @@ def update_word_cloud(selected_country, selected_category):
         return None
     
     return img_base64
+
+# 워드클라우드 제목 업데이트 콜백 추가
+@app.callback(
+    Output('wordcloud-title', 'children'),
+    [Input('country-dropdown', 'value'),
+     Input('category-dropdown', 'value')]
+)
+def update_wordcloud_title(selected_country, selected_category):
+    category_display = category_names.get(selected_category, selected_category)
+    return f"{selected_country} {category_display} 워드클라우드"
 
 @app.callback(
     Output('clicked-url', 'data'),

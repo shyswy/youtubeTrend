@@ -183,73 +183,93 @@ video_app.layout = html.Div([
     # 댓글 테이블
     html.Div([
         html.H3("댓글", style={'color': 'white', 'marginBottom': '20px', 'fontFamily': 'Roboto, Arial, sans-serif'}),
-        dash.dash_table.DataTable(
-            id='comments-table',
-            columns=[
-                {'name': '작성자', 'id': 'comment_author'},
-                {'name': '댓글', 'id': 'comment_text'},
-                {'name': '좋아요', 'id': 'comment_likes'},
-            ],
-            style_table={
-                'overflowX': 'auto',
-                'borderRadius': '8px',
-                'border': '1px solid #303030'
-            },
-            style_cell={
-                'backgroundColor': '#181818',
-                'color': 'white',
-                'textAlign': 'left',
-                'padding': '12px',
-                'border': '1px solid #303030',
-                'fontFamily': 'Roboto, Arial, sans-serif',
-                'fontSize': '14px'
-            },
-            style_header={
-                'backgroundColor': '#272727',
-                'fontWeight': '500',
-                'border': '1px solid #303030',
-                'fontFamily': 'Roboto, Arial, sans-serif',
-                'fontSize': '14px',
-                'padding': '12px',
-                'textTransform': 'none',
-                'letterSpacing': 'normal'
-            },
-            style_data={
-                'whiteSpace': 'normal',
-                'height': 'auto',
-                'lineHeight': '1.5',
-                'border': '1px solid #303030'
-            },
-            style_data_conditional=[
-                {
-                    'if': {'row_index': 'odd'},
-                    'backgroundColor': '#1a1a1a'
-                }
-            ],
-            style_as_list_view=True,
-            page_size=10,
-            sort_action='native',
-            filter_action='native',
-            page_action='native',
-            style_cell_conditional=[
-                {'if': {'column_id': 'text'}, 'width': '60%'},
-                {'if': {'column_id': 'author'}, 'width': '20%'},
-                {'if': {'column_id': 'likeCount'}, 'width': '20%'}
-            ],
-            css=[{
-                'selector': '.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner td',
-                'rule': 'font-family: Roboto, Arial, sans-serif !important;'
-            }, {
-                'selector': '.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner th',
-                'rule': 'font-family: Roboto, Arial, sans-serif !important; font-weight: 500 !important;'
-            }, {
-                'selector': '.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner .dash-spreadsheet-menu',
-                'rule': 'font-family: Roboto, Arial, sans-serif !important;'
-            }, {
-                'selector': '.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner .dash-spreadsheet-pagination',
-                'rule': 'font-family: Roboto, Arial, sans-serif !important; font-size: 14px !important; color: white !important;'
-            }]
-        )
+        html.Div([
+            # 왼쪽: 댓글 테이블
+            html.Div([
+                dash.dash_table.DataTable(
+                    id='comments-table',
+                    columns=[
+                        {'name': '작성자', 'id': 'comment_author'},
+                        {'name': '댓글', 'id': 'comment_text'},
+                        {'name': '좋아요', 'id': 'comment_likes'},
+                    ],
+                    style_table={
+                        'overflowX': 'auto',
+                        'borderRadius': '8px',
+                        'border': '1px solid #303030'
+                    },
+                    style_cell={
+                        'backgroundColor': '#181818',
+                        'color': 'white',
+                        'textAlign': 'left',
+                        'padding': '12px',
+                        'border': '1px solid #303030',
+                        'fontFamily': 'Roboto, Arial, sans-serif',
+                        'fontSize': '14px'
+                    },
+                    style_header={
+                        'backgroundColor': '#272727',
+                        'fontWeight': '500',
+                        'border': '1px solid #303030',
+                        'fontFamily': 'Roboto, Arial, sans-serif',
+                        'fontSize': '14px',
+                        'padding': '12px',
+                        'textTransform': 'none',
+                        'letterSpacing': 'normal'
+                    },
+                    style_data={
+                        'whiteSpace': 'normal',
+                        'height': 'auto',
+                        'lineHeight': '1.5',
+                        'border': '1px solid #303030'
+                    },
+                    style_data_conditional=[
+                        {
+                            'if': {'row_index': 'odd'},
+                            'backgroundColor': '#1a1a1a'
+                        }
+                    ],
+                    style_as_list_view=True,
+                    page_size=10,
+                    sort_action='native',
+                    filter_action='native',
+                    page_action='native',
+                    style_cell_conditional=[
+                        {'if': {'column_id': 'text'}, 'width': '60%'},
+                        {'if': {'column_id': 'author'}, 'width': '20%'},
+                        {'if': {'column_id': 'likeCount'}, 'width': '20%'}
+                    ],
+                    css=[{
+                        'selector': '.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner td',
+                        'rule': 'font-family: Roboto, Arial, sans-serif !important;'
+                    }, {
+                        'selector': '.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner th',
+                        'rule': 'font-family: Roboto, Arial, sans-serif !important; font-weight: 500 !important;'
+                    }, {
+                        'selector': '.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner .dash-spreadsheet-menu',
+                        'rule': 'font-family: Roboto, Arial, sans-serif !important;'
+                    }, {
+                        'selector': '.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner .dash-spreadsheet-pagination',
+                        'rule': 'font-family: Roboto, Arial, sans-serif !important; font-size: 14px !important; color: white !important;'
+                    }]
+                )
+            ], style={'width': '60%', 'display': 'inline-block', 'vertical-align': 'top', 'padding': '20px'}),
+
+            # 오른쪽: 워드클라우드 공간
+            html.Div([
+                html.H3("댓글 키워드", style={'color': 'white', 'marginBottom': '20px', 'fontFamily': 'Roboto, Arial, sans-serif'}),
+                html.Div(
+                    id='wordcloud-container',
+                    style={
+                        'height': '400px',
+                        'backgroundColor': '#181818',
+                        'borderRadius': '8px',
+                        'border': '1px solid #303030',
+                        'padding': '20px'
+                    }
+                )
+            ], style={'width': '40%', 'display': 'inline-block', 'vertical-align': 'top', 'padding': '20px'})
+        ], style={'display': 'flex', 'flexDirection': 'row', 'justifyContent': 'space-between'})
     ], style=youtube_styles['commentsTable']),
     
     dcc.Location(id='url', refresh=False)
@@ -361,4 +381,4 @@ def display_video(search):
     return "", "동영상을 찾을 수 없습니다.", "", "", "", "", "", "", "", []
 
 if __name__ == '__main__':
-    video_app.run_server(debug=True)
+    video_app.run(debug=True)
