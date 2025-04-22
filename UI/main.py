@@ -334,50 +334,6 @@ app.layout = html.Div([
                 ], style=styles['videoGridContainer'])
             ], style=styles['videoList'])
         ], style=styles['rightPanel']),
-        
-        # 동영상 팝업 모달
-        dcc.Store(id='selected-video-data'),
-        dcc.Store(id='show-modal-trigger', data=False),
-        html.Div([
-            html.Div([
-                html.Div([
-                    html.H3(id='modal-title', style={'marginBottom': '20px'}),
-                    html.Iframe(
-                        id='modal-video-player',
-                        style={'width': '100%', 'height': '400px', 'border': 'none'}
-                    ),
-                    html.Div([
-                        html.H4(id='modal-channel', style={'marginTop': '20px'}),
-                        html.P(id='modal-description', style={'marginTop': '10px'})
-                    ])
-                ], style={'padding': '20px'})
-            ], style={
-                'position': 'fixed',
-                'top': '50%',
-                'left': '50%',
-                'transform': 'translate(-50%, -50%)',
-                'width': '80%',
-                'maxWidth': '800px',
-                'backgroundColor': 'white',
-                'borderRadius': '10px',
-                'boxShadow': '0 4px 8px rgba(0,0,0,0.2)',
-                'zIndex': '1000',
-                'display': 'none'
-            }, id='video-modal'),
-            html.Div(
-                style={
-                    'position': 'fixed',
-                    'top': '0',
-                    'left': '0',
-                    'width': '100%',
-                    'height': '100%',
-                    'backgroundColor': 'rgba(0,0,0,0.5)',
-                    'zIndex': '999',
-                    'display': 'none'
-                },
-                id='modal-overlay'
-            )
-        ])
     ], style=styles['mainContent']),
     
     # 하단 섹션
@@ -581,38 +537,6 @@ def update_table_and_graph(selected_country, selected_category, page_current):
     
     return table_data.to_dict('records'), fig, table_title, selected_category
 
-# 테이블 행 클릭 시 동영상 데이터 저장 및 모달 표시
-@app.callback(
-    [Output('selected-video-data', 'data'),
-     Output('show-modal-trigger', 'data')],
-    [Input('rank-table', 'active_cell'),
-     Input('rank-table', 'page_current')],
-    [State('country-dropdown', 'value'),
-     State('category-dropdown', 'value')]
-)
-def update_selected_video(active_cell, page_current, selected_country, selected_category):
-    if not active_cell or active_cell['row'] is None:
-        return None, False
-    
-    # 데이터 필터링
-    filtered_df = df.copy()
-    if selected_country != '전체':
-        filtered_df = filtered_df[filtered_df['country_name'] == selected_country]
-    if selected_category != 'all':
-        filtered_df = filtered_df[filtered_df['category_name'] == selected_category]
-    
-    # 순위 계산
-    filtered_df = filtered_df.sort_values('views', ascending=False)
-    filtered_df['rank'] = range(1, len(filtered_df) + 1)
-    
-    # 선택된 행의 데이터 가져오기 (페이지네이션 고려)
-    row_index = page_current * 10 + active_cell['row']
-    if row_index < len(filtered_df):
-        selected_video = filtered_df.iloc[row_index].to_dict()
-        return selected_video, True
-    
-    return None, False
-
 # 유튜버 테이블 자동 순환 콜백
 @app.callback(
     Output('youtuber-table', 'data'),
@@ -641,54 +565,6 @@ def update_youtuber_table(n_intervals, current_data):
         }]
     
     return current_data
-
-# 동영상 카드 클릭 시 모달 표시
-@app.callback(
-    [Output('video-modal', 'style'),
-     Output('modal-overlay', 'style'),
-     Output('modal-title', 'children'),
-     Output('modal-video-player', 'src'),
-     Output('modal-channel', 'children'),
-     Output('modal-description', 'children')],
-    [Input('selected-video-data', 'data'),
-     Input('show-modal-trigger', 'data')]
-)
-def show_video_modal(video_data, show_modal):
-    if not video_data or not show_modal:
-        return (
-            {'display': 'none'},
-            {'display': 'none'},
-            '', '', '', ''
-        )
-    
-    video_id = video_data['url'].split('v=')[-1]
-    return (
-        {'display': 'block', 'position': 'fixed', 'top': '50%', 'left': '50%', 
-         'transform': 'translate(-50%, -50%)', 'width': '80%', 'maxWidth': '800px', 
-         'backgroundColor': 'white', 'borderRadius': '10px', 'boxShadow': '0 4px 8px rgba(0,0,0,0.2)', 
-         'zIndex': '1000'},
-        {'display': 'block', 'position': 'fixed', 'top': '0', 'left': '0', 
-         'width': '100%', 'height': '100%', 'backgroundColor': 'rgba(0,0,0,0.5)', 
-         'zIndex': '999'},
-        video_data['title'],
-        f"https://www.youtube.com/embed/{video_id}",
-        video_data['channel'],
-        video_data['description']
-    )
-
-# 모달 외부 클릭 시 닫기
-@app.callback(
-    [Output('video-modal', 'style', allow_duplicate=True),
-     Output('modal-overlay', 'style', allow_duplicate=True),
-     Output('show-modal-trigger', 'data', allow_duplicate=True)],
-    [Input('modal-overlay', 'n_clicks')],
-    [State('show-modal-trigger', 'data')],
-    prevent_initial_call=True
-)
-def close_modal(n_clicks, current_show_modal):
-    if n_clicks and current_show_modal:
-        return {'display': 'none'}, {'display': 'none'}, False
-    return dash.no_update, dash.no_update, dash.no_update
 
 # 콜백 함수 추가
 @app.callback(
