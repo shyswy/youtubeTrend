@@ -158,7 +158,7 @@ def read_file(country, category, type = "comments"):
     csv_path = max(matched_files, key=os.path.getmtime)
     print(f"선택된 CSV 파일: {csv_path}")
 
-    return csv_path, 
+    return csv_path, font_path
 
 
 
@@ -166,8 +166,8 @@ def read_file(country, category, type = "comments"):
 if __name__ == '__main__':
     from PIL import Image
     import matplotlib.pyplot as plt
-    img_base64 = generate_Title_WC(country="KR", category="all", image_Size = (1200, 600), Max_words = 100)
-    #img_base64 = generate_Comments_WC("Qhz2L8WzgIw", country="KR", category="all", image_Size = (400, 800), Max_words = 100)
+    #img_base64 = generate_Title_WC(country="KR", category="all", image_Size = (1200, 600), Max_words = 100)
+    img_base64 = generate_Comments_WC("Qhz2L8WzgIw", country="KR", category="all", image_Size = (400, 800), Max_words = 100)
     
     if img_base64 and img_base64.startswith("data:image"):
         img_base64_data = img_base64.split(",")[1]
