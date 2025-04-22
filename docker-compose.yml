@@ -6,14 +6,18 @@ services:
     build:
       context: ./youtubeBatch
       dockerfile: Dockerfile
+      args:
+        - GRADLE_OPTS=-Dorg.gradle.daemon=false
     ports:
-      - '8080:8080'
+      - '0.0.0.0:8080:8080'
     environment:
       - STAGE=local
       - REGION=ap-northeast-2
+      - CSV_DATA_PATH=/data
     volumes:
-      - ./csv_data:/data  # 호스트 csv_data를 컨테이너 /data에 마운트
-    working_dir: /home/app
+      - ${PWD}/csv_data:/data:rw
+      - ./youtubeBatch/src:/app/src:rw
+    working_dir: /app
     command: ['java', '-jar', '/app/app.jar']
     networks:
       - infra-net
@@ -21,16 +25,23 @@ services:
   dash:
     container_name: dash
     build:
-      context: ./dash
+      context: ./UI
       dockerfile: Dockerfile
     ports:
-      - '8050:8050'
+      - '0.0.0.0:8050:8050'
+    environment:
+      - CSV_DATA_PATH=/data
+      - PYTHONUNBUFFERED=1
+      - DASH_HOST=0.0.0.0
     volumes:
-      - ./csv_data:/data  # 동일한 경로 마운트
+      - ${PWD}/csv_data:/data:rw
+      - ./UI/Font:/app/Font
     working_dir: /app
-    command: ['python', 'app.py']
+    command: python main.py
     networks:
       - infra-net
+#    depends_on:
+#      - app
 
 networks:
   infra-net:
