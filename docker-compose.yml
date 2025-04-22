@@ -1,26 +1,26 @@
 version: '3.8'
 
 services:
-#  app:
-#    container_name: batch_server
-#    build:
-#      context: ./youtubeBatch
-#      dockerfile: Dockerfile
-#      args:
-#        - GRADLE_OPTS=-Dorg.gradle.daemon=false
-#    ports:
-#      - '0.0.0.0:8080:8080'
-#    environment:
-#      - STAGE=local
-#      - REGION=ap-northeast-2
-#      - CSV_DATA_PATH=/data
-#    volumes:
-#      - ${PWD}/csv_data:/data:rw
-#      - ./youtubeBatch/src:/app/src:rw
-#    working_dir: /app
-#    command: ['java', '-jar', '/app/app.jar']
-#    networks:
-#      - infra-net
+  app:
+    container_name: batch_server
+    build:
+      context: ./youtubeBatch
+      dockerfile: Dockerfile
+      args:
+        - GRADLE_OPTS=-Dorg.gradle.daemon=false
+    ports:
+      - '0.0.0.0:8080:8080'
+    environment:
+      - STAGE=local
+      - REGION=ap-northeast-2
+      - CSV_DATA_PATH=/data
+    volumes:
+      - ${PWD}/csv_data:/data:rw
+      - ./youtubeBatch/src:/app/src:rw
+    working_dir: /app
+    command: ['java', '-jar', '/app/app.jar']
+    networks:
+      - infra-net
 
   dash:
     container_name: dash
