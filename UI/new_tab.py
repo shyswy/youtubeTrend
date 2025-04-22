@@ -1,7 +1,7 @@
 import dash
 from dash import html, dcc
 import dash_bootstrap_components as dbc
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import urllib.parse
 import pandas as pd
 import os
@@ -352,7 +352,7 @@ video_app.layout = html.Div([
                             'boxShadow': '2px 2px 10px rgba(0,0,0,0.1)',
                             'borderRadius': '10px'
                         }
-                    )],
+                    )], 
                     id='wordcloud-container',
                     style={
                         'height': '400px',
@@ -367,7 +367,8 @@ video_app.layout = html.Div([
         ], style={'display': 'flex', 'flexDirection': 'row', 'justifyContent': 'space-between'})
     ], style=youtube_styles['commentsTable']),
     
-    dcc.Location(id='url', refresh=False)
+    dcc.Location(id='url', refresh=False),
+    dcc.Interval(id='init-callback-trigger', interval=1000, n_intervals=0, max_intervals=1)
 ], style=youtube_styles['container'])
 
 # URL 파라미터에서 정보를 추출하고 동영상을 표시하는 콜백
@@ -513,6 +514,59 @@ def display_video(search):
                 return "", f"오류 발생: {str(e)}", country, category, "", "", "", "", "", [], ""
     
     return "", "동영상을 찾을 수 없습니다.", "", "", "", "", "", "", "", [], ""
+
+
+
+
+
+@video_app.callback(
+    Output('word-cloud-img', 'src'),
+    [Input('init-callback-trigger', 'n_intervals')],
+    [State('videoId-value', 'children'),
+     State('country-value', 'children'),
+     State('category-value', 'children')]
+)
+def update_word_cloud(n, video_id, selected_country , selected_category):
+    try:
+        # 국가와 카테고리 매핑
+        country_mapping = {
+            '한국': 'KR',
+            '미국': 'US',
+            '전체': 'KR'  # 기본값
+        }
+        
+        category_mapping = {
+            'all': 'all',
+            'entertainment': 'entertainment',
+            'news': 'news',
+            'people': 'people_blogs',
+            'music': 'music',
+            'comedy': 'comedy',
+            'sports': 'sports'
+        }
+        
+        country = country_mapping.get(selected_country, 'KR')
+        category = category_mapping.get(selected_category, 'all')
+        
+        print(f"Generating word cloud for country: {country}, category: {category}")
+        
+        # 워드클라우드 이미지 생성
+        img_base64 = generate_Comments_WC(video_id, country, category)
+        if img_base64 is None:
+            print("Word cloud generation returned None")
+            return None
+        
+        print("Word cloud generated successfully")
+        return img_base64  # 이미 base64 URL이 포함되어 있으므로 그대로 반환
+    except Exception as e:
+        print(f"Error in update_word_cloud: {str(e)}")
+        return None    
+
+
+
+
+
+
 
 if __name__ == '__main__':
     video_app.run(debug=True)
