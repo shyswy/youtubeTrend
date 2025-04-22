@@ -5,8 +5,12 @@ import plotly.graph_objects as go
 import pandas as pd
 import os
 import glob
+import urllib.parse
 from web_crawl import get_youtuber_Ranking
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
+from werkzeug.serving import run_simple
 from word_visualization import generate_Title_WC
+from new_tab import video_app
 
 # 카테고리 한글 이름 매핑
 category_names = {
@@ -18,7 +22,9 @@ category_names = {
     'entertainment': '엔터테인먼트',
     'news': '뉴스'
 }
-
+    # parent_dir =os.path.dirname(os.path.abspath(__file__))
+    # video_file_path = os.path.join(parent_dir, 'csvCollection/')
+    # data_files = glob.glob(video_file_path+'*_video.csv')
 # 데이터 로드
 def load_data():
     data_files = glob.glob('youtube_data/*.csv')
@@ -28,16 +34,17 @@ def load_data():
     for file in data_files:
         df = pd.read_csv(file, encoding='utf-8-sig')
         # 파일명에서 국가와 카테고리 추출
-        country = file.split('_')[1].split('\\')[-1]
-        category = file.split('_')[2] if len(file.split('_')) > 2 else 'weekly'
+        file_name = os.path.basename(file)  # 파일 이름만 추출
+        country = file_name.split('_')[0]  # KR 또는 US
+        category = file_name.split('_')[1] if len(file_name.split('_')) > 1 else 'weekly'
         
-        if 'weekly' in file:
+        if 'weekly' in file_name:
             df['category_name'] = 'weekly'
-            df['country_name'] = '한국' if country == 'korea' or country == 'KR' else '미국'
+            df['country_name'] = '한국' if country == 'KR' else '미국'
             weekly_data.append(df)
         else:
             df['category_name'] = category
-            df['country_name'] = '한국' if country == 'korea' or country == 'KR' else '미국'
+            df['country_name'] = '한국' if country == 'KR' else '미국'
             all_data.append(df)
     
     return pd.concat(all_data, ignore_index=True), pd.concat(weekly_data, ignore_index=True) if weekly_data else None
@@ -49,12 +56,28 @@ def load_crawled_data():
 
 # 데이터 로드
 df, weekly_df = load_data()
+
 crawled_df = load_crawled_data()
 
 # Dash 앱 생성
 app = dash.Dash(__name__)
 app.title = "YouTube 인기 동영상 순위"
 app.config.suppress_callback_exceptions = True  # 콜백 예외 허용
+
+# 클라이언트 사이드 콜백 수정
+app.clientside_callback(
+    """
+    function(data) {
+        if (data && data.url) {
+            window.open(data.url, '_blank');
+            return null;
+        }
+        return null;
+    }
+    """,
+    Output('dummy-output', 'children'),
+    Input('clicked-url', 'data')
+)
 
 # 스타일 정의
 styles = {
@@ -231,7 +254,7 @@ app.layout = html.Div([
             dash_table.DataTable(
                 id='rank-table',
                 columns=[
-                    {'name': '순위', 'id': 'rank'},
+                    {'name': '순위', 'id': 'rank', 'type': 'numeric'},
                     {'name': '제목', 'id': 'title'},
                     {'name': '채널', 'id': 'channel'},
                     {'name': '조회수', 'id': 'views', 'type': 'numeric', 'format': {'specifier': ','}},
@@ -282,8 +305,9 @@ app.layout = html.Div([
                 ],
                 page_size=10,
                 page_current=0,
-                active_cell=None
-            )
+                active_cell={'row': 0, 'column': 0}
+            ),
+            dcc.Store(id='clicked-url'),
         ], style=styles['leftPanel']),
         
         # 오른쪽 패널: 인기 동영상 리스트
@@ -330,7 +354,7 @@ app.layout = html.Div([
                         )
                         for _, row in weekly_df.head(3).iterrows() if weekly_df is not None
                     ], style=styles['videoGrid'])
-                ], style=styles['videoGridContainer'])
+                ], style=styles['videoGridContainer']),
             ], style=styles['videoList'])
         ], style=styles['rightPanel']),
     ], style=styles['mainContent']),
@@ -480,7 +504,8 @@ app.layout = html.Div([
         'backgroundColor': '#f8f9fa',
         'borderRadius': '15px',
         'marginTop': '30px'
-    })
+    }),
+    html.Div(id='dummy-output', style={'display': 'none'})  # 이거 필수
 ], style=styles['container'])
 
 # 콜백 함수
@@ -488,20 +513,19 @@ app.layout = html.Div([
     [Output('rank-table', 'data'),
      Output('scatter-plot', 'figure'),
      Output('table-title', 'children'),
-     Output('category-dropdown', 'value')],
+     Output('category-dropdown', 'value'),
+     Output('rank-table', 'active_cell')],
     [Input('country-dropdown', 'value'),
      Input('category-dropdown', 'value'),
+     Input('rank-table', 'active_cell'),
      Input('rank-table', 'page_current')]
 )
-def update_table_and_graph(selected_country, selected_category, page_current):
-    # 국가가 변경되면 카테고리를 'all'로 초기화
-    ctx = dash.callback_context
-    if ctx.triggered[0]['prop_id'] == 'country-dropdown.value':
-        selected_category = 'all'
+def update_table_and_graph(selected_country, selected_category, active_cell, page_current):
+    print("Callback triggered")
+    print(f"Input values - country: {selected_country}, category: {selected_category}")
     
     # 데이터 필터링
     filtered_df = df.copy()
-    
     # 국가 필터링
     if selected_country != '전체':
         filtered_df = filtered_df[filtered_df['country_name'] == selected_country]
@@ -509,16 +533,18 @@ def update_table_and_graph(selected_country, selected_category, page_current):
     # 카테고리 필터링 (전체가 아닌 경우에만)
     if selected_category != 'all':
         filtered_df = filtered_df[filtered_df['category_name'] == selected_category]
+
     
     # 순위 계산
     filtered_df = filtered_df.sort_values('views', ascending=False)
     filtered_df['rank'] = range(1, len(filtered_df) + 1)
     
     # 테이블 데이터 준비 (페이지네이션 적용)
-    start_idx = page_current * 10
-    end_idx = start_idx + 10
+    page_size = 10  # 페이지당 10개 행
+    start_idx = page_current * page_size
+    end_idx = start_idx + page_size
     table_data = filtered_df[['rank', 'title', 'channel', 'views', 'likes', 'category']].iloc[start_idx:end_idx]
-    
+
     # 테이블 제목 설정
     category_text = category_names[selected_category]
     table_title = f"{selected_country} {category_text} 인기 동영상 순위"
@@ -534,7 +560,11 @@ def update_table_and_graph(selected_country, selected_category, page_current):
         log_y=True
     )
     
-    return table_data.to_dict('records'), fig, table_title, selected_category
+    # 활성 셀 설정
+    new_active_cell = {'row': 0, 'column': 0} if not active_cell else active_cell
+    
+    return (table_data.to_dict('records'), fig, table_title, 
+            selected_category, new_active_cell)
 
 # 유튜버 테이블 자동 순환 콜백
 @app.callback(
@@ -681,7 +711,34 @@ def update_word_cloud(selected_country, selected_category):
     
     return img_base64
 
-# 서버 실행
+@app.callback(
+    Output('clicked-url', 'data'),
+    [Input('rank-table', 'active_cell'),
+     Input('country-dropdown', 'value'),
+     Input('category-dropdown', 'value')],
+    [State('rank-table', 'data'),
+     State('table-title', 'children')],
+    prevent_initial_call=True
+)
+def open_new_tab(active_cell, selected_country, selected_category, table_data, table_title):
+    if active_cell and 'row' in active_cell and active_cell['column'] == 1:
+        row = active_cell['row']
+        if row < len(table_data):
+            title = table_data[row].get('title')
+            
+            # 해당 title에 맞는 URL을 가져오되, 여러 값이 있을 경우 첫 번째 값만 선택
+            url_series = df[df['title'] == title]['url']
+            if not url_series.empty:
+                video_id = url_series.iloc[0].split('v=')[-1]
+                # 새 탭에서 열릴 Dash 앱의 URL을 생성
+                new_tab_url = f'/new_tab?video_id={video_id}&country={selected_country}&category={selected_category}&video_title={urllib.parse.quote(title)}'
+                return {'url': new_tab_url}
+    return dash.no_update
+
+# 서버 설정
+application = DispatcherMiddleware(app.server, {
+    '/new_tab': video_app.server
+})
+
 if __name__ == '__main__':
-    app.run_server(debug=True) 
-    
+    run_simple('localhost', 8050, application, use_reloader=True) 
