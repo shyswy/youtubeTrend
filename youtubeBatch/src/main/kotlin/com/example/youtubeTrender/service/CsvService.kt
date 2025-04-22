@@ -13,12 +13,17 @@ import kotlin.reflect.full.memberProperties
 class CsvService {
     // reflection 사용해서 dto의 구성을 동적으로 읽어와 그에 알맞는 csv 파일 빌드.
     fun <T : Any> writeDtoListToCsv(dtoList: List<T>, fileName: String) {
+
         // DTO 리스트가 비어 있으면 함수 종료
         if (dtoList.isEmpty()) return
 
-        // 현재 워킹 디렉토리 기준으로 csvCollection 폴더를 생성
-        val directory = File("../csvCollection")
-        // 만약 csvCollection 폴더가 없으면 생성
+        // 환경 변수에서 CSV 저장 경로를 가져옴 (기본값: /data)
+        val csvPath = System.getenv("CSV_DATA_PATH") ?: "/data"
+        val directory = File(csvPath)
+
+        println("[path log] csvPath: $csvPath directory: $directory")
+
+        // 만약 디렉토리가 없으면 생성
         if (!directory.exists()) {
             directory.mkdirs()
         }
