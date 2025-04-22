@@ -81,7 +81,7 @@ def generate_Title_WC(country="KR", category="all", image_Size = (800, 400), Max
         print(f"에러 발생: {e}")
         return None
 
-def generate_Comments_WC(video_ID, country="KR", category="all", image_Size = (400, 800), Max_words = 200):
+def generate_Comments_WC(video_ID, country="KR", category="all", image_Size = (800, 800), Max_words = 200):
     
     csv_path, font_path = read_file(country, category, type = "comments")
 

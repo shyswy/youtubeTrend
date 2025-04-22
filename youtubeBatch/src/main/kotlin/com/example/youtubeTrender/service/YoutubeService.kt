@@ -8,8 +8,6 @@ import com.google.api.services.youtube.YouTube
 import com.google.api.services.youtube.model.VideoListResponse
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @Service
 class YoutubeService {
@@ -35,6 +33,7 @@ class YoutubeService {
             "comedy" to "23",
             "entertainment" to "24",
             "news" to "25",
+//            "travel" to "19",
         )
 
         val result = mutableMapOf<String, List<VideoDto>>()
@@ -54,54 +53,58 @@ class YoutubeService {
     }
 
 
-
     fun getPopularVideosByRegionAndCategory(
         regionCode: String,
         categoryName: String? = "total",
         videoCategoryId: String? = null,
         maxResults: Int = 50
     ): List<VideoDto> {
-        val request = youtube.videos().list("snippet,statistics") // statistics 포함 시 조회수 등 가능
-            .setChart("mostPopular")
-            .setRegionCode(regionCode)
-            .setMaxResults(maxResults.toLong())
-            .setKey(apiKey)
+        return try {
+            val request = youtube.videos().list("snippet,statistics") // statistics 포함 시 조회수 등 가능
+                .setChart("mostPopular")
+                .setRegionCode(regionCode)
+                .setMaxResults(maxResults.toLong())
+                .setKey(apiKey)
 
-        // 카테고리 ID가 있을 경우 설정
-        videoCategoryId?.let { request.setVideoCategoryId(it) }
+            // 카테고리 ID가 있을 경우 설정
+            videoCategoryId?.let { request.setVideoCategoryId(it) }
 
-        val response: VideoListResponse = request.execute()
+            val response: VideoListResponse = request.execute()
 
-        return response.items.mapNotNull { item ->
-            val id = item.id
-            val snippet = item.snippet
-            val title = snippet?.title
-            val channelTitle = snippet?.channelTitle
-            val categoryId = snippet?.categoryId
-            val viewCount = item.statistics?.viewCount
+            response.items.mapNotNull { item ->
+                val id = item.id
+                val snippet = item.snippet
+                val title = snippet?.title
+                val channelTitle = snippet?.channelTitle
+                val categoryId = snippet?.categoryId
+                val viewCount = item.statistics?.viewCount
 
-            if (id != null && title != null && channelTitle != null && categoryId != null && viewCount != null) {
-                VideoDto(
-                    id = id,
-                    title = title,
-                    channelTitle = channelTitle,
-                    categoryId = categoryId,
-                    category = categoryName, // 별도 API에서 category name 매핑 필요
-                    viewCount = viewCount.toLong(),
-                    likeCount = item.statistics.likeCount?.toLong(),
-                    description = snippet.description,
-                    tags = snippet.tags,
-                    url = "https://www.youtube.com/watch?v=$id",
-                    publishedAt = snippet.publishedAt?.toString() ?: "",
-                    commentCount = item.statistics.commentCount?.toLong(),
-                    country = regionCode
-                )
-            } else {
-                null
+                if (id != null && title != null && channelTitle != null && categoryId != null && viewCount != null) {
+                    VideoDto(
+                        id = id,
+                        title = title,
+                        channelTitle = channelTitle,
+                        categoryId = categoryId,
+                        category = categoryName, // 별도 API에서 category name 매핑 필요
+                        viewCount = viewCount.toLong(),
+                        likeCount = item.statistics.likeCount?.toLong(),
+                        description = snippet.description,
+                        tags = snippet.tags,
+                        url = "https://www.youtube.com/watch?v=$id",
+                        publishedAt = snippet.publishedAt?.toString() ?: "",
+                        commentCount = item.statistics.commentCount?.toLong(),
+                        country = regionCode
+                    )
+                } else {
+                    null
+                }
             }
+        } catch (e: Exception) {
+            // 예외 발생 시 로그 출력, 예외 처리 후 빈 리스트 반환
+            println("Error fetching popular video: ${e.message}")
+            emptyList() // or return null if you prefer
         }
     }
-
 
     fun getComments(videoId: String, maxComments: Int = 20): List<CommentDto> {
         return try {

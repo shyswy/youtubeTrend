@@ -17,7 +17,7 @@ class YoutubeBatch(
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    @Scheduled(fixedRate = 600000) // 10분마다
+    @Scheduled(fixedRate = 3600000) // 10분마다
     fun fetchPopularVideosAndCommentsBatch() {
         log.info("⏰ Youtube 영상 및 댓글 수집 배치 시작: {}", LocalDateTime.now())
 
