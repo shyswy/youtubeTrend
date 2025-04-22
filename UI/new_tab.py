@@ -1,10 +1,11 @@
 import dash
 from dash import html, dcc
 import dash_bootstrap_components as dbc
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import urllib.parse
 import pandas as pd
 import os
+from word_visualization import generate_Comments_WC
 
 # 새 탭용 Dash 앱 생성
 video_app = dash.Dash(__name__, requests_pathname_prefix='/new_tab/')
@@ -111,7 +112,9 @@ youtube_styles = {
         'backgroundColor': '#272727',
         'borderRadius': '8px',
         'maxHeight': '200px',
-        'overflowY': 'auto'
+        'overflowY': 'auto',
+        'scrollbarWidth': 'thin',
+        'scrollbarColor': '#3ea6ff #272727'
     },
     'videoTags': {
         'color': '#3ea6ff',
@@ -121,7 +124,11 @@ youtube_styles = {
         'gap': '8px',
         'padding': '10px',
         'backgroundColor': '#272727',
-        'borderRadius': '8px'
+        'borderRadius': '8px',
+        'maxHeight': '150px',
+        'overflowY': 'auto',
+        'scrollbarWidth': 'thin',
+        'scrollbarColor': '#3ea6ff #272727'
     },
     'tag': {
         'backgroundColor': '#272727',
@@ -202,14 +209,65 @@ youtube_styles = {
     }
 }
 
+# CSS 스타일 추가
+app_css = {
+    'selector': '.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner td',
+    'rule': '''
+        font-family: "Roboto", "Noto Sans KR", sans-serif !important;
+    '''
+}
+
+# 스크롤바 스타일 추가
+scrollbar_css = {
+    'selector': '::-webkit-scrollbar',
+    'rule': '''
+        width: 8px;
+        height: 8px;
+    '''
+}
+
+scrollbar_thumb_css = {
+    'selector': '::-webkit-scrollbar-thumb',
+    'rule': '''
+        background-color: #3ea6ff;
+        border-radius: 4px;
+    '''
+}
+
+scrollbar_track_css = {
+    'selector': '::-webkit-scrollbar-track',
+    'rule': '''
+        background-color: #272727;
+        border-radius: 4px;
+    '''
+}
+
 # 레이아웃 정의
 video_app.layout = html.Div([
+    # 스타일 추가
+    dcc.Markdown('''
+        <style>
+            ::-webkit-scrollbar {
+                width: 8px;
+                height: 8px;
+            }
+            ::-webkit-scrollbar-thumb {
+                background-color: #3ea6ff;
+                border-radius: 4px;
+            }
+            ::-webkit-scrollbar-track {
+                background-color: #272727;
+                border-radius: 4px;
+            }
+        </style>
+    ''', dangerously_allow_html=True),
     # 헤더
     html.Div([
         html.H1("YouTube", style={'color': 'red', 'fontSize': '24px', 'margin': '0', 'fontWeight': 'bold'}),
         html.Div([
             html.Span(id='country-value', style=youtube_styles['infoBadge']),
             html.Span(id='category-value', style=youtube_styles['infoBadge']),
+            html.Span(id='videoId-value', style={'display': 'none'}),
             html.Div(id='video-title', style=youtube_styles['title'])
         ], style={'display': 'flex', 'alignItems': 'center', 'gap': '15px', 'flexWrap': 'wrap'})
     ], style=youtube_styles['header']),
@@ -340,7 +398,17 @@ video_app.layout = html.Div([
                     'fontWeight': 'bold',
                     'textShadow': '0 2px 4px rgba(0,0,0,0.2)'
                 }),
-                html.Div(
+                html.Div([html.Img(
+                        id='word-cloud-img',
+                        style={
+                            'width': '100%',
+                            'height': '100%',
+                            'objectFit': 'contain',
+                            'border': '2px solid #ccc',
+                            'boxShadow': '2px 2px 10px rgba(0,0,0,0.1)',
+                            'borderRadius': '10px'
+                        }
+                    )], 
                     id='wordcloud-container',
                     style={
                         'height': '400px',
@@ -355,7 +423,8 @@ video_app.layout = html.Div([
         ], style={'display': 'flex', 'flexDirection': 'row', 'justifyContent': 'space-between'})
     ], style=youtube_styles['commentsTable']),
     
-    dcc.Location(id='url', refresh=False)
+    dcc.Location(id='url', refresh=False),
+    dcc.Interval(id='init-callback-trigger', interval=1000, n_intervals=0, max_intervals=1)
 ], style=youtube_styles['container'])
 
 # URL 파라미터에서 정보를 추출하고 동영상을 표시하는 콜백
@@ -369,7 +438,8 @@ video_app.layout = html.Div([
      Output('video-likes', 'children'),
      Output('video-description', 'children'),
      Output('video-tags', 'children'),
-     Output('comments-table', 'data')],
+     Output('comments-table', 'data'),
+     Output('videoId-value', 'children')],
     [Input('url', 'search')]
 )
 def display_video(search):
@@ -411,7 +481,7 @@ def display_video(search):
                 # 비디오 CSV 파일이 존재하는지 확인
                 if not os.path.exists(video_file_path):
                     print(f"비디오 파일이 존재하지 않습니다: {video_file_path}")  # 디버깅용
-                    return "", f"파일을 찾을 수 없습니다: {video_file_path}", country, category, "", "", "", "", "", []
+                    return "", f"파일을 찾을 수 없습니다: {video_file_path}", country, category, "", "", "", "", "", [], ""
                     
                 # 비디오 CSV 파일 읽기
                 video_df = pd.read_csv(video_file_path)
@@ -422,7 +492,7 @@ def display_video(search):
                 print(f"일치하는 비디오 행 개수: {len(matching_video)}")  # 디버깅용
                 if matching_video.empty:
                     print(f"video_id({video_id})와 일치하는 비디오가 없습니다.")  # 디버깅용
-                    return "", f"해당 video_id({video_id})를 찾을 수 없습니다.", country, category, "", "", "", "", "", []
+                    return "", f"해당 video_id({video_id})를 찾을 수 없습니다.", country, category, "", "", "", "", "", [], ""
                 
                 # 댓글 CSV 파일이 존재하는지 확인
                 if not os.path.exists(comments_file_path):
@@ -494,12 +564,65 @@ def display_video(search):
                     tags = []
                 
                 
-                return embed_url, video_title, country, category, "채널: "+channel_name, views, likes, description, tags, comments_data
+                return embed_url, video_title, country, category, "채널: "+channel_name, views, likes, description, tags, comments_data, video_id
                 
             except Exception as e:
-                return "", f"오류 발생: {str(e)}", country, category, "", "", "", "", "", []
+                return "", f"오류 발생: {str(e)}", country, category, "", "", "", "", "", [], ""
     
-    return "", "동영상을 찾을 수 없습니다.", "", "", "", "", "", "", "", []
+    return "", "동영상을 찾을 수 없습니다.", "", "", "", "", "", "", "", [], ""
+
+
+
+
+
+@video_app.callback(
+    Output('word-cloud-img', 'src'),
+    [Input('init-callback-trigger', 'n_intervals')],
+    [State('videoId-value', 'children'),
+     State('country-value', 'children'),
+     State('category-value', 'children')]
+)
+def update_word_cloud(n, video_id, selected_country , selected_category):
+    try:
+        # 국가와 카테고리 매핑
+        country_mapping = {
+            '한국': 'KR',
+            '미국': 'US',
+            '전체': 'KR'  # 기본값
+        }
+        
+        category_mapping = {
+            'all': 'all',
+            'entertainment': 'entertainment',
+            'news': 'news',
+            'people': 'people_blogs',
+            'music': 'music',
+            'comedy': 'comedy',
+            'sports': 'sports'
+        }
+        
+        country = country_mapping.get(selected_country, 'KR')
+        category = category_mapping.get(selected_category, 'all')
+        
+        print(f"Generating word cloud for country: {country}, category: {category}")
+        
+        # 워드클라우드 이미지 생성
+        img_base64 = generate_Comments_WC(video_id, country, category)
+        if img_base64 is None:
+            print("Word cloud generation returned None")
+            return None
+        
+        print("Word cloud generated successfully")
+        return img_base64  # 이미 base64 URL이 포함되어 있으므로 그대로 반환
+    except Exception as e:
+        print(f"Error in update_word_cloud: {str(e)}")
+        return None    
+
+
+
+
+
+
 
 if __name__ == '__main__':
     video_app.run(debug=True)
