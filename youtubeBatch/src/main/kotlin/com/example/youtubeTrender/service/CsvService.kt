@@ -18,7 +18,7 @@ class CsvService {
         if (dtoList.isEmpty()) return
 
         // 환경 변수에서 CSV 저장 경로를 가져옴 (기본값: /data)
-        val csvPath = System.getenv("CSV_DATA_PATH") ?: "/data"
+        val csvPath = System.getenv("CSV_DATA_PATH") ?: "./data"
         val directory = File(csvPath)
 
         println("[path log] csvPath: $csvPath directory: $directory")
