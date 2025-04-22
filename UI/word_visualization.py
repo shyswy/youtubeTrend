@@ -141,12 +141,10 @@ def generate_Comments_WC(video_ID, country="KR", category="all", image_Size = (4
 
 def read_file(country, category, type = "comments"):
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(current_dir)
-    csv_dir = os.path.join(project_root, "csvCollection")
+    csv_dir = os.path.join(current_dir, "youtube_data")
     font_path = os.path.join(current_dir, "Font", "LGEITextTTF-Bold.ttf")
     
     print(f"현재 디렉토리: {current_dir}")
-    print(f"프로젝트 루트: {project_root}")
     print(f"CSV 디렉토리: {csv_dir}")
     print(f"폰트 경로: {font_path}")
 

@@ -372,10 +372,37 @@ def display_video(search):
                 # 값 추출 (에러 처리 추가)
                 try:
                     channel_name = matching_video['channelTitle'].iloc[0] if 'channelTitle' in matching_video.columns else "채널 정보 없음"
-                    views = f"👁️ {matching_video['viewCount'].iloc[0]}회" if 'viewCount' in matching_video.columns else "👁️ 조회수 정보 없음"
-                    likes = f"👍 {matching_video['likeCount'].iloc[0]}개" if 'likeCount' in matching_video.columns else "👍 좋아요 정보 없음"
-                    description = matching_video['description'].iloc[0]
-                    tags = matching_video['tags'].iloc[0].split('|') if 'tags' in matching_video.columns and pd.notna(matching_video['tags'].iloc[0]) else []
+                    
+                    # 조회수 처리 (nan 체크 및 천 단위 콤마)
+                    if 'viewCount' in matching_video.columns and pd.notna(matching_video['viewCount'].iloc[0]):
+                        views = f"👁️ {int(matching_video['viewCount'].iloc[0]):,}회"
+                    else:
+                        views = "👁️ 조회수 정보 없음"
+                    
+                    # 좋아요 처리 (nan 체크 및 천 단위 콤마)
+                    if 'likeCount' in matching_video.columns and pd.notna(matching_video['likeCount'].iloc[0]):
+                        likes = f"👍 {int(matching_video['likeCount'].iloc[0]):,}개"
+                    else:
+                        likes = "👍 좋아요 정보 없음"
+                    
+                    # 설명 처리 (nan 체크)
+                    description = matching_video['description'].iloc[0] if pd.notna(matching_video['description'].iloc[0]) else "설명 없음"
+                    
+                    # 태그 처리 (nan 체크 및 # 추가)
+                    if 'tags' in matching_video.columns and pd.notna(matching_video['tags'].iloc[0]):
+                        # 태그 문자열을 리스트로 변환
+                        tag_str = matching_video['tags'].iloc[0]
+                        # 대괄호와 공백 제거 후 리스트로 변환
+                        tag_str = tag_str.replace('[', '').replace(']', '').strip()
+                        tag_list = [tag.strip() for tag in tag_str.split(',') if tag.strip()]
+                        
+                        tags = []
+                        for tag in tag_list:
+                            # 태그를 클릭 가능한 링크로 변환
+                            tag_url = f"https://www.youtube.com/results?search_query={urllib.parse.quote(tag)}"
+                            tags.append(html.A(f"#{tag}", href=tag_url, target="_blank", style=youtube_styles['tag']))
+                    else:
+                        tags = []
                 except Exception as e:
                     print(f"데이터 추출 중 오류 발생: {str(e)}")  # 디버깅용
                     channel_name = "채널 정보 없음"
@@ -385,10 +412,7 @@ def display_video(search):
                     tags = []
                 
                 
-                # 태그 생성
-                tag_elements = [html.Span(tag, style=youtube_styles['tag']) for tag in tags]
-                
-                return embed_url, video_title, country, category, "채널: "+channel_name, views, likes, description, tag_elements, comments_data
+                return embed_url, video_title, country, category, "채널: "+channel_name, views, likes, description, tags, comments_data
                 
             except Exception as e:
                 return "", f"오류 발생: {str(e)}", country, category, "", "", "", "", "", []
