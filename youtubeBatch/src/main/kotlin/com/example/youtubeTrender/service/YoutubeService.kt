@@ -101,7 +101,7 @@ class YoutubeService {
             }
         } catch (e: Exception) {
             // 예외 발생 시 로그 출력, 예외 처리 후 빈 리스트 반환
-            println("Error fetching popular videos: ${e.message}")
+            println("Error fetching popular video: ${e.message}")
             emptyList() // or return null if you prefer
         }
     }
