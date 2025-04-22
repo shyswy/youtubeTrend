@@ -28,16 +28,17 @@ def load_data():
     for file in data_files:
         df = pd.read_csv(file, encoding='utf-8-sig')
         # 파일명에서 국가와 카테고리 추출
-        country = file.split('_')[1].split('\\')[-1]
-        category = file.split('_')[2] if len(file.split('_')) > 2 else 'weekly'
+        file_name = os.path.basename(file)  # 파일 이름만 추출
+        country = file_name.split('_')[0]  # KR 또는 US
+        category = file_name.split('_')[1] if len(file_name.split('_')) > 1 else 'weekly'
         
-        if 'weekly' in file:
+        if 'weekly' in file_name:
             df['category_name'] = 'weekly'
-            df['country_name'] = '한국' if country == 'korea' or country == 'KR' else '미국'
+            df['country_name'] = '한국' if country == 'KR' else '미국'
             weekly_data.append(df)
         else:
             df['category_name'] = category
-            df['country_name'] = '한국' if country == 'korea' or country == 'KR' else '미국'
+            df['country_name'] = '한국' if country == 'KR' else '미국'
             all_data.append(df)
     
     return pd.concat(all_data, ignore_index=True), pd.concat(weekly_data, ignore_index=True) if weekly_data else None
