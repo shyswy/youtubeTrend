@@ -6,6 +6,7 @@ import re
 from collections import Counter
 import glob
 import os
+from Library.profanity_filter import clean_abusive_words
 
 KOREAN_STOPWORDS = set([
     "더보기", "보기", "입니다", "하는", "있습니다", "합니다", "라는",
@@ -101,7 +102,9 @@ def generate_Comments_WC(video_ID, country="KR", category="all", image_Size = (4
         for _, row in df.iterrows():
             if str(row["video_id"]) != video_ID:
                 continue
-            text = str(row["comment_text"])
+            text = clean_abusive_words(str(row["comment_text"]))
+            if len(text) == 0:
+                continue
             try:
                 like = int(row["comment_likes"])
             except ValueError:
@@ -166,13 +169,19 @@ def read_file(country, category, type = "comments"):
 if __name__ == '__main__':
     from PIL import Image
     import matplotlib.pyplot as plt
+    import time
+    import math
+    start = time.time()
+    math.factorial(100000)
     #img_base64 = generate_Title_WC(country="KR", category="all", image_Size = (1200, 600), Max_words = 100)
-    img_base64 = generate_Comments_WC("Qhz2L8WzgIw", country="KR", category="all", image_Size = (400, 800), Max_words = 100)
+    img_base64 = generate_Comments_WC("dtJ9j8grYHk", country="KR", category="all", image_Size = (400, 800), Max_words = 100)
     
     if img_base64 and img_base64.startswith("data:image"):
         img_base64_data = img_base64.split(",")[1]
         image_data = base64.b64decode(img_base64_data)
         image = Image.open(io.BytesIO(image_data))
+        end = time.time()
+        print(f"{end - start:.5f} sec")
         plt.imshow(image)
         plt.axis("off")
         plt.tight_layout()
