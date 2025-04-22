@@ -5,6 +5,7 @@ from dash.dependencies import Input, Output
 import urllib.parse
 import pandas as pd
 import os
+from word_visualization import generate_Comments_WC
 
 # 새 탭용 Dash 앱 생성
 video_app = dash.Dash(__name__, requests_pathname_prefix='/new_tab/')
@@ -210,6 +211,7 @@ video_app.layout = html.Div([
         html.Div([
             html.Span(id='country-value', style=youtube_styles['infoBadge']),
             html.Span(id='category-value', style=youtube_styles['infoBadge']),
+            html.Span(id='videoId-value', style={'display': 'none'}),
             html.Div(id='video-title', style=youtube_styles['title'])
         ], style={'display': 'flex', 'alignItems': 'center', 'gap': '15px', 'flexWrap': 'wrap'})
     ], style=youtube_styles['header']),
@@ -340,7 +342,17 @@ video_app.layout = html.Div([
                     'fontWeight': 'bold',
                     'textShadow': '0 2px 4px rgba(0,0,0,0.2)'
                 }),
-                html.Div(
+                html.Div([html.Img(
+                        id='word-cloud-img',
+                        style={
+                            'width': '100%',
+                            'height': '100%',
+                            'objectFit': 'contain',
+                            'border': '2px solid #ccc',
+                            'boxShadow': '2px 2px 10px rgba(0,0,0,0.1)',
+                            'borderRadius': '10px'
+                        }
+                    )],
                     id='wordcloud-container',
                     style={
                         'height': '400px',
@@ -369,7 +381,8 @@ video_app.layout = html.Div([
      Output('video-likes', 'children'),
      Output('video-description', 'children'),
      Output('video-tags', 'children'),
-     Output('comments-table', 'data')],
+     Output('comments-table', 'data'),
+     Output('videoId-value', 'children')],
     [Input('url', 'search')]
 )
 def display_video(search):
@@ -411,7 +424,7 @@ def display_video(search):
                 # 비디오 CSV 파일이 존재하는지 확인
                 if not os.path.exists(video_file_path):
                     print(f"비디오 파일이 존재하지 않습니다: {video_file_path}")  # 디버깅용
-                    return "", f"파일을 찾을 수 없습니다: {video_file_path}", country, category, "", "", "", "", "", []
+                    return "", f"파일을 찾을 수 없습니다: {video_file_path}", country, category, "", "", "", "", "", [], ""
                     
                 # 비디오 CSV 파일 읽기
                 video_df = pd.read_csv(video_file_path)
@@ -422,7 +435,7 @@ def display_video(search):
                 print(f"일치하는 비디오 행 개수: {len(matching_video)}")  # 디버깅용
                 if matching_video.empty:
                     print(f"video_id({video_id})와 일치하는 비디오가 없습니다.")  # 디버깅용
-                    return "", f"해당 video_id({video_id})를 찾을 수 없습니다.", country, category, "", "", "", "", "", []
+                    return "", f"해당 video_id({video_id})를 찾을 수 없습니다.", country, category, "", "", "", "", "", [], ""
                 
                 # 댓글 CSV 파일이 존재하는지 확인
                 if not os.path.exists(comments_file_path):
@@ -494,12 +507,12 @@ def display_video(search):
                     tags = []
                 
                 
-                return embed_url, video_title, country, category, "채널: "+channel_name, views, likes, description, tags, comments_data
+                return embed_url, video_title, country, category, "채널: "+channel_name, views, likes, description, tags, comments_data, video_id
                 
             except Exception as e:
-                return "", f"오류 발생: {str(e)}", country, category, "", "", "", "", "", []
+                return "", f"오류 발생: {str(e)}", country, category, "", "", "", "", "", [], ""
     
-    return "", "동영상을 찾을 수 없습니다.", "", "", "", "", "", "", "", []
+    return "", "동영상을 찾을 수 없습니다.", "", "", "", "", "", "", "", [], ""
 
 if __name__ == '__main__':
     video_app.run(debug=True)
