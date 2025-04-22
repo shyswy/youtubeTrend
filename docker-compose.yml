@@ -30,11 +30,11 @@ services:
     ports:
       - '0.0.0.0:8050:8050'
     environment:
-      - CSV_DATA_PATH=/data
+      - CSV_DATA_PATH=/youtube_data
       - PYTHONUNBUFFERED=1
       - DASH_HOST=0.0.0.0
     volumes:
-      - ${PWD}/csv_data:/data:rw
+      - ${PWD}/csv_data:/youtube_data:rw
       - ./UI/Font:/app/Font
     working_dir: /app
     command: python main.py
