@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 class YoutubeBatch(
     private val youtubeService: YoutubeService,
     private val youtuberService: YoutuberService,
-    private val csvService: CsvService
+//    private val csvService: CsvService
 //    private val csvService: CsvServiceSymbolic
 
 ) {

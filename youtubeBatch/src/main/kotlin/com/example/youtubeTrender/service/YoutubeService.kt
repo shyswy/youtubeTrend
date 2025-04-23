@@ -33,13 +33,17 @@ class YoutubeService (
                 getPopularVideosByRegionAndCategory(region, categoryName, categoryId)
             }
 
-        val popularVideoMap = RegionCategoryFetcher.fetchForAllRegionsAndCategories(fetchFunc)
+        val popularVideoMap = RegionCategoryFetcher.fetchForAllRegionsAndCategoriesWithDefault(fetchFunc)
 
         popularVideoMap.forEach { (key, videos) ->
             val videoFileName = "${key}_video"
             csvService.writeDtoListToCsv(videos, videoFileName)
             println("✅ 저장 완료: $videoFileName.csv (${videos.size}개 영상)")
 
+            if ("weekly" in key) {
+                println("skip, 'weekly' doesn't make comment data")
+                return@forEach
+            }
             println("getComments from $key")
             val allComments = videos.flatMap { video ->
                 try {
@@ -55,41 +59,6 @@ class YoutubeService (
             println("💬 댓글 저장 완료: $commentFileName.csv (${allComments.size}개 댓글)")
         }
     }
-
-
-//    fun fetchPopularVideosForAllRegionsAndCategories(): Map<String, List<VideoDto>> {
-//        val regions = listOf("KR", "US")
-//
-//        // 해당 해당 카테고리의 인기 급상승 영상 없을 때, 에러 생김.
-//        val categoryMap = mapOf(
-//            "all" to null,
-//            "music" to "10",
-//            "sports" to "17",
-//            "people_blogs" to "22",
-//            "comedy" to "23",
-//            "entertainment" to "24",
-//            "news" to "25",
-////            "travel" to "19",
-//        )
-//        val regions = YoutubeConstants.REGIONS
-//        val categoryMap = YoutubeConstants.CATEGORY_MAP
-//
-//        val result = mutableMapOf<String, List<VideoDto>>()
-//
-//        for (region in regions) {
-//            for ((categoryName, categoryId) in categoryMap) {
-//                val key = "${region}_${categoryName}"
-//                println("Fetching for: $key")
-//                val videos = getPopularVideosByRegionAndCategory(region, categoryName, categoryId)
-//                result[key] = videos
-//            }
-//            val totalVideos = getPopularVideosByRegionAndCategory(region)
-//            result["${region}_weekly"] = totalVideos
-//        }
-//
-//        return result
-//    }
-
 
     fun getPopularVideosByRegionAndCategory(
         regionCode: String,
