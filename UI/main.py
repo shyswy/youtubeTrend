@@ -23,9 +23,7 @@ category_names = {
     'entertainment': '엔터테인먼트',
     'news': '뉴스'
 }
-    # parent_dir =os.path.dirname(os.path.abspath(__file__))
-    # video_file_path = os.path.join(parent_dir, 'csvCollection/')
-    # data_files = glob.glob(video_file_path+'*_video.csv')
+
 # 데이터 로드
 def load_data():
     # 현재 스크립트의 디렉토리 경로를 가져옴
@@ -67,7 +65,7 @@ def load_data():
                 df['country_name'] = '한국' if country == 'KR' else '미국'
                 weekly_data.append(df)
                 print(f"Added to weekly data: {len(df)} rows")
-            else:
+            else: 
                 df['category_name'] = category
                 df['country_name'] = '한국' if country == 'KR' else '미국'
                 all_data.append(df)
@@ -545,6 +543,37 @@ app.layout = html.Div([
 
 # 콜백 함수
 @app.callback(
+    Output('clicked-url', 'data'),
+    [Input('rank-table', 'active_cell')],
+    [State('rank-table', 'data'),
+     State('country-dropdown', 'value'),
+     State('category-dropdown', 'value')],
+    prevent_initial_call=True
+)
+def open_new_tab(active_cell, table_data, selected_country, selected_category):
+    if not active_cell or 'row' not in active_cell or active_cell['column'] != 1:
+        return dash.no_update
+        
+    row = active_cell['row']
+    if row >= len(table_data):
+        return dash.no_update
+        
+    title = table_data[row].get('title')
+    if not title:
+        return dash.no_update
+        
+    # 해당 title에 맞는 URL을 가져오되, 여러 값이 있을 경우 첫 번째 값만 선택
+    url_series = df[df['title'] == title]['url']
+    if url_series.empty:
+        return dash.no_update
+        
+    video_id = url_series.iloc[0].split('v=')[-1]
+    # 새 탭에서 열릴 Dash 앱의 URL을 생성
+    new_tab_url = f'/new_tab?video_id={video_id}&country={selected_country}&category={selected_category}&video_title={urllib.parse.quote(title)}'
+    return {'url': new_tab_url}
+
+# 콜백 함수
+@app.callback(
     [Output('rank-table', 'data'),
      Output('scatter-plot', 'figure'),
      Output('table-title', 'children'),
@@ -556,18 +585,29 @@ app.layout = html.Div([
      Input('rank-table', 'page_current')]
 )
 def update_table_and_graph(selected_country, selected_category, active_cell, page_current):
-    print("Callback triggered")
-    print(f"Input values - country: {selected_country}, category: {selected_category}")
-    
+    category_mapping = {
+            'all': 'all',
+            'entertainment': 'entertainment',
+            'news': 'news',
+            'people': 'people_blogs',
+            'music': 'music',
+            'comedy': 'comedy',
+            'sports': 'sports'
+        }
+
+    category = category_mapping.get(selected_category, 'all')
     # 데이터 필터링
-    filtered_df = df.copy()
-    # 국가 필터링
-    if selected_country != '전체':
-        filtered_df = filtered_df[filtered_df['country_name'] == selected_country]
-    
+    if category=='all':
+        filtered_df = df[df['category'] == 'all']
+        # 국가 필터링
+        if selected_country != '전체':
+            filtered_df = filtered_df[filtered_df['country_name'] == selected_country]
     # 카테고리 필터링 (전체가 아닌 경우에만)
-    if selected_category != 'all':
-        filtered_df = filtered_df[filtered_df['category_name'] == selected_category]
+    elif category != 'all':
+        filtered_df = df[df['category'] == category]
+        # 국가 필터링
+        if selected_country != '전체':
+            filtered_df = filtered_df[filtered_df['country_name'] == selected_country]
 
     
     # 순위 계산
@@ -768,36 +808,6 @@ def update_wordcloud_title(selected_country, selected_category):
     except Exception as e:
         print(f"Error in update_wordcloud_title: {str(e)}")
         return "워드클라우드"
-
-@app.callback(
-    Output('clicked-url', 'data'),
-    [Input('rank-table', 'active_cell')],
-    [State('rank-table', 'data'),
-     State('country-dropdown', 'value'),
-     State('category-dropdown', 'value')],
-    prevent_initial_call=True
-)
-def open_new_tab(active_cell, table_data, selected_country, selected_category):
-    if not active_cell or 'row' not in active_cell or active_cell['column'] != 1:
-        return dash.no_update
-        
-    row = active_cell['row']
-    if row >= len(table_data):
-        return dash.no_update
-        
-    title = table_data[row].get('title')
-    if not title:
-        return dash.no_update
-        
-    # 해당 title에 맞는 URL을 가져오되, 여러 값이 있을 경우 첫 번째 값만 선택
-    url_series = df[df['title'] == title]['url']
-    if url_series.empty:
-        return dash.no_update
-        
-    video_id = url_series.iloc[0].split('v=')[-1]
-    # 새 탭에서 열릴 Dash 앱의 URL을 생성
-    new_tab_url = f'/new_tab?video_id={video_id}&country={selected_country}&category={selected_category}&video_title={urllib.parse.quote(title)}'
-    return {'url': new_tab_url}
 
 # 서버 설정
 application = DispatcherMiddleware(app.server, {

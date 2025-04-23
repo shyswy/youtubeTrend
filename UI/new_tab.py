@@ -5,6 +5,7 @@ from dash.dependencies import Input, Output, State
 import urllib.parse
 import pandas as pd
 import os
+import glob
 from word_visualization import generate_Comments_WC
 
 # 새 탭용 Dash 앱 생성
@@ -460,10 +461,14 @@ def display_video(search):
             'comedy': 'comedy',
             'sports': 'sports'
         }
-        
+        country_mapping = {
+            '한국': 'KR',
+            '미국': 'US',
+            '전체': 'all' 
+        }
         # 매핑된 카테고리 값 가져오기
         mapped_category = category_mapping.get(category, 'all')
-        
+        country = country_mapping.get(country, 'KR')
         video_title = urllib.parse.unquote(params.get('video_title', ''))
 
         if video_id:
@@ -472,24 +477,40 @@ def display_video(search):
 
             try:
                 # CSV 파일 경로 생성
-                video_file_path = os.path.join('youtube_data', f'KR_{mapped_category}_video.csv')
-                comments_file_path = os.path.join('youtube_data', f'KR_{mapped_category}_comments.csv')
-                
-                print(f"비디오 파일 경로: {video_file_path}")  # 디버깅용
-                print(f"댓글 파일 경로: {comments_file_path}")  # 디버깅용
+                if country != 'all':
+                    video_file_path = os.path.join('youtube_data', f'{country}_{mapped_category}_video.csv')
+                    comments_file_path = os.path.join('youtube_data', f'{country}_{mapped_category}_comments.csv')
+                else:
+                    # 와일드카드 패턴으로 모든 국가의 비디오 파일 찾기
+                    video_file_paths = glob.glob(os.path.join('youtube_data', f'*_{mapped_category}_video.csv'))
+                    
+                    # video_id와 일치하는 파일 찾기
+                    for file_path in video_file_paths:
+                        try:
+                            df = pd.read_csv(file_path)
+                            if not df[df['id'] == video_id].empty:
+                                matching_files=file_path
+                                break
+                        except Exception as e:
+                            print(f"파일 읽기 오류 {file_path}: {str(e)}")
+                            continue
+                    
+                    if not matching_files:
+                        return "", f"해당 video_id({video_id})를 찾을 수 없습니다.", country, category, "", "", "", "", "", [], ""
+
+                    # 매칭된 파일의 국가 코드 추출 (파일명에서)
+                    video_file_path=matching_files
+                    country_code = os.path.basename(matching_files).split('_')[0]
+                    comments_file_path = os.path.join('youtube_data', f'{country_code}_{mapped_category}_comments.csv')
                 
                 # 비디오 CSV 파일이 존재하는지 확인
                 if not os.path.exists(video_file_path):
-                    print(f"비디오 파일이 존재하지 않습니다: {video_file_path}")  # 디버깅용
                     return "", f"파일을 찾을 수 없습니다: {video_file_path}", country, category, "", "", "", "", "", [], ""
                     
                 # 비디오 CSV 파일 읽기
                 video_df = pd.read_csv(video_file_path)
-                print(f"비디오 CSV 컬럼: {video_df.columns.tolist()}")  # 디버깅용
-                
                 # video_id와 일치하는 행 찾기
                 matching_video = video_df[video_df['id'] == video_id]
-                print(f"일치하는 비디오 행 개수: {len(matching_video)}")  # 디버깅용
                 if matching_video.empty:
                     print(f"video_id({video_id})와 일치하는 비디오가 없습니다.")  # 디버깅용
                     return "", f"해당 video_id({video_id})를 찾을 수 없습니다.", country, category, "", "", "", "", "", [], ""
