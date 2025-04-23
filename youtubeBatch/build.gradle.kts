@@ -68,6 +68,9 @@ dependencies {
 
 	implementation("com.opencsv:opencsv:5.7.1")
 
+	// crawl
+	implementation("org.jsoup:jsoup:1.15.4") // 최신 버전 확인
+
 }
 
 tasks.withType<KotlinCompile> {
