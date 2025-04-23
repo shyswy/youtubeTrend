@@ -20,8 +20,7 @@ spring:
 
 
 youtube:
-    api-key: AIzaSyCgeKCSgGp-SapbqbAto84_IGHcgwcD5J8
-    #  api-key: AIzaSyArgb1hVHPXMwxPO3kGQwqGrd2VkYJcBW0
+    api-key: yourYoutubeAccessKey
 
 #  datasource:
 #    #    url: jdbc:h2:mem:study  # In-memory H2 database
