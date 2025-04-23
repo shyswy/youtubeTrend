@@ -269,6 +269,7 @@ video_app.layout = html.Div([
             html.Span(id='country-value', style=youtube_styles['infoBadge']),
             html.Span(id='category-value', style=youtube_styles['infoBadge']),
             html.Span(id='videoId-value', style={'display': 'none'}),
+            html.Span(id='country-code', style={'display': 'none'}),
             html.Div(id='video-title', style=youtube_styles['title'])
         ], style={'display': 'flex', 'alignItems': 'center', 'gap': '15px', 'flexWrap': 'wrap'})
     ], style=youtube_styles['header']),
@@ -440,7 +441,8 @@ video_app.layout = html.Div([
      Output('video-description', 'children'),
      Output('video-tags', 'children'),
      Output('comments-table', 'data'),
-     Output('videoId-value', 'children')],
+     Output('videoId-value', 'children'),
+     Output('country-code', 'children'),],
     [Input('url', 'search')]
 )
 def display_video(search):
@@ -480,6 +482,7 @@ def display_video(search):
                 if country != 'all':
                     video_file_path = os.path.join('youtube_data', f'{country}_{mapped_category}_video.csv')
                     comments_file_path = os.path.join('youtube_data', f'{country}_{mapped_category}_comments.csv')
+                    country_code = os.path.basename(comments_file_path).split('_')[0]
                 else:
                     # 와일드카드 패턴으로 모든 국가의 비디오 파일 찾기
                     video_file_paths = glob.glob(os.path.join('youtube_data', f'*_{mapped_category}_video.csv'))
@@ -496,16 +499,16 @@ def display_video(search):
                             continue
                     
                     if not matching_files:
-                        return "", f"해당 video_id({video_id})를 찾을 수 없습니다.", country, category, "", "", "", "", "", [], ""
+                        return "", f"해당 video_id({video_id})를 찾을 수 없습니다.", country, category, "", "", "", "", "", [], "", ""
 
                     # 매칭된 파일의 국가 코드 추출 (파일명에서)
                     video_file_path=matching_files
                     country_code = os.path.basename(matching_files).split('_')[0]
                     comments_file_path = os.path.join('youtube_data', f'{country_code}_{mapped_category}_comments.csv')
-                
+
                 # 비디오 CSV 파일이 존재하는지 확인
                 if not os.path.exists(video_file_path):
-                    return "", f"파일을 찾을 수 없습니다: {video_file_path}", country, category, "", "", "", "", "", [], ""
+                    return "", f"파일을 찾을 수 없습니다: {video_file_path}", country, category, "", "", "", "", "", [], "", ""
                     
                 # 비디오 CSV 파일 읽기
                 video_df = pd.read_csv(video_file_path)
@@ -513,7 +516,7 @@ def display_video(search):
                 matching_video = video_df[video_df['id'] == video_id]
                 if matching_video.empty:
                     print(f"video_id({video_id})와 일치하는 비디오가 없습니다.")  # 디버깅용
-                    return "", f"해당 video_id({video_id})를 찾을 수 없습니다.", country, category, "", "", "", "", "", [], ""
+                    return "", f"해당 video_id({video_id})를 찾을 수 없습니다.", country, category, "", "", "", "", "", [], "", ""
                 
                 # 댓글 CSV 파일이 존재하는지 확인
                 if not os.path.exists(comments_file_path):
@@ -585,12 +588,12 @@ def display_video(search):
                     tags = []
                 
                 
-                return embed_url, video_title, country, category, "채널: "+channel_name, views, likes, description, tags, comments_data, video_id
+                return embed_url, video_title, country, category, "채널: "+channel_name, views, likes, description, tags, comments_data, video_id, country_code
                 
             except Exception as e:
-                return "", f"오류 발생: {str(e)}", country, category, "", "", "", "", "", [], ""
+                return "", f"오류 발생: {str(e)}", country, category, "", "", "", "", "", [], "", ""
     
-    return "", "동영상을 찾을 수 없습니다.", "", "", "", "", "", "", "", [], ""
+    return "", "동영상을 찾을 수 없습니다.", "", "", "", "", "", "", "", [], "", ""
 
 
 
@@ -600,18 +603,11 @@ def display_video(search):
     Output('word-cloud-img', 'src'),
     [Input('init-callback-trigger', 'n_intervals')],
     [State('videoId-value', 'children'),
-     State('country-value', 'children'),
+     State('country-code', 'children'),
      State('category-value', 'children')]
 )
 def update_word_cloud(n, video_id, selected_country , selected_category):
     try:
-        # 국가와 카테고리 매핑
-        country_mapping = {
-            '한국': 'KR',
-            '미국': 'US',
-            '전체': 'KR'  # 기본값
-        }
-        
         category_mapping = {
             'all': 'all',
             'entertainment': 'entertainment',
@@ -622,13 +618,13 @@ def update_word_cloud(n, video_id, selected_country , selected_category):
             'sports': 'sports'
         }
         
-        country = country_mapping.get(selected_country, 'KR')
+        #country = country_mapping.get(selected_country, 'KR')
         category = category_mapping.get(selected_category, 'all')
         
-        print(f"Generating word cloud for country: {country}, category: {category}")
+        print(f"Generating word cloud for country: {selected_country}, category: {category}")
         
         # 워드클라우드 이미지 생성
-        img_base64 = generate_Comments_WC(video_id, country, category)
+        img_base64 = generate_Comments_WC(video_id, selected_country, category)
         if img_base64 is None:
             print("Word cloud generation returned None")
             return None
