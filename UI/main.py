@@ -93,16 +93,70 @@ df, weekly_df = load_data()
 crawled_df = load_crawled_data()
 
 # Dash 앱 생성
-app = dash.Dash(__name__)
-app.title = "YouTube 인기 동영상 순위"
-app.config.suppress_callback_exceptions = True  # 콜백 예외 허용
+app = dash.Dash(__name__, 
+    suppress_callback_exceptions=True,
+    external_stylesheets=['https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap']
+)
 
-# 클라이언트 사이드 콜백 수정
+# 앱 스타일 추가
+app.index_string = '''
+<!DOCTYPE html>
+<html>
+    <head>
+        {%metas%}
+        <title>{%title%}</title>
+        {%favicon%}
+        {%css%}
+        <style>
+            .Select-control, .Select-menu-outer {
+                background-color: #1f1f1f !important;
+                border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            }
+            .Select-menu-outer {
+                z-index: 9999 !important;
+            }
+            .Select-value-label, .Select-option {
+                color: white !important;
+            }
+            .Select-option:hover {
+                background-color: rgba(255, 255, 255, 0.1) !important;
+            }
+            .Select-arrow {
+                border-color: white transparent transparent !important;
+            }
+            .Select.is-open > .Select-control {
+                background-color: #1f1f1f !important;
+                border-color: rgba(255, 255, 255, 0.2) !important;
+            }
+            .Select-placeholder {
+                color: rgba(255, 255, 255, 0.5) !important;
+            }
+        </style>
+    </head>
+    <body>
+        {%app_entry%}
+        <footer>
+            {%config%}
+            {%scripts%}
+            {%renderer%}
+        </footer>
+    </body>
+</html>
+'''
+
+app.title = "YouTube 인기 동영상 순위"
+
+# 클라이언트 사이드 콜백만 사용하도록 수정
+
 app.clientside_callback(
     """
     function(data) {
-        if (data && data.url) {
+        if (data && data.url && !window.lastOpenedUrl) {
+            window.lastOpenedUrl = data.url;
             window.open(data.url, '_blank');
+            setTimeout(() => {
+                window.lastOpenedUrl = null;
+            }, 1000);
             return null;
         }
         return null;
@@ -164,7 +218,9 @@ styles = {
         'padding': '15px 25px',
         'borderRadius': '12px',
         'boxShadow': '0 4px 15px rgba(0, 0, 0, 0.2)',
-        'border': '1px solid rgba(255, 255, 255, 0.1)'
+        'border': '1px solid rgba(255, 255, 255, 0.1)',
+        'position': 'relative',
+        'zIndex': 1000
     },
     'filterLabel': {
         'color': '#ffffff',
@@ -181,11 +237,50 @@ styles = {
         'padding': '8px 15px',
         'fontSize': '14px',
         'width': '130px',
-        'transition': 'all 0.3s ease'
+        'transition': 'all 0.3s ease',
+        'cursor': 'pointer',
+        'fontFamily': "'Noto Sans KR', sans-serif",
+        'fontWeight': '400'
     },
     'filterDropdown:hover': {
         'borderColor': 'rgba(255, 255, 255, 0.2)',
         'boxShadow': '0 2px 8px rgba(0, 0, 0, 0.2)'
+    },
+    'pagination': {
+        'display': 'flex',
+        'justifyContent': 'center',
+        'alignItems': 'center',
+        'gap': '15px',
+        'marginTop': '20px',
+        'backgroundColor': 'rgba(39, 39, 39, 0.8)',
+        'padding': '15px',
+        'borderRadius': '12px',
+        'border': '1px solid rgba(255, 255, 255, 0.1)'
+    },
+    'paginationButton': {
+        'backgroundColor': 'rgba(39, 39, 39, 0.8)',
+        'color': '#ffffff',
+        'border': '1px solid rgba(255, 255, 255, 0.1)',
+        'borderRadius': '8px',
+        'padding': '8px 15px',
+        'fontSize': '14px',
+        'cursor': 'pointer',
+        'transition': 'all 0.3s ease',
+        'minWidth': '80px'
+    },
+    'paginationButton:hover': {
+        'backgroundColor': 'rgba(255, 255, 255, 0.1)',
+        'borderColor': 'rgba(255, 255, 255, 0.2)'
+    },
+    'paginationInfo': {
+        'color': '#ffffff',
+        'fontSize': '14px',
+        'padding': '8px 15px',
+        'backgroundColor': 'rgba(31, 31, 31, 0.8)',
+        'borderRadius': '8px',
+        'border': '1px solid rgba(255, 255, 255, 0.1)',
+        'minWidth': '150px',
+        'textAlign': 'center'
     },
     'mainContent': {
         'display': 'flex',
@@ -201,7 +296,10 @@ styles = {
         'backgroundColor': 'rgba(31, 31, 31, 0.8)',
         'backdropFilter': 'blur(10px)',
         'boxShadow': '0 4px 15px rgba(0, 0, 0, 0.2)',
-        'border': '1px solid rgba(255, 255, 255, 0.1)'
+        'border': '1px solid rgba(255, 255, 255, 0.1)',
+        'display': 'flex',
+        'flexDirection': 'column',
+        'gap': '20px'
     },
     'rightPanel': {
         'width': '400px',
@@ -311,7 +409,7 @@ app.layout = html.Div([
         ], style=styles['headerTitle']),
         html.Div([
             html.Div([
-                html.Label("국가:", style=styles['filterLabel']),
+                html.Label("Country", style=styles['filterLabel']),
                 dcc.Dropdown(
                     id='country-dropdown',
                     options=[
@@ -320,16 +418,42 @@ app.layout = html.Div([
                         {'label': '미국', 'value': '미국'}
                     ],
                     value='전체',
-                    style=styles['filterDropdown']
+                    style={
+                        'backgroundColor': 'rgba(31, 31, 31, 0.9)',
+                        'color': '#ffffff',
+                        'border': '1px solid rgba(255, 255, 255, 0.1)',
+                        'borderRadius': '8px',
+                        'padding': '8px 15px',
+                        'fontSize': '14px',
+                        'width': '130px',
+                        'fontFamily': "'Noto Sans KR', sans-serif",
+                        'fontWeight': '400'
+                    },
+                    className='custom-dropdown',
+                    clearable=False,
+                    optionHeight=35
                 )
             ]),
             html.Div([
-                html.Label("카테고리:", style=styles['filterLabel']),
+                html.Label("Category", style=styles['filterLabel']),
                 dcc.Dropdown(
                     id='category-dropdown',
                     options=[{'label': v, 'value': k} for k, v in category_names.items()],
                     value='all',
-                    style=styles['filterDropdown']
+                    style={
+                        'backgroundColor': 'rgba(31, 31, 31, 0.9)',
+                        'color': '#ffffff',
+                        'border': '1px solid rgba(255, 255, 255, 0.1)',
+                        'borderRadius': '8px',
+                        'padding': '8px 15px',
+                        'fontSize': '14px',
+                        'width': '130px',
+                        'fontFamily': "'Noto Sans KR', sans-serif",
+                        'fontWeight': '400'
+                    },
+                    className='custom-dropdown',
+                    clearable=False,
+                    optionHeight=35
                 )
             ])
         ], style=styles['filterContainer'])
@@ -339,6 +463,7 @@ app.layout = html.Div([
     html.Div([
         # 왼쪽 패널: 순위표
         html.Div([
+            # 인기 동영상 순위 테이블
             html.H3(id='table-title', style={
                 'textAlign': 'center',
                 'color': '#ffffff',
@@ -361,11 +486,11 @@ app.layout = html.Div([
                     'borderRadius': '12px',
                     'backgroundColor': '#1f1f1f',
                     'margin': '20px 0',
-                    'maxHeight': '400px'  # 테이블 최대 높이 제한
+                    'maxHeight': '400px'
                 },
                 style_cell={
                     'textAlign': 'left',
-                    'padding': '10px',  # 패딩 줄임
+                    'padding': '10px',
                     'maxWidth': '300px',
                     'whiteSpace': 'normal',
                     'height': 'auto',
@@ -381,7 +506,7 @@ app.layout = html.Div([
                     'fontWeight': '500',
                     'fontSize': '14px',
                     'textAlign': 'center',
-                    'padding': '10px',  # 패딩 줄임
+                    'padding': '10px',
                     'border': 'none'
                 },
                 style_data={
@@ -405,7 +530,92 @@ app.layout = html.Div([
                 page_current=0,
                 active_cell={'row': 0, 'column': 0}
             ),
+            # 페이지네이션 버튼
+            html.Div([
+                html.Button('이전', id='prev-page', style=styles['paginationButton']),
+                html.Div(id='page-info', style=styles['paginationInfo']),
+                html.Button('다음', id='next-page', style=styles['paginationButton'])
+            ], style=styles['pagination']),
+            
+            dcc.Store(id='current-page', data=0),  # 현재 페이지 저장
+            dcc.Store(id='total-pages', data=0),  # 총 페이지 수 저장
             dcc.Store(id='clicked-url'),
+            
+            # 실시간 인기 유튜버 테이블
+            html.Div([
+                html.H3("실시간 인기 유튜버", style={
+                    'textAlign': 'center',
+                    'color': '#ffffff',
+                    'marginTop': '30px',
+                    'marginBottom': '20px',
+                    'fontWeight': '600'
+                }),
+                dash_table.DataTable(
+                    id='youtuber-table',
+                    columns=[
+                        {'name': '순위', 'id': 'rank'},
+                        {'name': '채널명', 'id': 'channel_name'},
+                        {'name': '채널 이미지', 'id': 'channel_image', 'presentation': 'markdown'}
+                    ],
+                    data=[{
+                        'rank': row['rank'],
+                        'channel_name': row['channel_name'],
+                        'channel_link': row['channel_link'],
+                        'channel_image': f"![{row['channel_name']}]({row['channel_image']})"
+                    } for row in crawled_df.to_dict('records')],
+                    style_table={
+                        'border': 'none',
+                        'borderRadius': '12px',
+                        'backgroundColor': '#1f1f1f',
+                        'width': '100%'
+                    },
+                    style_cell={
+                        'textAlign': 'center',
+                        'padding': '8px',
+                        'whiteSpace': 'normal',
+                        'height': '80px',
+                        'fontFamily': "'Roboto', 'Noto Sans KR', sans-serif",
+                        'fontSize': '14px',
+                        'border': 'none',
+                        'color': '#ffffff',
+                        'backgroundColor': '#1f1f1f',
+                        'verticalAlign': 'middle'
+                    },
+                    style_header={
+                        'backgroundColor': '#272727',
+                        'color': '#ffffff',
+                        'fontWeight': '500',
+                        'fontSize': '14px',
+                        'textAlign': 'center',
+                        'padding': '10px',
+                        'border': 'none',
+                        'height': '50px'
+                    },
+                    style_data={
+                        'backgroundColor': 'transparent',
+                        'borderBottom': '1px solid #272727'
+                    },
+                    style_cell_conditional=[
+                        {'if': {'column_id': 'rank'}, 
+                         'width': '15%',
+                         'fontSize': '20px',
+                         'fontWeight': 'bold',
+                         'color': '#e74c3c'},
+                        {'if': {'column_id': 'channel_name'}, 
+                         'width': '35%',
+                         'textAlign': 'left',
+                         'paddingLeft': '10px'},
+                        {'if': {'column_id': 'channel_image'}, 
+                         'width': '50%'}
+                    ],
+                    page_size=1
+                ),
+                dcc.Interval(
+                    id='interval-component',
+                    interval=1700,
+                    n_intervals=0
+                )
+            ])
         ], style=styles['leftPanel']),
         
         # 오른쪽 패널: 인기 동영상 리스트
@@ -501,101 +711,6 @@ app.layout = html.Div([
             'display': 'flex',
             'marginBottom': '30px',
             'gap': '20px'
-        }),
-        
-        # 실시간 인기 유튜버
-        html.Div([
-            html.H3("실시간 인기 유튜버", style={'textAlign': 'center', 'marginBottom': '20px'}),
-            dash_table.DataTable(
-                id='youtuber-table',
-                columns=[
-                    {'name': '순위', 'id': 'rank'},
-                    {'name': '채널명', 'id': 'channel_name'},
-                    {'name': '채널 이미지', 'id': 'channel_image', 'presentation': 'markdown'}
-                ],
-                data=[{
-                    'rank': row['rank'],
-                    'channel_name': row['channel_name'],
-                    'channel_link': row['channel_link'],
-                    'channel_image': f"![{row['channel_name']}]({row['channel_image']})"
-                } for row in crawled_df.to_dict('records')],
-                style_table={
-                    'border': '2px solid #e74c3c',
-                    'borderRadius': '12px',
-                    'boxShadow': '0 4px 8px rgba(0,0,0,0.1)',
-                    'background': 'linear-gradient(to bottom right, #ffffff, #f8f9fa)',
-                    'height': '180px',
-                    'width': '800px',
-                    'overflowY': 'hidden',
-                    'margin': '0 auto'
-                },
-                style_cell={
-                    'textAlign': 'center',
-                    'padding': '8px',
-                    'whiteSpace': 'normal',
-                    'height': '150px',
-                    'fontFamily': '"Noto Sans KR", Arial, sans-serif',
-                    'fontSize': '13px',
-                    'border': 'none',
-                    'verticalAlign': 'middle'
-                },
-                style_header={
-                    'backgroundColor': '#e74c3c',
-                    'color': 'white',
-                    'fontWeight': 'bold',
-                    'fontSize': '14px',
-                    'textAlign': 'center',
-                    'padding': '8px',
-                    'border': 'none',
-                    'borderTopLeftRadius': '10px',
-                    'borderTopRightRadius': '10px',
-                    'height': '30px'
-                },
-                style_data={
-                    'backgroundColor': 'transparent',
-                    'cursor': 'default',
-                    'borderBottom': '1px solid #f2f2f2',
-                    'height': '150px',
-                    'verticalAlign': 'middle'
-                },
-                style_cell_conditional=[
-                    {'if': {'column_id': 'rank'}, 
-                     'width': '15%',
-                     'fontSize': '20px',
-                     'fontWeight': 'bold',
-                     'color': '#e74c3c'},
-                    {'if': {'column_id': 'channel_name'}, 
-                     'width': '35%',
-                     'textAlign': 'left',
-                     'paddingLeft': '10px',
-                     'fontSize': '14px'},
-                    {'if': {'column_id': 'channel_image'}, 
-                     'width': '50%',
-                     'maxWidth': '100px',
-                     'maxHeight': '80px',
-                     'objectFit': 'contain'}
-                ],
-                style_data_conditional=[
-                    {
-                        'if': {'row_index': 0},
-                        'backgroundColor': 'rgba(231, 76, 60, 0.05)',
-                        'transition': 'background-color 0.3s ease'
-                    }
-                ],
-                page_size=1,
-                markdown_options={'html': True}
-            ),
-            dcc.Interval(
-                id='interval-component',
-                interval=1700,  # 1.7초마다 업데이트
-                n_intervals=0
-            )
-        ], style={
-            'padding': '20px',
-            'backgroundColor': 'white',
-            'borderRadius': '15px',
-            'boxShadow': '0 4px 8px rgba(0,0,0,0.1)',
-            'textAlign': 'center'
         })
     ], style={
         'padding': '30px',
@@ -606,7 +721,7 @@ app.layout = html.Div([
     html.Div(id='dummy-output', style={'display': 'none'})  # 이거 필수
 ], style=styles['container'])
 
-# 콜백 함수
+# 새탭 열기
 @app.callback(
     Output('clicked-url', 'data'),
     [Input('rank-table', 'active_cell')],
@@ -637,20 +752,66 @@ def open_new_tab(active_cell, table_data, selected_country, selected_category):
     new_tab_url = f'/new_tab?video_id={video_id}&country={selected_country}&category={selected_category}&video_title={urllib.parse.quote(title)}'
     return {'url': new_tab_url}
 
-# 콜백 함수
+# 드롭다운 변경 시 페이지 초기화를 위한 콜백
+@app.callback(
+    Output('current-page', 'data'),
+    [Input('country-dropdown', 'value'),
+     Input('category-dropdown', 'value'),
+     Input('prev-page', 'n_clicks'),
+     Input('next-page', 'n_clicks')],
+    [State('current-page', 'data'),
+     State('rank-table', 'data'),
+     State('total-pages', 'data')],
+    prevent_initial_call=True
+)
+def update_pagination(country, category, prev_clicks, next_clicks, current_page, data, total_pages):
+    triggered_id = ctx.triggered_id
+    
+    # 드롭다운이 변경된 경우
+    if triggered_id in ['country-dropdown', 'category-dropdown']:
+        return 0  # 1페이지(인덱스 0)로 초기화
+    
+    # 페이지 이동 버튼이 클릭된 경우
+    if not data:
+        return 0
+        
+    if triggered_id == 'prev-page' and current_page > 0:
+        current_page -= 1
+    elif triggered_id == 'next-page' and current_page < total_pages - 1:
+        current_page += 1
+    
+    return current_page
+
+current_filtered_df = None
+current_filter_key = None
+# 테이블 업데이트 콜백
 @app.callback(
     [Output('rank-table', 'data'),
      Output('scatter-plot', 'figure'),
      Output('table-title', 'children'),
      Output('category-dropdown', 'value'),
-     Output('rank-table', 'active_cell')],
+     Output('rank-table', 'active_cell'),
+     Output('page-info', 'children'),
+     Output('total-pages', 'data')],
     [Input('country-dropdown', 'value'),
      Input('category-dropdown', 'value'),
      Input('rank-table', 'active_cell'),
-     Input('rank-table', 'page_current')]
+     Input('current-page', 'data')]
 )
 def update_table_and_graph(selected_country, selected_category, active_cell, page_current):
-    category_mapping = {
+    global current_filtered_df, current_filter_key
+    
+    # 현재 필터 키 생성
+    filter_key = f"{selected_country}_{selected_category}"
+    
+    # 필터가 변경되었거나 페이지가 변경된 경우 active_cell을 None으로 설정
+    triggered_id = ctx.triggered_id
+    if triggered_id in ['country-dropdown', 'category-dropdown'] or triggered_id == 'current-page':
+        active_cell = None
+    
+    # 필터가 변경된 경우에만 데이터 재계산
+    if current_filter_key != filter_key:
+        category_mapping = {
             'all': 'all',
             'entertainment': 'entertainment',
             'news': 'news',
@@ -660,31 +821,44 @@ def update_table_and_graph(selected_country, selected_category, active_cell, pag
             'sports': 'sports'
         }
 
-    category = category_mapping.get(selected_category, 'all')
-    # 데이터 필터링
-    if category=='all':
-        filtered_df = df[df['category'] == 'all']
-        # 국가 필터링
-        if selected_country != '전체':
-            filtered_df = filtered_df[filtered_df['country_name'] == selected_country]
-    # 카테고리 필터링 (전체가 아닌 경우에만)
-    elif category != 'all':
-        filtered_df = df[df['category'] == category]
-        # 국가 필터링
-        if selected_country != '전체':
-            filtered_df = filtered_df[filtered_df['country_name'] == selected_country]
-
+        category = category_mapping.get(selected_category, 'all')
+        
+        # 데이터 필터링
+        if category=='all':
+            filtered_df = df[df['category'] == 'all']
+            if selected_country != '전체':
+                filtered_df = filtered_df[filtered_df['country_name'] == selected_country]
+        elif category != 'all':
+            filtered_df = df[df['category'] == category]
+            if selected_country != '전체':
+                filtered_df = filtered_df[filtered_df['country_name'] == selected_country]
+        
+        # 순위 계산
+        filtered_df = filtered_df.sort_values('views', ascending=False)
+        filtered_df['rank'] = range(1, len(filtered_df) + 1)
+        
+        # video_id 추가
+        filtered_df['video_id'] = filtered_df['url'].apply(lambda x: x.split('v=')[-1])
+        
+        # 전역 변수 업데이트
+        current_filtered_df = filtered_df
+        current_filter_key = filter_key
+    else:
+        filtered_df = current_filtered_df
     
-    # 순위 계산
-    filtered_df = filtered_df.sort_values('views', ascending=False)
-    filtered_df['rank'] = range(1, len(filtered_df) + 1)
+    # 페이지 정보 계산
+    page_size = 10
+    total_pages = (len(filtered_df) + page_size - 1) // page_size
     
     # 테이블 데이터 준비 (페이지네이션 적용)
-    page_size = 10  # 페이지당 10개 행
     start_idx = page_current * page_size
     end_idx = start_idx + page_size
-    table_data = filtered_df[['rank', 'title', 'channel', 'views', 'likes', 'category']].iloc[start_idx:end_idx]
-
+    table_data = filtered_df[['rank', 'title', 'channel', 'views', 'likes', 'category', 'video_id']].iloc[start_idx:end_idx].to_dict('records')
+    
+    # 페이지 정보 업데이트
+    current_page_display = page_current + 1
+    page_info = f'{current_page_display} 페이지 / {total_pages} 페이지'
+    
     # 테이블 제목 설정
     category_text = category_names[selected_category]
     table_title = f"{selected_country} {category_text} 인기 동영상 순위"
@@ -697,7 +871,12 @@ def update_table_and_graph(selected_country, selected_category, active_cell, pag
         color='category',
         hover_data=['title', 'channel'],
         log_x=True,
-        log_y=True
+        log_y=True,
+        labels={
+            'views': '조회수',
+            'likes': '좋아요 수',
+            'category': '카테고리'
+        }
     )
     
     # 차트 스타일링
@@ -708,27 +887,31 @@ def update_table_and_graph(selected_country, selected_category, active_cell, pag
         xaxis=dict(
             gridcolor='#272727',
             zerolinecolor='#272727',
-            tickfont=dict(color='#ffffff')
+            tickfont=dict(color='#ffffff'),
+            title='조회수'
         ),
         yaxis=dict(
             gridcolor='#272727',
             zerolinecolor='#272727',
-            tickfont=dict(color='#ffffff')
+            tickfont=dict(color='#ffffff'),
+            title='좋아요 수'
         ),
         legend=dict(
             bgcolor='#1f1f1f',
             bordercolor='#272727',
             borderwidth=1,
             font=dict(color='#ffffff')
+        ),
+        title=dict(
+            text='조회수 vs 좋아요 수',
+            font=dict(color='#ffffff', size=16),
+            x=0.5,
+            y=0.95
         )
     )
     
-    # 필터가 변경되면 active_cell 초기화
-    if ctx.triggered_id in ['country-dropdown', 'category-dropdown']:
-        active_cell = None
-    
-    return (table_data.to_dict('records'), fig, table_title, 
-            selected_category, active_cell)
+    return (table_data, fig, table_title, 
+            selected_category, active_cell, page_info, total_pages)
 
 # 유튜버 테이블 자동 순환 콜백
 @app.callback(
@@ -759,7 +942,7 @@ def update_youtuber_table(n_intervals, current_data):
     
     return current_data
 
-# 콜백 함수 추가
+# 콜백 함수
 @app.callback(
     Output('category-pie-chart', 'figure'),
     [Input('country-dropdown', 'value')]
@@ -776,7 +959,7 @@ def update_pie_chart(selected_country):
     # 파이 차트 생성
     fig = px.pie(
         values=category_counts.values,
-        names=category_counts.index,
+        names=category_counts.index.map(lambda x: category_names.get(x, x)),  # 카테고리 이름 한글로 변환
         color_discrete_sequence=px.colors.qualitative.Set3
     )
     
