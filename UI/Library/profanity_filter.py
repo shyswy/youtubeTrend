@@ -6,7 +6,7 @@ profanity.load_censor_words()
 
 # 추가적으로 삭제하고 싶은 특정 단어
 BANWORD_SET = set([
-    # 예: "일베", "틀딱" 등 사용자 정의 단어
+
 ])
 
 # 한국어 욕설 우회 표현까지 커버하는 정규식 패턴
@@ -36,7 +36,6 @@ def is_abusive_comment(text: str) -> bool:
         is_korean_profane(lowered) or
         any(bad in lowered for bad in BANWORD_SET)
     )
-
 
 # 욕설 제거용 Clean 함수
 def clean_abusive_words(sentence: str) -> str:
@@ -88,6 +87,7 @@ if __name__ =='__main__':
         "좋아요 눌렀어요",
         "응원합니다~"
     ]
+    
     test_korean_abuse_variants = [
         "씨1발 뭐야",       # 숫자
         "ㅅ.ㅂ 진심?",       # 특수문자

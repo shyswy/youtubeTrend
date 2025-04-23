@@ -28,6 +28,7 @@ def get_youtuber_Ranking(category = 'all', country = 'korea', ranking = "인기"
         "korea": "south-korea",
         "usa": "united-states",
         }
+    
     # 집계 기간 맵핑
     DURACTION_TYPE = {
         "일간": "daily",
