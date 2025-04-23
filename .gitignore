@@ -43,7 +43,7 @@ out/
 .DS_Store
 
 # 애플리케이션 설정 파일 무시
-application.properties
+application.yml
 
 # 이름이 ~~~로 끝나는 _data 폴더 및 그 하위 모든 파일/디렉토리 무시
 *_data/
