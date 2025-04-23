@@ -115,131 +115,189 @@ app.clientside_callback(
 # 스타일 정의
 styles = {
     'container': {
-        'padding': '30px',
-        'fontFamily': "'Noto Sans KR', sans-serif",
-        'backgroundColor': '#f8f9fa',
-        'minHeight': '100vh'
+        'padding': '20px',
+        'fontFamily': "'Roboto', 'Noto Sans KR', sans-serif",
+        'backgroundColor': '#0f0f0f',
+        'minHeight': '100vh',
+        'color': '#ffffff'
     },
     'header': {
         'textAlign': 'center',
         'marginBottom': '40px',
-        'color': '#2c3e50',
-        'fontSize': '2.5rem',
-        'fontWeight': '700',
-        'textShadow': '2px 2px 4px rgba(0,0,0,0.1)'
+        'color': '#ffffff',
+        'fontSize': '2rem',
+        'fontWeight': '500',
+        'display': 'flex',
+        'alignItems': 'center',
+        'justifyContent': 'center',
+        'gap': '30px',
+        'flexWrap': 'wrap'
+    },
+    'headerTitle': {
+        'display': 'flex',
+        'alignItems': 'center',
+        'gap': '15px',
+        'background': 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
+        'padding': '20px 40px',
+        'borderRadius': '16px',
+        'boxShadow': '0 4px 20px rgba(0, 0, 0, 0.2)',
+        'transition': 'all 0.3s ease',
+        'border': '1px solid rgba(255, 255, 255, 0.1)',
+        'backdropFilter': 'blur(10px)'
+    },
+    'headerTitle:hover': {
+        'transform': 'translateY(-2px)',
+        'boxShadow': '0 6px 25px rgba(0, 0, 0, 0.3)',
+        'borderColor': 'rgba(255, 255, 255, 0.2)'
+    },
+    'headerIcon': {
+        'fontSize': '2.8rem',
+        'color': '#ff0000',
+        'filter': 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
+    },
+    'filterContainer': {
+        'display': 'flex',
+        'alignItems': 'center',
+        'gap': '20px',
+        'backgroundColor': 'rgba(39, 39, 39, 0.8)',
+        'backdropFilter': 'blur(10px)',
+        'padding': '15px 25px',
+        'borderRadius': '12px',
+        'boxShadow': '0 4px 15px rgba(0, 0, 0, 0.2)',
+        'border': '1px solid rgba(255, 255, 255, 0.1)'
+    },
+    'filterLabel': {
+        'color': '#ffffff',
+        'fontSize': '14px',
+        'fontWeight': '500',
+        'marginRight': '8px',
+        'opacity': '0.9'
+    },
+    'filterDropdown': {
+        'backgroundColor': 'rgba(31, 31, 31, 0.9)',
+        'color': '#ffffff',
+        'border': '1px solid rgba(255, 255, 255, 0.1)',
+        'borderRadius': '8px',
+        'padding': '8px 15px',
+        'fontSize': '14px',
+        'width': '130px',
+        'transition': 'all 0.3s ease'
+    },
+    'filterDropdown:hover': {
+        'borderColor': 'rgba(255, 255, 255, 0.2)',
+        'boxShadow': '0 2px 8px rgba(0, 0, 0, 0.2)'
     },
     'mainContent': {
         'display': 'flex',
         'gap': '30px',
-        'marginBottom': '40px'
+        'marginBottom': '40px',
+        'maxWidth': '1600px',
+        'margin': '0 auto'
     },
     'leftPanel': {
         'flex': '1',
         'padding': '25px',
-        'borderRadius': '15px',
-        'boxShadow': '0 8px 16px rgba(0,0,0,0.1)',
-        'backgroundColor': 'white',
-        'transition': 'transform 0.3s ease'
+        'borderRadius': '16px',
+        'backgroundColor': 'rgba(31, 31, 31, 0.8)',
+        'backdropFilter': 'blur(10px)',
+        'boxShadow': '0 4px 15px rgba(0, 0, 0, 0.2)',
+        'border': '1px solid rgba(255, 255, 255, 0.1)'
     },
     'rightPanel': {
         'width': '400px',
         'padding': '25px',
-        'borderRadius': '15px',
-        'boxShadow': '0 8px 16px rgba(0,0,0,0.1)',
-        'backgroundColor': 'white',
-        'transition': 'transform 0.3s ease'
-    },
-    'filterSection': {
-        'marginBottom': '30px',
-        'padding': '20px',
-        'borderRadius': '12px',
-        'backgroundColor': 'white',
-        'boxShadow': '0 4px 8px rgba(0,0,0,0.05)',
-        'textAlign': 'right',
-        'marginRight': '20px'
+        'borderRadius': '16px',
+        'backgroundColor': 'rgba(31, 31, 31, 0.8)',
+        'backdropFilter': 'blur(10px)',
+        'boxShadow': '0 4px 15px rgba(0, 0, 0, 0.2)',
+        'border': '1px solid rgba(255, 255, 255, 0.1)'
     },
     'videoList': {
-        'marginBottom': '30px',
+        'marginBottom': '25px',
         'padding': '20px',
         'borderRadius': '12px',
-        'backgroundColor': 'white',
-        'boxShadow': '0 4px 8px rgba(0,0,0,0.05)'
-    },
-    'videoGrid': {
-        'display': 'grid',
-        'gridTemplateColumns': 'repeat(3, 1fr)',
-        'gap': '15px',
-        'overflow': 'hidden',
-        'position': 'relative',
-        'width': '100%',
-        'height': '100%'
+        'backgroundColor': 'rgba(39, 39, 39, 0.8)',
+        'backdropFilter': 'blur(10px)',
+        'border': '1px solid rgba(255, 255, 255, 0.1)'
     },
     'videoGridContainer': {
         'display': 'flex',
-        'overflow': 'hidden',
+        'overflow': 'auto',
         'position': 'relative',
         'width': '100%',
-        'height': '300px',
+        'height': '400px',
         'perspective': '1000px',
-        'maxWidth': '1200px',
-        'margin': '0 auto'
+        'scrollbarWidth': 'thin',
+        'scrollbarColor': '#272727 #1f1f1f',
+        'padding': '5px'
+    },
+    'videoGrid': {
+        'display': 'grid',
+        'gridTemplateColumns': 'repeat(1, 1fr)',
+        'gap': '20px',
+        'padding': '10px'
     },
     'videoCard': {
         'borderRadius': '12px',
         'overflow': 'hidden',
-        'boxShadow': '0 4px 8px rgba(0,0,0,0.1)',
+        'backgroundColor': 'rgba(39, 39, 39, 0.8)',
+        'backdropFilter': 'blur(10px)',
         'cursor': 'pointer',
-        'transition': 'transform 0.3s ease, box-shadow 0.3s ease',
-        'backgroundColor': 'white',
+        'transition': 'all 0.3s ease',
         'width': '100%',
         'height': '100%',
         'display': 'flex',
         'flexDirection': 'column',
-        'transform': 'scale(1)',
-        'transformOrigin': 'center center'
+        'border': '1px solid rgba(255, 255, 255, 0.1)'
     },
     'videoCard:hover': {
         'transform': 'translateY(-5px)',
-        'boxShadow': '0 8px 16px rgba(0,0,0,0.2)'
+        'boxShadow': '0 8px 20px rgba(0, 0, 0, 0.3)',
+        'borderColor': 'rgba(255, 255, 255, 0.2)'
     },
     'videoThumbnail': {
         'width': '100%',
         'height': '180px',
         'objectFit': 'cover',
-        'borderRadius': '12px 12px 0 0'
+        'borderRadius': '12px 12px 0 0',
+        'transition': 'transform 0.3s ease'
+    },
+    'videoCard:hover .videoThumbnail': {
+        'transform': 'scale(1.05)'
     },
     'videoInfo': {
         'padding': '15px',
         'flex': '1',
         'display': 'flex',
         'flexDirection': 'column',
-        'justifyContent': 'space-between'
+        'gap': '10px'
     },
     'videoTitle': {
         'margin': '0',
         'fontSize': '14px',
-        'fontWeight': '600',
-        'color': '#2c3e50',
+        'fontWeight': '500',
+        'color': '#ffffff',
         'display': '-webkit-box',
         '-webkit-line-clamp': '2',
         '-webkit-box-orient': 'vertical',
         'overflow': 'hidden',
-        'textOverflow': 'ellipsis'
+        'textOverflow': 'ellipsis',
+        'lineHeight': '1.4'
     },
     'videoChannel': {
-        'margin': '10px 0 0 0',
-        'color': '#666',
+        'margin': '0',
+        'color': '#aaaaaa',
         'fontSize': '12px',
         'overflow': 'hidden',
         'textOverflow': 'ellipsis',
-        'whiteSpace': 'nowrap'
+        'whiteSpace': 'nowrap',
+        'opacity': '0.8'
     },
     'bottomSection': {
-        'padding': '30px',
-        'borderRadius': '15px',
-        'boxShadow': '0 8px 16px rgba(0,0,0,0.1)',
-        'marginBottom': '30px',
-        'backgroundColor': 'white'
+        'padding': '20px',
+        'borderRadius': '12px',
+        'backgroundColor': '#1f1f1f',
+        'marginBottom': '20px'
     }
 }
 
@@ -247,32 +305,35 @@ styles = {
 app.layout = html.Div([
     # 헤더
     html.Div([
-        html.H1("📺 YouTube 인기 동영상 순위", style=styles['header']),
-    ]),
-    
-    # 필터 섹션
-    html.Div([
         html.Div([
-            html.Label("국가 선택:", style={'marginRight': '10px'}),
-            dcc.Dropdown(
-                id='country-dropdown',
-                options=[
-                    {'label': '전체', 'value': '전체'},
-                    {'label': '한국', 'value': '한국'},
-                    {'label': '미국', 'value': '미국'}
-                ],
-                value='전체',
-                style={'width': '150px', 'display': 'inline-block', 'marginRight': '20px'}
-            ),
-            html.Label("카테고리 선택:", style={'marginRight': '10px'}),
-            dcc.Dropdown(
-                id='category-dropdown',
-                options=[{'label': v, 'value': k} for k, v in category_names.items()],
-                value='all',
-                style={'width': '150px', 'display': 'inline-block'}
-            )
-        ], style=styles['filterSection'])
-    ]),
+            html.Span("📺", style=styles['headerIcon']),
+            html.H1("YouTube 인기 동영상 순위", style={'margin': '0', 'color': '#ffffff'})
+        ], style=styles['headerTitle']),
+        html.Div([
+            html.Div([
+                html.Label("국가:", style=styles['filterLabel']),
+                dcc.Dropdown(
+                    id='country-dropdown',
+                    options=[
+                        {'label': '전체', 'value': '전체'},
+                        {'label': '한국', 'value': '한국'},
+                        {'label': '미국', 'value': '미국'}
+                    ],
+                    value='전체',
+                    style=styles['filterDropdown']
+                )
+            ]),
+            html.Div([
+                html.Label("카테고리:", style=styles['filterLabel']),
+                dcc.Dropdown(
+                    id='category-dropdown',
+                    options=[{'label': v, 'value': k} for k, v in category_names.items()],
+                    value='all',
+                    style=styles['filterDropdown']
+                )
+            ])
+        ], style=styles['filterContainer'])
+    ], style=styles['header']),
     
     # 메인 콘텐츠 영역
     html.Div([
@@ -280,7 +341,7 @@ app.layout = html.Div([
         html.Div([
             html.H3(id='table-title', style={
                 'textAlign': 'center',
-                'color': '#2c3e50',
+                'color': '#ffffff',
                 'marginBottom': '25px',
                 'fontWeight': '600'
             }),
@@ -298,42 +359,46 @@ app.layout = html.Div([
                     'overflowX': 'auto',
                     'border': 'none',
                     'borderRadius': '12px',
-                    'boxShadow': '0 4px 8px rgba(0,0,0,0.05)',
-                    'margin': '20px 0'
+                    'backgroundColor': '#1f1f1f',
+                    'margin': '20px 0',
+                    'maxHeight': '400px'  # 테이블 최대 높이 제한
                 },
                 style_cell={
                     'textAlign': 'left',
-                    'padding': '15px',
+                    'padding': '10px',  # 패딩 줄임
                     'maxWidth': '300px',
                     'whiteSpace': 'normal',
                     'height': 'auto',
-                    'fontFamily': "'Noto Sans KR', sans-serif",
+                    'fontFamily': "'Roboto', 'Noto Sans KR', sans-serif",
                     'fontSize': '14px',
-                    'border': 'none'
+                    'border': 'none',
+                    'color': '#ffffff',
+                    'backgroundColor': '#1f1f1f'
                 },
                 style_header={
-                    'backgroundColor': '#2c3e50',
-                    'color': 'white',
-                    'fontWeight': '600',
-                    'fontSize': '15px',
+                    'backgroundColor': '#272727',
+                    'color': '#ffffff',
+                    'fontWeight': '500',
+                    'fontSize': '14px',
                     'textAlign': 'center',
-                    'padding': '15px',
+                    'padding': '10px',  # 패딩 줄임
                     'border': 'none'
                 },
                 style_data={
                     'cursor': 'pointer',
-                    'borderBottom': '1px solid #eee',
-                    'transition': 'background-color 0.3s ease'
+                    'borderBottom': '1px solid #272727',
+                    'transition': 'background-color 0.2s ease',
+                    'backgroundColor': '#1f1f1f'
                 },
                 style_data_conditional=[
                     {
                         'if': {'state': 'active'},
-                        'backgroundColor': 'rgba(44, 62, 80, 0.1)',
-                        'border': '1px solid #2c3e50'
+                        'backgroundColor': '#272727',
+                        'border': 'none'
                     },
                     {
                         'if': {'row_index': 'odd'},
-                        'backgroundColor': 'rgba(0, 0, 0, 0.02)'
+                        'backgroundColor': '#272727'
                     }
                 ],
                 page_size=10,
@@ -349,7 +414,7 @@ app.layout = html.Div([
             html.Div([
                 html.H4("카테고리별 비율", style={
                     'marginBottom': '20px',
-                    'color': '#2c3e50',
+                    'color': '#ffffff',
                     'fontWeight': '600'
                 }),
                 dcc.Graph(
@@ -365,7 +430,7 @@ app.layout = html.Div([
             html.Div([
                 html.H4("주간 인기 동영상", style={
                     'marginBottom': '20px',
-                    'color': '#2c3e50',
+                    'color': '#ffffff',
                     'fontWeight': '600'
                 }),
                 html.Div([
@@ -385,7 +450,7 @@ app.layout = html.Div([
                                 ], style=styles['videoCard'])
                             ]
                         )
-                        for _, row in weekly_df.head(3).iterrows() if weekly_df is not None
+                        for _, row in weekly_df.iterrows()  # 모든 행을 표시
                     ], style=styles['videoGrid'])
                 ], style=styles['videoGridContainer']),
             ], style=styles['videoList'])
@@ -635,6 +700,29 @@ def update_table_and_graph(selected_country, selected_category, active_cell, pag
         log_y=True
     )
     
+    # 차트 스타일링
+    fig.update_layout(
+        plot_bgcolor='#1f1f1f',
+        paper_bgcolor='#1f1f1f',
+        font=dict(color='#ffffff'),
+        xaxis=dict(
+            gridcolor='#272727',
+            zerolinecolor='#272727',
+            tickfont=dict(color='#ffffff')
+        ),
+        yaxis=dict(
+            gridcolor='#272727',
+            zerolinecolor='#272727',
+            tickfont=dict(color='#ffffff')
+        ),
+        legend=dict(
+            bgcolor='#1f1f1f',
+            bordercolor='#272727',
+            borderwidth=1,
+            font=dict(color='#ffffff')
+        )
+    )
+    
     # 필터가 변경되면 active_cell 초기화
     if ctx.triggered_id in ['country-dropdown', 'category-dropdown']:
         active_cell = None
@@ -701,20 +789,21 @@ def update_pie_chart(selected_country):
     
     fig.update_layout(
         showlegend=True,
+        plot_bgcolor='#1f1f1f',
+        paper_bgcolor='#1f1f1f',
+        font=dict(color='#ffffff'),
         legend=dict(
             orientation='h',
             yanchor='bottom',
             y=-0.5,
             xanchor='center',
             x=0.5,
-            bgcolor='rgba(255, 255, 255, 0.8)',
-            bordercolor='rgba(0, 0, 0, 0.1)',
-            borderwidth=2,
-            tracegroupgap=1
+            bgcolor='#1f1f1f',
+            bordercolor='#272727',
+            borderwidth=1,
+            font=dict(color='#ffffff')
         ),
         margin=dict(t=10, b=60, l=0, r=10),
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
         width=400,
         height=300
     )
@@ -750,7 +839,7 @@ def update_weekly_videos(selected_country):
                 ], style=styles['videoCard'])
             ]
         )
-        for _, row in filtered_df.head(3).iterrows()
+        for _, row in filtered_df.iterrows()  # 모든 행을 표시
     ]
 
 # 워드클라우드 업데이트 콜백
