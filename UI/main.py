@@ -673,20 +673,31 @@ app.layout = html.Div([
         html.Div([
             # 조회수 vs 좋아요 분석
             html.Div([
-                html.H3("조회수 vs 좋아요 분석", style={'textAlign': 'center', 'marginBottom': '20px'}),
+                html.H3("조회수 vs 좋아요 분석", style={
+                    'textAlign': 'center', 
+                    'marginBottom': '20px',
+                    'color': '#ffffff',
+                    'fontWeight': '600'
+                }),
                 dcc.Graph(id='scatter-plot', style={'height': '500px'})
             ], style={
                 'flex': '1',
                 'padding': '20px',
-                'backgroundColor': 'white',
+                'backgroundColor': '#1f1f1f',
                 'borderRadius': '15px',
                 'boxShadow': '0 4px 8px rgba(0,0,0,0.1)',
-                'marginRight': '20px'
+                'marginRight': '20px',
+                'border': '1px solid rgba(255, 255, 255, 0.1)'
             }),
             
             # 워드클라우드
             html.Div([
-                html.H3(id='wordcloud-title', style={'textAlign': 'center', 'marginBottom': '20px'}),
+                html.H3(id='wordcloud-title', style={
+                    'textAlign': 'center', 
+                    'marginBottom': '20px',
+                    'color': '#ffffff',
+                    'fontWeight': '600'
+                }),
                 html.Div([
                     html.Img(
                         id='word-cloud-img',
@@ -694,27 +705,31 @@ app.layout = html.Div([
                             'width': '100%',
                             'height': '500px',
                             'objectFit': 'contain',
-                            'border': '2px solid #ccc',
+                            'border': '1px solid rgba(255, 255, 255, 0.1)',
                             'boxShadow': '2px 2px 10px rgba(0,0,0,0.1)',
-                            'borderRadius': '10px'
+                            'borderRadius': '10px',
+                            'backgroundColor': '#272727'
                         }
                     )
                 ], style={'textAlign': 'center'})
             ], style={
                 'flex': '1',
                 'padding': '20px',
-                'backgroundColor': 'white',
+                'backgroundColor': '#1f1f1f',
                 'borderRadius': '15px',
-                'boxShadow': '0 4px 8px rgba(0,0,0,0.1)'
+                'boxShadow': '0 4px 8px rgba(0,0,0,0.1)',
+                'border': '1px solid rgba(255, 255, 255, 0.1)'
             })
         ], style={
             'display': 'flex',
             'marginBottom': '30px',
-            'gap': '20px'
+            'gap': '20px',
+            'maxWidth': '1600px',
+            'margin': '0 auto'
         })
     ], style={
         'padding': '30px',
-        'backgroundColor': '#f8f9fa',
+        'backgroundColor': '#0f0f0f',
         'borderRadius': '15px',
         'marginTop': '30px'
     }),
