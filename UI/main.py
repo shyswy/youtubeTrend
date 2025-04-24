@@ -311,7 +311,8 @@ styles = {
         'border': '1px solid rgba(255, 255, 255, 0.1)'
     },
     'videoList': {
-        'marginBottom': '10px',
+        'marginTop': '10px',
+        'marginBottom': '25px',
         'padding': '20px',
         'borderRadius': '12px',
         'backgroundColor': 'rgba(39, 39, 39, 0.8)',
@@ -685,7 +686,8 @@ app.layout = html.Div([
             # 주간 인기 동영상
             html.Div([
                 html.H4("주간 인기 동영상", style={
-                    'marginBottom': '10px',
+                    'marginBottom': '8px',
+                    'marginTop': '8px',
                     'color': '#ffffff',
                     'fontWeight': '600'
                 }),
@@ -708,7 +710,7 @@ app.layout = html.Div([
                         )
                         for _, row in weekly_df.iterrows()
                     ], style=styles['videoGrid'])
-                ], style={**styles['videoGridContainer'], 'height': '350px'}),
+                ], style={**styles['videoGridContainer'], 'height': '410px'}),
             ], style=styles['videoList'])
         ], style=styles['rightPanel']),
     ], style=styles['mainContent']),
@@ -1018,7 +1020,7 @@ def update_pie_chart(selected_country):
     fig = px.pie(
         values=category_counts.values,
         names=category_counts.index.map(lambda x: category_names.get(x, x)),  # 카테고리 이름 한글로 변환
-        color_discrete_sequence=px.colors.qualitative.Set3
+        color_discrete_sequence=px.colors.qualitative.Set3,
     )
     
     # 차트 스타일링
@@ -1044,9 +1046,9 @@ def update_pie_chart(selected_country):
             borderwidth=1,
             font=dict(color='#ffffff', size=10)
         ),
-        margin=dict(t=30, b=30, l=30, r=30),
+        margin=dict(t=30, b=30, l=60, r=60),  # 좌우 여백 늘려서 원 크기 줄임
         width=400,
-        height=400
+        height=350
     )
     
     return fig
