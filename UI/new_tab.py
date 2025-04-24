@@ -7,6 +7,8 @@ import pandas as pd
 import os
 import glob
 from Library.word_visualization import generate_Comments_WC
+import math
+import base64
 
 # 현재 스크립트의 디렉토리 경로를 가져옴
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -216,6 +218,37 @@ youtube_styles = {
     }
 }
 
+# 게이지 스타일 정의
+gauge_styles = {
+    'red-gauge': {
+        'width': '50%',
+        'height': '100px',
+        'backgroundColor': '#ff4444',
+        'display': 'inline-block',
+        'verticalAlign': 'top'
+    },
+    'blue-gauge': {
+        'width': '50%',
+        'height': '100px',
+        'backgroundColor': '#4444ff',
+        'display': 'inline-block',
+        'verticalAlign': 'top'
+    }
+}
+
+# 게이지 컨테이너 스타일
+gauge_container_style = {
+    'width': '100%',
+    'height': '100px',
+    'backgroundColor': '#272727',
+    'borderRadius': '8px',
+    'overflow': 'hidden',
+    'marginTop': '10px',
+    'boxShadow': '0 2px 10px rgba(0,0,0,0.2)',
+    'border': '1px solid #303030',
+    'whiteSpace': 'nowrap'  # 추가: 내부 요소들이 줄바꿈되지 않도록
+}
+
 # CSS 스타일 추가
 app_css = {
     'selector': '.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner td',
@@ -250,7 +283,11 @@ scrollbar_track_css = {
 }
 
 # 레이아웃 정의
-video_app = dash.Dash(__name__, requests_pathname_prefix='/new_tab/')
+video_app = dash.Dash(
+    __name__, 
+    requests_pathname_prefix='/new_tab/',
+    assets_folder='assets'  # assets 폴더 위치 지정
+)
 
 video_app.layout = html.Div([
     # 스타일 추가
@@ -453,18 +490,48 @@ video_app.layout = html.Div([
                     }),
                     html.Div(
                         id='sentiment-gauge',
+                        children=[
+                            # 게이지 컨테이너
+                            html.Div([
+                                # 빨간색 영역
+                                html.Div(
+                                    id='red-gauge',
+                                    style=gauge_styles['red-gauge']
+                                ),
+                                # 파란색 영역
+                                html.Div(
+                                    id='blue-gauge',
+                                    style=gauge_styles['blue-gauge']
+                                ),
+                            ], style=gauge_container_style),
+                            # 퍼센트 표시 컨테이너
+                            html.Div([
+                                html.Div(
+                                    id='predict_percentage',
+                                    children='여론을 맞춰보세요',
+                                    style={
+                                        'color': '#ffffff',
+                                        'display': 'inline-block',
+                                        'width': '100%',
+                                        'textAlign': 'center',
+                                        'marginTop': '10px',
+                                        'fontSize': '20px',
+                                        'fontWeight': 'bold'
+                                    }
+                                )
+                            ])
+                        ],
                         style={
                             'width': '530px',
-                            'height': '100%',
+                            'height': 'auto',
                             'backgroundColor': '#181818',
                             'borderRadius': '12px',
                             'border': '1px solid #303030',
                             'padding': '20px',
                             'boxShadow': '0 4px 20px rgba(0,0,0,0.2)',
-                            'aspectRatio': '3/1',  # 3:2 비율 설정
                             'marginBottom': '20px'
                         }
-                    )
+                    ),
                 ]),
                 
                 html.H3("댓글 키워드", style={
@@ -728,6 +795,47 @@ def update_word_cloud(n, video_id, selected_country , selected_category):
     except Exception as e:
         print(f"Error in update_word_cloud: {str(e)}")
         return None    
+
+@video_app.callback(
+    [Output('red-gauge', 'style'),
+     Output('blue-gauge', 'style')],
+    [Input('gauge-interval', 'n_intervals')]
+)
+def update_gauge_animation(n):
+    if n is None:
+        n = 0
+    
+    # 60단계로 나누어 더 부드럽게 만듦
+    step = n % 60  # 60단계로 나눔 (올라가는 30단계 + 내려가는 30단계)
+    
+    if step < 30:  # 0~29: 증가
+        # sin 함수를 사용하여 더 부드러운 움직임 생성
+        progress = step / 29  # 0에서 1까지의 진행도
+        red_percentage = 20 + (60 * (math.sin(progress * math.pi / 2)))  # 20%에서 80%까지
+    else:  # 30~59: 감소
+        progress = (step - 30) / 29  # 0에서 1까지의 진행도
+        red_percentage = 80 - (60 * (math.sin(progress * math.pi / 2)))  # 80%에서 20%까지
+    
+    blue_percentage = 100 - red_percentage
+    
+    red_style = {
+        'width': f'{red_percentage}%',
+        'height': '100px',
+        'backgroundColor': '#ff4444',
+        'display': 'inline-block',
+        'verticalAlign': 'top',
+        'animation': 'gauge-animation 4s ease-in-out infinite'
+    }
+    
+    blue_style = {
+        'width': f'{blue_percentage}%',
+        'height': '100px',
+        'backgroundColor': '#4444ff',
+        'display': 'inline-block',
+        'verticalAlign': 'top'
+    }
+    
+    return red_style, blue_style
 
 if __name__ == '__main__':
     video_app.run(debug=True)
