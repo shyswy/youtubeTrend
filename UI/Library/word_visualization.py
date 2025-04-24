@@ -6,7 +6,12 @@ import re
 from collections import Counter
 import glob
 import os
-from Library.profanity_filter import clean_abusive_words
+
+try:
+    from Library.profanity_filter import clean_abusive_words
+except ImportError:
+    from profanity_filter import clean_abusive_words
+
 
 KOREAN_STOPWORDS = set([
     "더보기", "보기", "입니다", "하는", "있습니다", "합니다", "라는",
@@ -140,7 +145,7 @@ def generate_Comments_WC(video_ID, country="KR", category="all", image_Size = (8
         return None
 
 def read_file(country, category, type = "video"):
-    current_dir = os.path.dirname(os.path.abspath(__file__))
+    current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     csv_dir = os.path.join(current_dir, "youtube_data")
     font_path = os.path.join(current_dir, "Font", "LGEITextTTF-Bold.ttf")
     
