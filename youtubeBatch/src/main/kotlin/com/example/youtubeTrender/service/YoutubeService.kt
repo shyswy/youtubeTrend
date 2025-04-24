@@ -47,9 +47,9 @@ class YoutubeService (
             }
 
             // defaultKey 추가
-            val defaultKey = "${region}_weekly"
-            val defaultData = getPopularVideosByRegionAndCategory(region, "all", null)
-            categoryResults + (defaultKey to defaultData)
+            val weekKey = "${region}_weekly"
+            val weekTotalData = getPopularVideosByRegionAndCategory(region, "all", null)
+            categoryResults + (weekKey to weekTotalData)
         }.toMap()
 
         val keyWorldVideoMap = YoutubeConstants.REGIONS.associate { region ->
