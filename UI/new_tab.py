@@ -8,8 +8,9 @@ import os
 import glob
 from Library.word_visualization import generate_Comments_WC
 
-# 새 탭용 Dash 앱 생성
-video_app = dash.Dash(__name__, requests_pathname_prefix='/new_tab/')
+# 현재 스크립트의 디렉토리 경로를 가져옴
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, 'youtube_data')
 
 # YouTube 스타일의 CSS
 youtube_styles = {
@@ -41,28 +42,33 @@ youtube_styles = {
         'textShadow': '0 2px 4px rgba(0,0,0,0.2)'
     },
     'videoContainer': {
-        'maxWidth': '1200px',
+        'maxWidth': '1600px',
         'margin': '20px auto',
         'backgroundColor': '#0f0f0f',
         'borderRadius': '12px',
         'overflow': 'hidden',
         'display': 'flex',
         'gap': '20px',
-        'boxShadow': '0 4px 20px rgba(0,0,0,0.2)'
+        'boxShadow': '0 4px 20px rgba(0,0,0,0.2)',
+        'height': '500px'
     },
     'videoPlayer': {
         'flex': '1',
         'minWidth': '0',
         'borderRadius': '12px',
         'overflow': 'hidden',
-        'boxShadow': '0 4px 20px rgba(0,0,0,0.2)'
+        'boxShadow': '0 4px 20px rgba(0,0,0,0.2)',
+        'height': '100%'
     },
     'channelInfo': {
-        'width': '300px',
+        'width': '400px',
         'backgroundColor': '#181818',
         'padding': '20px',
         'borderRadius': '12px',
-        'boxShadow': '0 4px 20px rgba(0,0,0,0.2)'
+        'boxShadow': '0 4px 20px rgba(0,0,0,0.2)',
+        'height': '100%',
+        'overflowY': 'auto',
+        'paddingBottom': '50px'
     },
     'channelHeader': {
         'display': 'flex',
@@ -126,10 +132,10 @@ youtube_styles = {
         'padding': '10px',
         'backgroundColor': '#272727',
         'borderRadius': '8px',
-        'maxHeight': '150px',
         'overflowY': 'auto',
         'scrollbarWidth': 'thin',
-        'scrollbarColor': '#3ea6ff #272727'
+        'scrollbarColor': '#3ea6ff #272727',
+        'marginBottom': '30px'
     },
     'tag': {
         'backgroundColor': '#272727',
@@ -170,7 +176,7 @@ youtube_styles = {
         'transform': 'translateY(-2px)'
     },
     'commentsTable': {
-        'maxWidth': '1200px',
+        'maxWidth': '1560px',
         'margin': '20px auto',
         'backgroundColor': '#181818',
         'borderRadius': '12px',
@@ -244,6 +250,8 @@ scrollbar_track_css = {
 }
 
 # 레이아웃 정의
+video_app = dash.Dash(__name__, requests_pathname_prefix='/new_tab/')
+
 video_app.layout = html.Div([
     # 스타일 추가
     dcc.Markdown('''
@@ -269,7 +277,7 @@ video_app.layout = html.Div([
             html.Span(id='country-value', style=youtube_styles['infoBadge']),
             html.Span(id='category-value', style=youtube_styles['infoBadge']),
             html.Span(id='videoId-value', style={'display': 'none'}),
-            html.Span(id='country-code', style={'display': 'none'}),
+            html.Span(id='country_code', style={'display': 'none'}),
             html.Div(id='video-title', style=youtube_styles['title'])
         ], style={'display': 'flex', 'alignItems': 'center', 'gap': '15px', 'flexWrap': 'wrap'})
     ], style=youtube_styles['header']),
@@ -282,7 +290,7 @@ video_app.layout = html.Div([
                 id='video-player',
                 style={
                     'width': '100%',
-                    'height': '450px',
+                    'height': '100%',
                     'border': 'none',
                     'borderRadius': '12px',
                     'boxShadow': '0 4px 20px rgba(0,0,0,0.2)'
@@ -304,17 +312,45 @@ video_app.layout = html.Div([
     
     # 댓글 테이블
     html.Div([
-        html.H3("댓글", style={
-            'color': 'white', 
-            'marginBottom': '20px', 
-            'fontFamily': "'Roboto', 'Noto Sans KR', sans-serif",
-            'fontSize': '24px',
-            'fontWeight': 'bold',
-            'textShadow': '0 2px 4px rgba(0,0,0,0.2)'
-        }),
+        # 댓글 요약문 div 추가
         html.Div([
-            # 왼쪽: 댓글 테이블
+            html.H3("댓글 요약", style={
+                'color': 'white',
+                'marginBottom': '10px',
+                'fontFamily': "'Roboto', 'Noto Sans KR', sans-serif",
+                'fontSize': '20px',
+                'fontWeight': '600'
+            }),
+            html.Div(id='comments-summary', style={
+                'width': '1510px',
+                'height': '70px',
+                'backgroundColor': '#272727',
+                'padding': '20px',
+                'borderRadius': '12px',
+                'color': '#aaaaaa',
+                'fontSize': '14px',
+                'lineHeight': '1.6',
+                'marginBottom': '30px',
+                'border': '1px solid #303030',
+                'boxShadow': '0 4px 20px rgba(0,0,0,0.2)',
+                'overflowY': 'auto',
+                'overflowX': 'hidden',
+                'scrollbarWidth': 'thin',
+                'scrollbarColor': '#3ea6ff #272727'
+            })
+        ]),
+
+        html.Div([
+            # 왼쪽: 댓글 제목과 테이블
             html.Div([
+                html.H3("댓글", style={
+                    'color': 'white', 
+                    'marginBottom': '20px', 
+                    'fontFamily': "'Roboto', 'Noto Sans KR', sans-serif",
+                    'fontSize': '20px',
+                    'fontWeight': '600',
+                    'textShadow': '0 2px 4px rgba(0,0,0,0.2)'
+                }),
                 dash.dash_table.DataTable(
                     id='comments-table',
                     columns=[
@@ -323,11 +359,15 @@ video_app.layout = html.Div([
                         {'name': '좋아요', 'id': 'comment_likes'},
                     ],
                     style_table={
-                        'overflowX': 'auto',
                         'borderRadius': '12px',
                         'border': '1px solid #303030',
-                        'boxShadow': '0 4px 20px rgba(0,0,0,0.2)'
+                        'boxShadow': '0 4px 20px rgba(0,0,0,0.2)',
+                        'height': '750px',
+                        'width': '100%',
+                        'tableLayout': 'fixed',  # 테이블 레이아웃을 고정
+                        'overflowY': 'auto', 
                     },
+                    #fixed_rows={'headers': True},  # 헤더 고정
                     style_cell={
                         'backgroundColor': '#181818',
                         'color': 'white',
@@ -335,7 +375,19 @@ video_app.layout = html.Div([
                         'padding': '15px',
                         'border': '1px solid #303030',
                         'fontFamily': "'Roboto', 'Noto Sans KR', sans-serif",
-                        'fontSize': '14px'
+                        'fontSize': '14px',
+                        'whiteSpace': 'pre-wrap',
+                        'overflow': 'hidden',
+                        'textOverflow': 'ellipsis',
+                        'maxWidth': '0'
+                    },
+                    style_data={
+                        'whiteSpace': 'pre-wrap',
+                        'height': 'auto',
+                        'lineHeight': '1.5',
+                        'border': '1px solid #303030',
+                        'overflow': 'hidden',
+                        'textOverflow': 'ellipsis'
                     },
                     style_header={
                         'backgroundColor': '#272727',
@@ -345,13 +397,10 @@ video_app.layout = html.Div([
                         'fontSize': '14px',
                         'padding': '15px',
                         'textTransform': 'none',
-                        'letterSpacing': 'normal'
-                    },
-                    style_data={
-                        'whiteSpace': 'normal',
-                        'height': 'auto',
-                        'lineHeight': '1.5',
-                        'border': '1px solid #303030'
+                        'letterSpacing': 'normal',
+                        'position': 'sticky',  # 헤더 고정을 위한 스타일
+                        'top': 0,  # 헤더 고정을 위한 스타일
+                        'zIndex': 1  # 헤더가 다른 내용 위에 표시되도록 함
                     },
                     style_data_conditional=[
                         {
@@ -370,9 +419,9 @@ video_app.layout = html.Div([
                     filter_action='native',
                     page_action='native',
                     style_cell_conditional=[
-                        {'if': {'column_id': 'comment_text'}, 'width': '60%'},
-                        {'if': {'column_id': 'comment_author'}, 'width': '20%'},
-                        {'if': {'column_id': 'comment_likes'}, 'width': '20%'}
+                        {'if': {'column_id': 'comment_text'}, 'width': '70%', 'minWidth': '70%', 'maxWidth': '70%'},
+                        {'if': {'column_id': 'comment_author'}, 'width': '15%', 'minWidth': '15%', 'maxWidth': '15%'},
+                        {'if': {'column_id': 'comment_likes'}, 'width': '15%', 'minWidth': '15%', 'maxWidth': '15%'}
                     ],
                     css=[{
                         'selector': '.dash-table-container .dash-spreadsheet-container .dash-spreadsheet-inner td',
@@ -388,16 +437,42 @@ video_app.layout = html.Div([
                         'rule': 'font-family: "Roboto", "Noto Sans KR", sans-serif !important; font-size: 14px !important; color: white !important;'
                     }]
                 )
-            ], style={'width': '60%', 'display': 'inline-block', 'vertical-align': 'top', 'padding': '20px'}),
+            ], style={'width': '62%', 'display': 'flex', 'flexDirection': 'column'}),
 
             # 오른쪽: 워드클라우드 공간
             html.Div([
+                # 여론 온도계 섹션
+                html.Div([
+                    html.H3("여론 온도계", style={
+                        'color': 'white', 
+                        'marginBottom': '20px', 
+                        'fontFamily': "'Roboto', 'Noto Sans KR', sans-serif",
+                        'fontSize': '20px',
+                        'fontWeight': '600',
+                        'textShadow': '0 2px 4px rgba(0,0,0,0.2)'
+                    }),
+                    html.Div(
+                        id='sentiment-gauge',
+                        style={
+                            'width': '530px',
+                            'height': '100%',
+                            'backgroundColor': '#181818',
+                            'borderRadius': '12px',
+                            'border': '1px solid #303030',
+                            'padding': '20px',
+                            'boxShadow': '0 4px 20px rgba(0,0,0,0.2)',
+                            'aspectRatio': '3/1',  # 3:2 비율 설정
+                            'marginBottom': '20px'
+                        }
+                    )
+                ]),
+                
                 html.H3("댓글 키워드", style={
                     'color': 'white', 
                     'marginBottom': '20px', 
                     'fontFamily': "'Roboto', 'Noto Sans KR', sans-serif",
-                    'fontSize': '24px',
-                    'fontWeight': 'bold',
+                    'fontSize': '20px',
+                    'fontWeight': '600',
                     'textShadow': '0 2px 4px rgba(0,0,0,0.2)'
                 }),
                 html.Div([html.Img(
@@ -413,6 +488,7 @@ video_app.layout = html.Div([
                     )], 
                     id='wordcloud-container',
                     style={
+                        'width': '530px',
                         'height': '400px',
                         'backgroundColor': '#181818',
                         'borderRadius': '12px',
@@ -442,7 +518,7 @@ video_app.layout = html.Div([
      Output('video-tags', 'children'),
      Output('comments-table', 'data'),
      Output('videoId-value', 'children'),
-     Output('country-code', 'children'),],
+     Output('country_code', 'children')],
     [Input('url', 'search')]
 )
 def display_video(search):
@@ -480,20 +556,42 @@ def display_video(search):
             try:
                 # CSV 파일 경로 생성
                 if country != 'all':
-                    video_file_path = os.path.join('youtube_data', f'{country}_{mapped_category}_video.csv')
-                    comments_file_path = os.path.join('youtube_data', f'{country}_{mapped_category}_comments.csv')
-                    country_code = os.path.basename(comments_file_path).split('_')[0]
+                    video_file_path = os.path.join(DATA_DIR, f'{country}_{mapped_category}_video.csv')
+                    comments_file_path = os.path.join(DATA_DIR, f'{country}_{mapped_category}_comments.csv')
+                    country_code = country  # country_code 초기화
+                    print(f"country: {country}, category: {category}, mapped_category: {mapped_category}")  # 디버깅용
+                    print(f"video_file_path: {video_file_path}")  # 디버깅용
                 else:
                     # 와일드카드 패턴으로 모든 국가의 비디오 파일 찾기
-                    video_file_paths = glob.glob(os.path.join('youtube_data', f'*_{mapped_category}_video.csv'))
+                    if mapped_category == 'all':
+                        # 미국과 한국의 all_video.csv 파일을 모두 찾기
+                        video_file_paths = []
+                        for country_code in ['US', 'KR']:
+                            file_path = os.path.join(DATA_DIR, f'{country_code}_all_video.csv')
+                            if os.path.exists(file_path):
+                                video_file_paths.append(file_path)
+                    else:
+                        # 미국과 한국의 해당 카테고리 파일을 모두 찾기
+                        video_file_paths = []
+                        country_code = country
+                        file_path = os.path.join(DATA_DIR, f'{country_code}_{mapped_category}_video.csv')
+                        if os.path.exists(file_path):
+                            video_file_paths.append(file_path)
+                    matching_files = None
                     
                     # video_id와 일치하는 파일 찾기
                     for file_path in video_file_paths:
                         try:
                             df = pd.read_csv(file_path)
-                            if not df[df['id'] == video_id].empty:
-                                matching_files=file_path
-                                break
+                            if 'id' in df.columns:
+                                matching_rows = df[df['id'] == video_id]
+                                if not matching_rows.empty:
+                                    matching_files = file_path
+                                    country_code = os.path.basename(file_path).split('_')[0]  # 파일명에서 국가 코드 추출
+                                    print(f"일치하는 파일 찾음: {matching_files}, country_code: {country_code}")  # 디버깅용
+                                    break
+                            else:
+                                print(f"'id' 컬럼이 없음: {file_path}")  # 디버깅용
                         except Exception as e:
                             print(f"파일 읽기 오류 {file_path}: {str(e)}")
                             continue
@@ -502,12 +600,12 @@ def display_video(search):
                         return "", f"해당 video_id({video_id})를 찾을 수 없습니다.", country, category, "", "", "", "", "", [], "", ""
 
                     # 매칭된 파일의 국가 코드 추출 (파일명에서)
-                    video_file_path=matching_files
-                    country_code = os.path.basename(matching_files).split('_')[0]
-                    comments_file_path = os.path.join('youtube_data', f'{country_code}_{mapped_category}_comments.csv')
-
+                    video_file_path = matching_files
+                    comments_file_path = os.path.join(DATA_DIR, f'{country_code}_{mapped_category}_comments.csv')
+                
                 # 비디오 CSV 파일이 존재하는지 확인
                 if not os.path.exists(video_file_path):
+                    print(f"비디오 파일이 존재하지 않습니다: {video_file_path}")  # 디버깅용
                     return "", f"파일을 찾을 수 없습니다: {video_file_path}", country, category, "", "", "", "", "", [], "", ""
                     
                 # 비디오 CSV 파일 읽기
@@ -587,26 +685,23 @@ def display_video(search):
                     description = "설명 없음"
                     tags = []
                 
-                
                 return embed_url, video_title, country, category, "채널: "+channel_name, views, likes, description, tags, comments_data, video_id, country_code
                 
             except Exception as e:
+                print(f"오류 발생: {str(e)}")  # 디버깅용
                 return "", f"오류 발생: {str(e)}", country, category, "", "", "", "", "", [], "", ""
     
     return "", "동영상을 찾을 수 없습니다.", "", "", "", "", "", "", "", [], "", ""
-
-
-
-
 
 @video_app.callback(
     Output('word-cloud-img', 'src'),
     [Input('init-callback-trigger', 'n_intervals')],
     [State('videoId-value', 'children'),
-     State('country-code', 'children'),
+     State('country_code', 'children'),
      State('category-value', 'children')]
 )
 def update_word_cloud(n, video_id, selected_country , selected_category):
+    print("Update Word Cloud ", video_id, selected_country , selected_category)
     try:
         category_mapping = {
             'all': 'all',
@@ -618,7 +713,6 @@ def update_word_cloud(n, video_id, selected_country , selected_category):
             'sports': 'sports'
         }
         
-        #country = country_mapping.get(selected_country, 'KR')
         category = category_mapping.get(selected_category, 'all')
         
         print(f"Generating word cloud for country: {selected_country}, category: {category}")
@@ -634,12 +728,6 @@ def update_word_cloud(n, video_id, selected_country , selected_category):
     except Exception as e:
         print(f"Error in update_word_cloud: {str(e)}")
         return None    
-
-
-
-
-
-
 
 if __name__ == '__main__':
     video_app.run(debug=True)
