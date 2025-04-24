@@ -140,7 +140,7 @@ def generate_Comments_WC(video_ID, country="KR", category="all", image_Size = (8
         return None
 
 def read_file(country, category, type = "video"):
-    current_dir = os.path.dirname(os.path.abspath(__file__))
+    current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     csv_dir = os.path.join(current_dir, "youtube_data")
     font_path = os.path.join(current_dir, "Font", "LGEITextTTF-Bold.ttf")
     
