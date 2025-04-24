@@ -1,7 +1,8 @@
 import pandas as pd
 import openai
-import time
 import re
+import read_csv 
+
 
 def load_api_key(path="./../../../LG_bootcamp_openai_api_key.txt"):
     with open(path, "r", encoding="utf-8") as f:
