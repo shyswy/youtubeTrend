@@ -22,7 +22,7 @@ category_names = {
     'people': 'v-log',
     'entertainment': '엔터테인먼트',
     'news': '뉴스',
-    'LG전자': 'LG전자'
+    'lge': 'LG전자'
 }
 
 # 데이터 로드
@@ -987,7 +987,7 @@ def update_table_and_graph(selected_country, selected_category, active_cell, pag
             'music': 'music',
             'comedy': 'comedy',
             'sports': 'sports',
-            'LG전자': 'LG전자'
+            'lge': 'lge'
         }
 
         category = category_mapping.get(selected_category, 'all')
@@ -1073,12 +1073,6 @@ def update_table_and_graph(selected_country, selected_category, active_cell, pag
             borderwidth=1,
             font=dict(color='#ffffff')
         ),
-        # title=dict(
-        #     text='조회수 vs 좋아요 수',
-        #     font=dict(color='#ffffff', size=16),
-        #     x=0.5,
-        #     y=0.95
-        # )
     )
     
     return (table_data, fig, table_title, 
@@ -1213,7 +1207,7 @@ def update_word_cloud(selected_country, selected_category):
             'music': 'music',
             'comedy': 'comedy',
             'sports': 'sports',
-            'LG전자': 'LG전자'
+            'lge': 'lge'
         }
         
         country = country_mapping.get(selected_country, 'KR')
