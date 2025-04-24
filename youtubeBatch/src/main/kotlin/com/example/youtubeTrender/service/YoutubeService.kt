@@ -3,7 +3,6 @@ package com.example.youtubeTrender.service
 import com.example.youtubeTrender.config.YoutubeConstants
 import com.example.youtubeTrender.dto.CommentDto
 import com.example.youtubeTrender.dto.VideoDto
-import com.example.youtubeTrender.util.RegionCategoryFetcher
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.youtube.YouTube
@@ -16,6 +15,8 @@ import kotlin.collections.component2
 private const val LG_ELECTRONICS_US = "lg electronics"
 
 private const val LG_ELECTRONICS_KR = "LG전자"
+
+private const val WEEKLY_CSV_IDENTIFIER = "weekly"
 
 @Service
 class YoutubeService (
@@ -38,13 +39,18 @@ class YoutubeService (
 
 
     fun save() {
-        val fetchFunc: (String, String, String?) -> List<VideoDto> =
-            { region, categoryName, categoryId ->
-                getPopularVideosByRegionAndCategory(region, categoryName, categoryId)
+        val popularVideoMap = YoutubeConstants.REGIONS.flatMap { region ->
+            // 카테고리 이름과 ID를 기반으로 하는 항목들을 맵핑
+            val categoryResults = YoutubeConstants.CATEGORY_MAP.map { (categoryName, categoryId) ->
+                val key = "${region}_${categoryName}"
+                key to getPopularVideosByRegionAndCategory(region, categoryName, categoryId)
             }
 
-        // TBD 각각 가져와서 merge하는 방식으로 추후 변경.
-        val popularVideoMap = RegionCategoryFetcher.fetchForAllRegionsAndCategoriesWithDefault(fetchFunc)
+            // defaultKey 추가
+            val defaultKey = "${region}_weekly"
+            val defaultData = getPopularVideosByRegionAndCategory(region, "all", null)
+            categoryResults + (defaultKey to defaultData)
+        }.toMap()
 
         val keyWorldVideoMap = YoutubeConstants.REGIONS.associate { region ->
             "${region}_lge" to getTopVideosByKeyword(region, LG_KEYWORD[region]?: LG_ELECTRONICS_US)
@@ -57,7 +63,7 @@ class YoutubeService (
             csvService.writeDtoListToCsv(videos, videoFileName)
             println("✅ 저장 완료: $videoFileName.csv (${videos.size}개 영상)")
 
-            if ("weekly" in key) {
+            if (WEEKLY_CSV_IDENTIFIER in key) {
                 println("skip, 'weekly' doesn't make comment data")
                 return@forEach
             }

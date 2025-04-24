@@ -1,11 +1,15 @@
 package com.example.youtubeTrender.service
 
+import com.example.youtubeTrender.config.YoutubeConstants
 import com.example.youtubeTrender.dto.YoutuberInfo
 import com.example.youtubeTrender.util.RegionCategoryFetcher
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.springframework.stereotype.Service
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.plus
 
 @Service
 class YoutuberService (
@@ -47,17 +51,17 @@ class YoutuberService (
     )
 
     fun save() {
-        val fetchFunc: (String, String, String?) -> List<YoutuberInfo> =
-            { region, categoryName, _ ->
-                getYoutuberRanking(
+        val youtuberRankingMap = YoutubeConstants.REGIONS.flatMap { region ->
+            // 카테고리 이름과 ID를 기반으로 하는 항목들을 맵핑
+            YoutubeConstants.CATEGORY_MAP.map { (categoryName, categoryId) ->
+                val key = "${region}_${categoryName}"
+                key to getYoutuberRanking(
                     category = categoryName,
                     country = region.lowercase(),
                     ranking = "인기",
-                    duration = "주간"
-                )
+                    duration = "주간")
             }
-
-        val youtuberRankingMap = RegionCategoryFetcher.fetchForAllRegionsAndCategories(fetchFunc)
+        }.toMap()
 
         youtuberRankingMap.forEach { (key, videos) ->
             val fileName = "${key}_youtuber"
