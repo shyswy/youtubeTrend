@@ -6,7 +6,7 @@ import re
 from collections import Counter
 import glob
 import os
-from Library.profanity_filter import clean_abusive_words
+from profanity_filter import clean_abusive_words
 
 KOREAN_STOPWORDS = set([
     "더보기", "보기", "입니다", "하는", "있습니다", "합니다", "라는",

@@ -6,10 +6,10 @@ import pandas as pd
 import os
 import glob
 import urllib.parse
-from web_crawl import get_youtuber_Ranking
+from Library.web_crawl import get_youtuber_Ranking
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from werkzeug.serving import run_simple
-from word_visualization import generate_Title_WC
+from Library.word_visualization import generate_Title_WC
 from new_tab import video_app
 import traceback
 

@@ -6,7 +6,7 @@ import urllib.parse
 import pandas as pd
 import os
 import glob
-from word_visualization import generate_Comments_WC
+from Library.word_visualization import generate_Comments_WC
 
 # 새 탭용 Dash 앱 생성
 video_app = dash.Dash(__name__, requests_pathname_prefix='/new_tab/')
