@@ -21,7 +21,8 @@ category_names = {
     'comedy': '코미디',
     'people': 'v-log',
     'entertainment': '엔터테인먼트',
-    'news': '뉴스'
+    'news': '뉴스',
+    'LG전자': 'LG전자'
 }
 
 # 데이터 로드
@@ -80,7 +81,7 @@ def load_data():
     if not all_data and not weekly_data:
         raise ValueError("No data was loaded from any files")
     
-    return pd.concat(all_data, ignore_index=True) if all_data else pd.DataFrame(), pd.concat(weekly_data, ignore_index=True) if weekly_data else pd.DataFrame()
+    return pd.concat(all_data, ignore_index=True).drop_duplicates(subset='title') if all_data else pd.DataFrame(), pd.concat(weekly_data, ignore_index=True) if weekly_data else pd.DataFrame()
 
 # 크롤링 데이터 로드 함수 추가
 def load_crawled_data():
@@ -338,10 +339,11 @@ styles = {
         'borderRadius': '12px',
         'backgroundColor': 'rgba(39, 39, 39, 0.8)',
         'backdropFilter': 'blur(10px)',
-        'border': '1px solid rgba(255, 255, 255, 0.1)'
+        'border': '1px solid rgba(255, 255, 255, 0.1)',
+        'height': '750px'
     },
     'categoryPieChart': {
-        'marginBottom': '10px',
+        'marginBottom': '30px',
         'padding': '20px',
         'borderRadius': '12px',
         'backgroundColor': 'rgba(39, 39, 39, 0.8)',
@@ -356,7 +358,7 @@ styles = {
         'backgroundColor': 'rgba(39, 39, 39, 0.8)',
         'backdropFilter': 'blur(10px)',
         'border': '1px solid rgba(255, 255, 255, 0.1)',
-        'height': '295px'
+        'height': '800px'
     },
     'videoGridContainer': {
         'display': 'flex',
@@ -812,7 +814,7 @@ app.layout = html.Div([
                         )
                         for _, row in weekly_df.iterrows()
                     ], style=styles['videoGrid'])
-                ], style={**styles['videoGridContainer'], 'height': '600px'}),
+                ], style={**styles['videoGridContainer'], 'height': '680px'}),
             ], style=styles['videoList'])
         ], style=styles['rightPanel']),
     ], style=styles['mainContent']),
@@ -984,7 +986,8 @@ def update_table_and_graph(selected_country, selected_category, active_cell, pag
             'people': 'people_blogs',
             'music': 'music',
             'comedy': 'comedy',
-            'sports': 'sports'
+            'sports': 'sports',
+            'LG전자': 'LG전자'
         }
 
         category = category_mapping.get(selected_category, 'all')
@@ -1209,7 +1212,8 @@ def update_word_cloud(selected_country, selected_category):
             'people': 'people_blogs',
             'music': 'music',
             'comedy': 'comedy',
-            'sports': 'sports'
+            'sports': 'sports',
+            'LG전자': 'LG전자'
         }
         
         country = country_mapping.get(selected_country, 'KR')
