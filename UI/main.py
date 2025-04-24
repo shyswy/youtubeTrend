@@ -6,10 +6,10 @@ import pandas as pd
 import os
 import glob
 import urllib.parse
-from web_crawl import get_youtuber_Ranking
+from Library.web_crawl import get_youtuber_Ranking
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from werkzeug.serving import run_simple
-from word_visualization import generate_Title_WC
+from Library.word_visualization import generate_Title_WC
 from new_tab import video_app
 import traceback
 
@@ -130,6 +130,28 @@ app.index_string = '''
             }
             .Select-placeholder {
                 color: rgba(255, 255, 255, 0.5) !important;
+            }
+            ._dash-loading {
+                display: none !important;
+            }
+            ._dash-loading-callback {
+                display: none !important;
+            }
+            /* 스크롤바 스타일 */
+            ::-webkit-scrollbar {
+                width: 8px;
+                height: 8px;
+            }
+            ::-webkit-scrollbar-track {
+                background: #1f1f1f;
+                border-radius: 4px;
+            }
+            ::-webkit-scrollbar-thumb {
+                background: #272727;
+                border-radius: 4px;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background: #333333;
             }
         </style>
     </head>
@@ -316,8 +338,25 @@ styles = {
         'borderRadius': '12px',
         'backgroundColor': 'rgba(39, 39, 39, 0.8)',
         'backdropFilter': 'blur(10px)',
+        'border': '1px solid rgba(255, 255, 255, 0.1)'
+    },
+    'categoryPieChart': {
+        'marginBottom': '10px',
+        'padding': '20px',
+        'borderRadius': '12px',
+        'backgroundColor': 'rgba(39, 39, 39, 0.8)',
+        'backdropFilter': 'blur(10px)',
         'border': '1px solid rgba(255, 255, 255, 0.1)',
         'height': '375px'
+    },
+    'weeklyVideos': {
+        'marginBottom': '10px',
+        'padding': '20px',
+        'borderRadius': '12px',
+        'backgroundColor': 'rgba(39, 39, 39, 0.8)',
+        'backdropFilter': 'blur(10px)',
+        'border': '1px solid rgba(255, 255, 255, 0.1)',
+        'height': '295px'
     },
     'videoGridContainer': {
         'display': 'flex',
@@ -550,116 +589,181 @@ app.layout = html.Div([
             dcc.Store(id='total-pages', data=0),  # 총 페이지 수 저장
             dcc.Store(id='clicked-url'),
             
-            # 실시간 인기 유튜버 테이블
+            # 실시간 인기 유튜버 테이블과 카테고리별 통계 차트를 포함하는 컨테이너
             html.Div([
-                html.H3("실시간 인기 유튜버", style={
-                    'color': '#ffffff',
-                    'marginTop': '30px',
-                    'marginBottom': '20px',
-                    'fontWeight': '600',
-                    'width': '100%',
-                    'textAlign': 'center'
-                }),
-                dash_table.DataTable(
-                    id='youtuber-table',
-                    columns=[
-                        {'name': '순위', 'id': 'rank', 'width': '80px'},
-                        {'name': '채널명', 'id': 'channel_name', 'width': '200px', 'presentation': 'markdown'},
-                        {'name': '채널 이미지', 'id': 'channel_image', 'presentation': 'markdown', 'width': '200px'}
-                    ],
-                    data=[{
-                        'rank': row['rank'],
-                        'channel_name': f"[{row['channel_name']}]({row['channel_link']})",
-                        'channel_image': f"[![{row['channel_name']}]({row['channel_image']})]({row['channel_link']})"
-                    } for row in crawled_df.to_dict('records')],
-                    markdown_options={'html': True, 'link_target': '_blank'},
-                    style_table={
-                        'border': 'none',
-                        'borderRadius': '12px',
-                        'backgroundColor': '#1f1f1f',
-                        'width': '100%',
-                        'tableLayout': 'fixed'
-                    },
-                    style_cell={
-                        'textAlign': 'center',
-                        'padding': '8px',
-                        'backgroundColor': '#1f1f1f',
+                # 실시간 인기 유튜버 테이블
+                html.Div([
+                    html.H3("실시간 인기 유튜버", style={
                         'color': '#ffffff',
-                        'border': 'none',
-                        'height': '80px',
-                        'fontFamily': "'Roboto', 'Noto Sans KR', sans-serif",
-                        'fontSize': '14px'
-                    },
-                    style_header={
-                        'backgroundColor': '#272727',
+                        'marginTop': '30px',
+                        'marginBottom': '20px',
                         'fontWeight': '600',
-                        'fontSize': '15px',
-                        'borderBottom': '2px solid rgba(255, 255, 255, 0.1)',
-                        'height': '50px',
-                        'textAlign': 'center',
-                    },
-                    style_data={
-                        'borderBottom': '1px solid rgba(255, 255, 255, 0.1)'
-                    },
-                    css=[{
-                        'selector': 'td.cell--channel_name a',
-                        'rule': '''
-                            color: #ffffff;
-                            text-decoration: none !important;
-                            display: inline-block;
-                            width: 100%;
-                        '''
-                    }, {
-                        'selector': '.dash-table-container td.cell--channel_image img, .dash-table-container td.cell--channel_image a img',
-                        'rule': '''
-                            padding-left: 60px !important;
-                            display: inline-block !important;
-                            vertical-align: middle !important;
-                        '''
-                    }, {
-                        'selector': '.dash-cell-value a',
-                        'rule': '''
-                            color: #ffffff !important;
-                            text-decoration: none !important;
-                        '''
-                    }],
-                    style_cell_conditional=[
-                        {'if': {'column_id': 'rank'}, 
-                         'width': '80px',
-                         'fontSize': '20px',
-                         'fontWeight': 'bold',
-                         'color': '#e74c3c'},
-                        {'if': {'column_id': 'channel_name'},
-                         'width': '200px',
-                         'minWidth': '200px',
-                         'maxWidth': '200px'},
-                        {'if': {'column_id': 'channel_image'},
-                         'width': '200px',
-                         'minWidth': '200px',
-                         'maxWidth': '200px'}
-                    ],
-                    style_data_conditional=[
-                        {
-                            'if': {'column_id': 'channel_image'},
-                            'paddingLeft': '50px'
+                        'width': '100%',
+                        'textAlign': 'center'
+                    }),
+                    dash_table.DataTable(
+                        id='youtuber-table',
+                        columns=[
+                            {'name': '순위', 'id': 'rank', 'width': '80px'},
+                            {'name': '채널명', 'id': 'channel_name', 'width': '200px', 'presentation': 'markdown'},
+                            {'name': '채널 이미지', 'id': 'channel_image', 'presentation': 'markdown', 'width': '200px'}
+                        ],
+                        data=[{
+                            'rank': row['rank'],
+                            'channel_name': f"[{row['channel_name']}]({row['channel_link']})",
+                            'channel_image': f"[![{row['channel_name']}]({row['channel_image']})]({row['channel_link']})"
+                        } for row in crawled_df.to_dict('records')],
+                        markdown_options={'html': True, 'link_target': '_blank'},
+                        style_table={
+                            'border': 'none',
+                            'borderRadius': '12px',
+                            'backgroundColor': '#1f1f1f',
+                            'width': '100%',
+                            'tableLayout': 'fixed'
+                        },
+                        style_cell={
+                            'textAlign': 'center',
+                            'padding': '8px',
+                            'backgroundColor': '#1f1f1f',
+                            'color': '#ffffff',
+                            'border': 'none',
+                            'height': '80px',
+                            'fontFamily': "'Roboto', 'Noto Sans KR', sans-serif",
+                            'fontSize': '14px'
+                        },
+                        style_header={
+                            'backgroundColor': '#272727',
+                            'fontWeight': '600',
+                            'fontSize': '15px',
+                            'borderBottom': '2px solid rgba(255, 255, 255, 0.1)',
+                            'height': '50px',
+                            'textAlign': 'center',
+                        },
+                        style_data={
+                            'borderBottom': '1px solid rgba(255, 255, 255, 0.1)'
+                        },
+                        css=[{
+                            'selector': 'td.cell--channel_name a',
+                            'rule': '''
+                                color: #ffffff;
+                                text-decoration: none !important;
+                                display: inline-block;
+                                width: 100%;
+                            '''
+                        }, {
+                            'selector': '.dash-table-container td.cell--channel_image img, .dash-table-container td.cell--channel_image a img',
+                            'rule': '''
+                                padding-left: 60px !important;
+                                display: inline-block !important;
+                                vertical-align: middle !important;
+                            '''
+                        }, {
+                            'selector': '.dash-cell-value a',
+                            'rule': '''
+                                color: #ffffff !important;
+                                text-decoration: none !important;
+                            '''
+                        }],
+                        style_cell_conditional=[
+                            {'if': {'column_id': 'rank'}, 
+                             'width': '80px',
+                             'fontSize': '20px',
+                             'fontWeight': 'bold',
+                             'color': '#e74c3c'},
+                            {'if': {'column_id': 'channel_name'},
+                             'width': '200px',
+                             'minWidth': '200px',
+                             'maxWidth': '200px'},
+                            {'if': {'column_id': 'channel_image'},
+                             'width': '200px',
+                             'minWidth': '200px',
+                             'maxWidth': '200px'}
+                        ],
+                        style_data_conditional=[
+                            {
+                                'if': {'column_id': 'channel_image'},
+                                'paddingLeft': '50px'
+                            }
+                        ],
+                        page_size=1
+                    ),
+                    dcc.Location(id='url', refresh=False),
+                    dcc.Interval(
+                        id='interval-component',
+                        interval=1700,
+                        n_intervals=0
+                    ),
+                    # 시간대별 조회수 분석 그래프 추가
+                    html.Div([
+                        html.H3("시간대별 평균 조회수", style={
+                            'color': '#ffffff',
+                            'marginTop': '30px',
+                            'marginBottom': '20px',
+                            'fontWeight': '600',
+                            'width': '100%',
+                            'textAlign': 'center'
+                        }),
+                        dcc.Graph(
+                            id='hourly-views-chart',
+                            style={
+                                'width': '464px',
+                                'height': '199px',
+                                'backgroundColor': '#1f1f1f',
+                                'borderRadius': '12px',
+                                'padding': '10px'
+                            }
+                        )
+                    ], style={
+                        'marginTop': '20px',
+                        'display': 'flex',
+                        'flexDirection': 'column',
+                        'alignItems': 'center'
+                    })
+                ], style={
+                    'width': '50%',
+                    'margin': '0',
+                    'display': 'flex',
+                    'flexDirection': 'column',
+                    'alignItems': 'left',
+                    'marginBottom': '10px',
+                    'marginLeft': '0'
+                }),
+                
+                # 카테고리별 통계 차트
+                html.Div([
+                    html.H3("카테고리별 조회수와 좋아요 비율", style={
+                        'color': '#ffffff',
+                        'marginTop': '30px',
+                        'marginBottom': '20px',
+                        'fontWeight': '600',
+                        'width': '100%',
+                        'textAlign': 'center'
+                    }),
+                    dcc.Graph(
+                        id='category-stats-chart',
+                        style={
+                            'height': '400px',
+                            'width': '100%',
+                            'backgroundColor': '#1f1f1f',
+                            'borderRadius': '12px',
+                            'padding': '10px'
                         }
-                    ],
-                    page_size=1
-                ),
-                dcc.Location(id='url', refresh=False),
-                dcc.Interval(
-                    id='interval-component',
-                    interval=1700,
-                    n_intervals=0
-                )
+                    )
+                ], style={
+                    'width': '50%',
+                    'margin': '0',
+                    'display': 'flex',
+                    'flexDirection': 'column',
+                    'alignItems': 'left',
+                    'marginBottom': '10px',
+                    'marginLeft': '0'
+                })
             ], style={
-                'width': '50%',
-                'margin': '0',
                 'display': 'flex',
-                'flexDirection': 'column',
-                'alignItems': 'left',
-                'marginBottom': '10px',
-                'marginLeft': '0'
+                'flexDirection': 'row',
+                'justifyContent': 'space-between',
+                'width': '100%',
+                'marginTop': '20px'
             })
         ], style=styles['leftPanel']),
         
@@ -680,7 +784,7 @@ app.layout = html.Div([
                         'width': '100%'
                     }
                 )
-            ], style=styles['videoList']),
+            ], style=styles['categoryPieChart']),
             
             # 주간 인기 동영상
             html.Div([
@@ -708,7 +812,7 @@ app.layout = html.Div([
                         )
                         for _, row in weekly_df.iterrows()
                     ], style=styles['videoGrid'])
-                ], style={**styles['videoGridContainer'], 'height': '350px'}),
+                ], style={**styles['videoGridContainer'], 'height': '600px'}),
             ], style=styles['videoList'])
         ], style=styles['rightPanel']),
     ], style=styles['mainContent']),
@@ -719,7 +823,7 @@ app.layout = html.Div([
         html.Div([
             # 조회수 vs 좋아요 분석
             html.Div([
-                html.H3("조회수 vs 좋아요 분석", style={
+                html.H3("영상 별 조회수 vs 좋아요 분석", style={
                     'textAlign': 'center', 
                     'marginBottom': '20px',
                     'color': '#ffffff',
@@ -1044,9 +1148,9 @@ def update_pie_chart(selected_country):
             borderwidth=1,
             font=dict(color='#ffffff', size=10)
         ),
-        margin=dict(t=30, b=30, l=30, r=30),
+        margin=dict(t=30, b=30, l=60, r=60),  # 좌우 여백 늘려서 원 크기 줄임
         width=400,
-        height=400
+        height=350
     )
     
     return fig
@@ -1155,6 +1259,156 @@ def open_channel_link(active_cell, table_data):
             channel_link = table_data[row]['channel_link']
             return channel_link
     return dash.no_update
+
+# 카테고리별 통계 차트 업데이트 콜백
+@app.callback(
+    Output('category-stats-chart', 'figure'),
+    [Input('country-dropdown', 'value'),
+     Input('category-dropdown', 'value')]
+)
+def update_category_stats_chart(selected_country, selected_category):
+    # 데이터 필터링
+    filtered_df = df.copy()
+    if selected_country != '전체':
+        filtered_df = filtered_df[filtered_df['country_name'] == selected_country]
+    
+    # 카테고리별 통계 계산
+    stats = filtered_df.groupby('category_name').agg({
+        'views': 'mean',
+        'likes': 'mean'
+    }).round(2)
+    
+    # 카테고리 이름 한글로 변환
+    stats.index = stats.index.map(lambda x: category_names.get(x, x))
+    
+    # 이중 축 차트 생성
+    fig = go.Figure()
+    
+    # 조회수 바 (첫 번째 y축)
+    fig.add_trace(go.Bar(
+        x=stats.index,
+        y=stats['views'],
+        name='평균 조회수',
+        marker_color='#ff4444',
+        text=stats['views'].apply(lambda x: f'{x:,.0f}'),
+        textposition='auto',
+        yaxis='y'
+    ))
+    
+    # 좋아요 선 (두 번째 y축)
+    fig.add_trace(go.Scatter(
+        x=stats.index,
+        y=stats['likes'],
+        name='평균 좋아요',
+        line=dict(color='#44ff44', width=3),
+        mode='lines+markers',
+        marker=dict(size=8),
+        text=stats['likes'].apply(lambda x: f'{x:,.0f}'),
+        textposition='top center',
+        yaxis='y2'
+    ))
+    
+    # 차트 스타일링
+    fig.update_layout(
+        plot_bgcolor='#1f1f1f',
+        paper_bgcolor='#1f1f1f',
+        font=dict(color='#ffffff'),
+        xaxis=dict(
+            title='카테고리',
+            gridcolor='#272727',
+            zerolinecolor='#272727',
+            tickfont=dict(color='#ffffff')
+        ),
+        yaxis=dict(
+            title='조회수',
+            gridcolor='#272727',
+            zerolinecolor='#272727',
+            tickfont=dict(color='#ffffff'),
+            titlefont=dict(color='#ff4444')
+        ),
+        yaxis2=dict(
+            title='좋아요',
+            overlaying='y',
+            side='right',
+            gridcolor='#272727',
+            zerolinecolor='#272727',
+            tickfont=dict(color='#ffffff'),
+            titlefont=dict(color='#44ff44')
+        ),
+        legend=dict(
+            bgcolor='#1f1f1f',
+            bordercolor='#272727',
+            borderwidth=1,
+            font=dict(color='#ffffff'),
+            orientation='h',
+            yanchor='bottom',
+            y=1.02,
+            xanchor='right',
+            x=1
+        ),
+        margin=dict(t=30, b=30, l=30, r=30),
+        height=400
+    )
+    
+    return fig
+
+# 시간대별 조회수 분석 그래프 업데이트 콜백 추가
+@app.callback(
+    Output('hourly-views-chart', 'figure'),
+    [Input('country-dropdown', 'value')]
+)
+def update_hourly_views_chart(selected_country):
+    # 데이터 필터링
+    filtered_df = df.copy()
+    if selected_country != '전체':
+        filtered_df = filtered_df[filtered_df['country_name'] == selected_country]
+    
+    # 게시 시간을 시간대별로 분류
+    filtered_df['published_at'] = pd.to_datetime(filtered_df['published_at'])
+    filtered_df['hour'] = filtered_df['published_at'].dt.hour
+    
+    # 시간대별 평균 조회수 계산
+    hourly_views = filtered_df.groupby('hour')['views'].mean().reset_index()
+    
+    # 그래프 생성
+    fig = go.Figure()
+    
+    fig.add_trace(go.Scatter(
+        x=hourly_views['hour'],
+        y=hourly_views['views'],
+        mode='lines+markers',
+        line=dict(color='#ff4444', width=2),
+        marker=dict(size=8, color='#ff4444'),
+        name='평균 조회수'
+    ))
+    
+    # 그래프 스타일링
+    fig.update_layout(
+        plot_bgcolor='#1f1f1f',
+        paper_bgcolor='#1f1f1f',
+        font=dict(color='#ffffff'),
+        xaxis=dict(
+            title='시간대',
+            gridcolor='#272727',
+            zerolinecolor='#272727',
+            tickfont=dict(color='#ffffff'),
+            tickmode='linear',
+            tick0=0,
+            dtick=2,
+            range=[0, 23]
+        ),
+        yaxis=dict(
+            title='평균 조회수',
+            gridcolor='#272727',
+            zerolinecolor='#272727',
+            tickfont=dict(color='#ffffff')
+        ),
+        margin=dict(t=30, b=30, l=30, r=30),
+        width=464,
+        height=199
+    )
+    
+    return fig
 
 # 서버 설정
 application = DispatcherMiddleware(app.server, {

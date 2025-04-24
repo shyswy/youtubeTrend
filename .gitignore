@@ -49,5 +49,11 @@ application.yml
 *_data/
 
 
+
 # data 폴더 무시
 data/
+
+### __pycache__ ###
+UI/__pycache__/
+UI/Library/__pycache__/
+

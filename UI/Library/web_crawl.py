@@ -6,7 +6,7 @@ def get_youtuber_Ranking(category = 'all', country = 'korea', ranking = "인기"
     CATEGORY_TYPE = {
         'all': 'all',
         'entertainment': 'entertainment',
-        'news': 'popular',
+        'news': 'news',
         'people_blogs': 'vlog',
         'music': 'music',
         'comedy': 'comedy',
