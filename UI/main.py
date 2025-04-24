@@ -80,7 +80,7 @@ def load_data():
     if not all_data and not weekly_data:
         raise ValueError("No data was loaded from any files")
     
-    return pd.concat(all_data, ignore_index=True) if all_data else pd.DataFrame(), pd.concat(weekly_data, ignore_index=True) if weekly_data else pd.DataFrame()
+    return pd.concat(all_data, ignore_index=True).drop_duplicates(subset='title') if all_data else pd.DataFrame(), pd.concat(weekly_data, ignore_index=True) if weekly_data else pd.DataFrame()
 
 # 크롤링 데이터 로드 함수 추가
 def load_crawled_data():
