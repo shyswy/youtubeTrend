@@ -13,14 +13,18 @@ import org.springframework.stereotype.Service
 import kotlin.collections.component1
 import kotlin.collections.component2
 
+private const val LG_ELECTRONICS_US = "lg electronics"
+
+private const val LG_ELECTRONICS_KR = "LG전자"
+
 @Service
 class YoutubeService (
     private val csvService: CsvService
 ) {
 
     private val LG_KEYWORD = mapOf(
-        "KR" to "LG전자",
-        "US" to "lg electronics",
+        "KR" to LG_ELECTRONICS_KR,
+        "US" to LG_ELECTRONICS_US,
     )
 
     @Value("\${youtube.api-key}")
@@ -43,7 +47,7 @@ class YoutubeService (
         val popularVideoMap = RegionCategoryFetcher.fetchForAllRegionsAndCategoriesWithDefault(fetchFunc)
 
         val keyWorldVideoMap = YoutubeConstants.REGIONS.associate { region ->
-            "${region}_lge" to getTopVideosByKeyword(region, LG_KEYWORD[region]?: "lg electronics")
+            "${region}_lge" to getTopVideosByKeyword(region, LG_KEYWORD[region]?: LG_ELECTRONICS_US)
         }
 
         val mergedVideoMap = popularVideoMap + keyWorldVideoMap
@@ -160,7 +164,7 @@ class YoutubeService (
         }
     }
 
-    fun getTopVideosByKeyword(countryCode: String = "KR", keyword: String = "lg전자", maxVideos: Long = 50): List<VideoDto> {
+    fun getTopVideosByKeyword(countryCode: String = "KR", keyword: String = LG_ELECTRONICS_KR, maxVideos: Long = 50): List<VideoDto> {
         return try {
             // Step 1: Search for videos
             val searchRequest = youtube.search().list("snippet")
