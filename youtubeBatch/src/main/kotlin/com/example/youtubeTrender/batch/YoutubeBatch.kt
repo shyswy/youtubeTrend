@@ -14,9 +14,6 @@ import java.time.LocalDateTime
 class YoutubeBatch(
     private val youtubeService: YoutubeService,
     private val youtuberService: YoutuberService,
-//    private val csvService: CsvService
-//    private val csvService: CsvServiceSymbolic
-
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -25,7 +22,6 @@ class YoutubeBatch(
         log.info("⏰ Youtube 영상 및 댓글 수집 배치 시작: {}", LocalDateTime.now())
         
         youtuberService.save()
-
         youtubeService.save()
         log.info("🎉 Youtube 영상 및 댓글 수집 배치 종료: {}", LocalDateTime.now())
     }

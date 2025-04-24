@@ -1,5 +1,6 @@
 package com.example.youtubeTrender.service
 
+import com.example.youtubeTrender.config.YoutubeConstants
 import com.example.youtubeTrender.dto.CommentDto
 import com.example.youtubeTrender.dto.VideoDto
 import com.example.youtubeTrender.util.RegionCategoryFetcher
@@ -17,6 +18,11 @@ class YoutubeService (
     private val csvService: CsvService
 ) {
 
+    private val LG_KEYWORD = mapOf(
+        "KR" to "LG전자",
+        "US" to "lg electronics",
+    )
+
     @Value("\${youtube.api-key}")
     private lateinit var apiKey: String
 
@@ -33,9 +39,16 @@ class YoutubeService (
                 getPopularVideosByRegionAndCategory(region, categoryName, categoryId)
             }
 
+        // TBD 각각 가져와서 merge하는 방식으로 추후 변경.
         val popularVideoMap = RegionCategoryFetcher.fetchForAllRegionsAndCategoriesWithDefault(fetchFunc)
 
-        popularVideoMap.forEach { (key, videos) ->
+        val keyWorldVideoMap = YoutubeConstants.REGIONS.associate { region ->
+            "${region}_lge" to getTopVideosByKeyword(region, LG_KEYWORD[region]?: "lg electronics")
+        }
+
+        val mergedVideoMap = popularVideoMap + keyWorldVideoMap
+
+        mergedVideoMap.forEach { (key, videos) ->
             val videoFileName = "${key}_video"
             csvService.writeDtoListToCsv(videos, videoFileName)
             println("✅ 저장 완료: $videoFileName.csv (${videos.size}개 영상)")
@@ -147,7 +160,7 @@ class YoutubeService (
         }
     }
 
-    fun getTopVideosByKeyword(keyword: String = "lg전자", countryCode: String = "KR", maxVideos: Long = 50): List<VideoDto> {
+    fun getTopVideosByKeyword(countryCode: String = "KR", keyword: String = "lg전자", maxVideos: Long = 50): List<VideoDto> {
         return try {
             // Step 1: Search for videos
             val searchRequest = youtube.search().list("snippet")

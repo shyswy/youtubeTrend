@@ -42,4 +42,18 @@ object RegionCategoryFetcher {
 
         return result
     }
+
+    fun <T> fetchForAllRegions(
+        fetchFunction: (region: String) -> List<T>,
+    ): Map<String, List<T>> {
+        val result = mutableMapOf<String, List<T>>()
+
+        for (region in YoutubeConstants.REGIONS) {
+            val key = region
+            println("Fetching for: $key")
+            val data = fetchFunction(region)
+            result[key] = data
+        }
+        return result
+    }
 }
