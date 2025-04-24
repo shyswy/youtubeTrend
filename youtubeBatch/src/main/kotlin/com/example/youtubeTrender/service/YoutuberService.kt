@@ -14,7 +14,7 @@ class YoutuberService (
     private val categoryType = mapOf(
         "all" to "all",
         "entertainment" to "entertainment",
-        "news" to "popular",
+        "news" to "news",
         "people_blogs" to "vlog",
         "music" to "music",
         "comedy" to "comedy",

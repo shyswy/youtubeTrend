@@ -147,5 +147,55 @@ class YoutubeService (
         }
     }
 
+    fun getTopVideosByKeyword(keyword: String = "lg전자", countryCode: String = "KR", maxVideos: Long = 50): List<VideoDto> {
+        return try {
+            // Step 1: Search for videos
+            val searchRequest = youtube.search().list("snippet")
+                .setQ(keyword)
+                .setType("video")
+                .setOrder("viewCount")
+                .setRegionCode(countryCode)
+                .setMaxResults(maxVideos)
+                .setKey(apiKey)
+
+            val searchResponse = searchRequest.execute()
+
+            val videoIds = searchResponse.items.mapNotNull { it.id.videoId }
+
+            if (videoIds.isEmpty()) return emptyList()
+
+            // Step 2: Get video statistics
+            val videosRequest = youtube.videos().list("snippet,statistics")
+                .setId(videoIds.joinToString(","))
+                .setKey(apiKey)
+
+            val videosResponse = videosRequest.execute()
+
+            videosResponse.items.map {
+                val snippet = it.snippet
+                val statistics = it.statistics
+                val videoId = it.id
+
+                VideoDto(
+                    id = videoId,
+                    title = snippet.title,
+                    channelTitle = snippet.channelTitle,
+                    categoryId = snippet.categoryId ?: "unknown",
+                    category = null, // 필요시 RegionCategoryFetcher 활용
+                    viewCount = statistics.viewCount?.toLong() ?: 0,
+                    likeCount = statistics.likeCount?.toLong(),
+                    description = snippet.description,
+                    tags = snippet.tags,
+                    url = "https://www.youtube.com/watch?v=$videoId",
+                    publishedAt = snippet.publishedAt.toString(),
+                    commentCount = statistics.commentCount?.toLong(),
+                    country = countryCode
+                )
+            }
+        } catch (e: Exception) {
+            println("영상 검색 오류: ${e.message}")
+            emptyList()
+        }
+    }
 }
 
