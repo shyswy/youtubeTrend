@@ -33,7 +33,7 @@ def summarize_youtube_comments_by_id(video_id, country = "KR", category = "all")
         openai.api_key = load_api_key()
     except Exception as e:
         print(f"api key가 없는거 같습니다 :{e}")
-        return ["gpt api Key가 없습니다", -1, -1]
+        return "gpt api Key가 없습니다", -1, -1
 
     csv_path, _ = read_file(country, category, type = "comments")
     try:
@@ -45,22 +45,22 @@ def summarize_youtube_comments_by_id(video_id, country = "KR", category = "all")
 
         if "comment_text" not in df.columns or "video_id" not in df.columns:
             print("CSV에 'comment_text', 'video_id' 열이 필요합니다.")
-            return None
+            return None, -1, -1
 
         df = df[['video_id', 'comment_text']].dropna()
 
     except Exception as e:
-        return [f"- CSV 파일 로딩 실패: {str(e)}", -1, -1]
+        return f"- CSV 파일 로딩 실패: {str(e)}", -1, -1
 
     filtered_df = df[df['video_id'] == video_id]
 
     if filtered_df.empty:
-        return ["- 해당 video_id에 대한 댓글이 없습니다.", 0, 0]
+        return "- 해당 video_id에 대한 댓글이 없습니다.", -1, -1
 
     comments = [c.strip() for c in filtered_df['comment_text'].values if isinstance(c, str) and len(c.strip()) > 10][:10]
 
     if not comments:
-        return ["- 요약할 충분한 댓글이 없습니다.", 0, 0]
+        return "- 요약할 충분한 댓글이 없습니다.", -1, -1
 
     comment_block = "\n".join(comments)
 
@@ -87,15 +87,22 @@ def summarize_youtube_comments_by_id(video_id, country = "KR", category = "all")
 
         # 정규식으로 점수 추출
         match = re.search(r'긍정\s*[:：]\s*(\d+)\s*/\s*부정\s*[:：]\s*(\d+)', content)
+
+        # 추출한 내용 content에서 제거
+        if match:
+            content_cleaned = re.sub(r'\(?\s*긍정\s*[:：]\s*\d+\s*/\s*부정\s*[:：]\s*\d+\s*\)?', '', content).strip()
+        else:
+            content_cleaned = content
+
         if match:
             pos_score, neg_score = int(match.group(1)), int(match.group(2))
         else:
             pos_score, neg_score = -1, -1  # 점수 추출 실패
 
-        return [content, pos_score, neg_score]
+        return content_cleaned, pos_score, neg_score
 
     except Exception as e:
-        return [f"- 요약 실패: {str(e)}", -1, -1]
+        return f"- 요약 실패: {str(e)}", -1, -1
 
 if __name__ == '__main__':
     result = summarize_youtube_comments_by_id("Qhz2L8WzgIw", country = "KR", category = "all")

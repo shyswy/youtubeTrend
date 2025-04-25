@@ -812,7 +812,8 @@ def update_word_cloud(n, video_id, selected_country , selected_category):
             'people': 'people_blogs',
             'music': 'music',
             'comedy': 'comedy',
-            'sports': 'sports'
+            'sports': 'sports',
+            'lge'   :'lge'
         }
         
         category = category_mapping.get(selected_category, 'all')
@@ -833,36 +834,31 @@ def update_word_cloud(n, video_id, selected_country , selected_category):
 
 # 버튼 블라인드용 콜백
 @video_app.callback(
-    [Output('show-summary-btn', 'style'),
-     Output('sentiment-gauge', 'className'),
-     Output('red-gauge', 'style'),
-     Output('blue-gauge', 'style'),
-     Output('predict_percentage', 'children')],
+    Output('show-summary-btn', 'style'),
     Input('show-summary-btn', 'n_clicks'),
     prevent_initial_call=True
 )
 def hide_button_and_fix_gauge(n_clicks):
-    # 기본 스타일에서 width만 업데이트
-    red_style = gauge_styles['red-gauge'].copy()
-    blue_style = gauge_styles['blue-gauge'].copy()
     
-    # 비율을 80:20으로 설정
-    red_style['width'] = '80%'
-    blue_style['width'] = '20%'
-    
-    return {'display': 'none'}, 'fixed-gauge', red_style, blue_style, '긍정적인 반응!'
+    return {'display': 'none'}
 
 # GPT 요약용 콜백
 @video_app.callback(
     [Output('summary-textbox', 'children'),
-     Output('summary-textbox', 'style')],
+     Output('summary-textbox', 'style'),
+
+     Output('sentiment-gauge', 'className'),
+     Output('red-gauge', 'style'),
+     Output('blue-gauge', 'style'),
+     Output('predict_percentage', 'children')],
+
     Input('show-summary-btn', 'n_clicks'),
     [State('videoId-value', 'children'),
      State('country_code', 'children'),
      State('category-value', 'children')],
     prevent_initial_call=True
 )
-def show_summary(n_clicks, vidoe_id, country, category):
+def show_summary(n_clicks, vidoe_id, country, selected_category):
     print("클릭 입력 감지 확인")
     
     div_style = {
@@ -871,7 +867,7 @@ def show_summary(n_clicks, vidoe_id, country, category):
         'height': '50px',
         'backgroundColor': '#1e1e1e',
         'color': '#cccccc',
-        'fontSize': '13px',
+        'fontSize': '20px',
         'padding': '10px',
         'borderRadius': '10px',
         'border': '1px solid #444',
@@ -879,7 +875,45 @@ def show_summary(n_clicks, vidoe_id, country, category):
         'whiteSpace': 'pre-wrap'
     }
 
-    return summarize_youtube_comments_by_id(vidoe_id, country, category)[0], div_style
+    category_mapping = {
+        'all': 'all',
+        'entertainment': 'entertainment',
+        'news': 'news',
+        'people': 'people_blogs',
+        'music': 'music',
+        'comedy': 'comedy',
+        'sports': 'sports',
+        'lge'   :'lge'
+        }
+        
+    category = category_mapping.get(selected_category, 'all')
+
+
+    # 기본 스타일에서 width만 업데이트
+    red_style = gauge_styles['red-gauge'].copy()
+    blue_style = gauge_styles['blue-gauge'].copy()
+    
+    # 비율을 80:20으로 설정
+    red_style['width'] = '80%'
+    blue_style['width'] = '20%'
+    summary, pos_score, neg_score = summarize_youtube_comments_by_id(vidoe_id, country, category)
+
+    # Error가 뜨는 경우는 50, 50으로 보이도록 설정
+    if pos_score == -1:
+        red_style['width'] = '50%'
+        blue_style['width'] = '50%'
+    else:
+        red_style['width']  = f'{neg_score}%'
+        blue_style['width'] = f'{pos_score}%'
+    
+    if pos_score == 50:
+        predict_text = "중립적인 반응!"
+    elif pos_score > 50:
+        predict_text = "긍정적인 반응!"
+    else:
+        predict_text = "부정적인 반응!"
+
+    return summary, div_style, 'fixed-gauge', red_style, blue_style, predict_text
 
 if __name__ == '__main__':
     video_app.run(debug=True)
