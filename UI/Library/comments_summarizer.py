@@ -83,7 +83,7 @@ def summarize_youtube_comments_by_id(video_id, country = "KR", category = "all")
             messages=[{"role": "user", "content": prompt}],
             temperature=0.3
         )
-        content = response['choices'][0]['message']['ceontnt'].strip()
+        content = response['choices'][0]['message']['content'].strip()
 
         # 정규식으로 점수 추출
         match = re.search(r'긍정\s*[:：]\s*(\d+)\s*/\s*부정\s*[:：]\s*(\d+)', content)
