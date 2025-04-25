@@ -311,7 +311,11 @@ video_app.layout = html.Div([
     ''', dangerously_allow_html=True),
     # 헤더
     html.Div([
-        html.H1("YouTube", style={'color': 'red', 'fontSize': '24px', 'margin': '0', 'fontWeight': 'bold'}),
+        html.H1([
+            html.Span("요즘 ", style={'color': 'white', 'fontSize': '24px', 'margin': '0', 'fontWeight': 'bold'}),
+            html.Span("IN:Depth", style={'color': 'red', 'fontSize': '24px', 'margin': '0', 'fontWeight': 'bold'}),
+            html.Span(" – 인기 영상 분석실", style={'color': 'white', 'fontSize': '24px', 'margin': '0', 'fontWeight': 'bold'})
+        ], style={'margin': '0'}),
         html.Div([
             html.Span(id='country-value', style=youtube_styles['infoBadge']),
             html.Span(id='category-value', style=youtube_styles['infoBadge']),
