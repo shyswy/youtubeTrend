@@ -1001,7 +1001,6 @@ def update_table_and_graph(selected_country, selected_category, active_cell, pag
             filtered_df = df[df['category'] == category]
             if selected_country != '전체':
                 filtered_df = filtered_df[filtered_df['country_name'] == selected_country]
-        
         # 순위 계산
         filtered_df = filtered_df.sort_values('views', ascending=False)
         filtered_df['rank'] = range(1, len(filtered_df) + 1)
