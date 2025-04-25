@@ -29,7 +29,7 @@ class YoutubeBatch(
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Scheduled(fixedRate = 3600000)
-    fun fetchPopularVideosAndCommentsBatch() = runBlocking {
+fun fetchPopularVideosAndCommentsBatch() = runBlocking {
         log.info("⏰ Youtube 영상 및 댓글 수집 배치 시작: {}", LocalDateTime.now())
 
         coroutineScope {
@@ -44,7 +44,7 @@ class YoutubeBatch(
         val dashIp = System.getenv("DASH_IP") ?: "localhost"
         val dashPort = System.getenv("DASH_PORT") ?: "8050"
         val dashUrl = "http://$dashIp:$dashPort/refresh"
-
+        println("[update notify] send request to $dashUrl")
         val client = HttpClient(CIO)
         val response: String = try {
             val httpResponse: HttpResponse = client.get(dashUrl)
