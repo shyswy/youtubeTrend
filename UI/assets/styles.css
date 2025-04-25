@@ -1,21 +1,21 @@
-@keyframes red-animation {
-    0% { width: 20%; }
-    50% { width: 80%; }
-    100% { width: 20%; }
-}
+    @keyframes red-animation {
+        0% { width: 20%; }
+        50% { width: 80%; }
+        100% { width: 20%; }
+    }
 
-@keyframes blue-animation {
-    0% { width: 80%; }
-    50% { width: 20%; }
-    100% { width: 80%; }
-}
+    @keyframes blue-animation {
+        0% { width: 80%; }
+        50% { width: 20%; }
+        100% { width: 80%; }
+    }
 
-#red-gauge {
-    animation: red-animation 4s ease-in-out infinite;
-    animation-direction: alternate;
-}
+    #red-gauge {
+        animation: red-animation 4s ease-in-out infinite;
+        animation-direction: alternate;
+    }
 
-#blue-gauge {
-    animation: blue-animation 4s ease-in-out infinite;
-    animation-direction: alternate;
-} 
+    #blue-gauge {
+        animation: blue-animation 4s ease-in-out infinite;
+        animation-direction: alternate;
+    } 
