@@ -364,19 +364,19 @@ video_app.layout = html.Div([
                 html.Div([
                     html.Button("요약 보기", id='show-summary-btn', 
                         style={
-                        'backgroundColor': '#3ea6ff',
-                        'color': 'white',
-                        'border': 'none',
-                        'padding': '10px 20px',
-                        'borderRadius': '8px',
-                        'fontSize': '14px',
-                        'fontWeight': '500',
-                        'cursor': 'pointer',
-                        'marginBottom': '10px',
-                        'boxShadow': '0 2px 10px rgba(0,0,0,0.15)',
-                        'display': 'block',  # 시작 시 보임
-                    }),
-                    
+                            'backgroundColor': '#1f1f1f',         # 어두운 회색 배경
+                            'color': '#ffffff',                   # 흰색 글씨
+                            'border': '1px solid #444444',        # 어두운 회색 테두리
+                            'padding': '10px 24px',
+                            'borderRadius': '10px',
+                            'fontSize': '14px',
+                            'fontWeight': '500',
+                            'cursor': 'pointer',
+                            'marginBottom': '10px',
+                            'boxShadow': '0 2px 8px rgba(0,0,0,0.4)',  # 부드러운 그림자
+                            'transition': 'all 0.3s ease-in-out',      # 부드러운 효과
+                        }
+                    ),
                     html.Div(id='summary-textbox', children='', style={
                         'display': 'none',  # 처음에는 안 보임
                         'width': '1480px',
@@ -867,7 +867,7 @@ def show_summary(n_clicks, vidoe_id, country, selected_category):
         'height': '50px',
         'backgroundColor': '#1e1e1e',
         'color': '#cccccc',
-        'fontSize': '20px',
+        'fontSize': '17px',
         'padding': '10px',
         'borderRadius': '10px',
         'border': '1px solid #444',
@@ -906,7 +906,7 @@ def show_summary(n_clicks, vidoe_id, country, selected_category):
         red_style['width']  = f'{neg_score}%'
         blue_style['width'] = f'{pos_score}%'
     
-    if pos_score == 50:
+    if pos_score == 50 or pos_score == -1:
         predict_text = "중립적인 반응!"
     elif pos_score > 50:
         predict_text = "긍정적인 반응!"

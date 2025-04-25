@@ -6,7 +6,7 @@ try:
 except ImportError:
     from word_visualization import read_file
 
-def load_api_key(path="./../../../LG_bootcamp_openai_api_key.txt"):
+def load_api_key():
     try:
         path = "./../../../LG_bootcamp_openai_api_key.txt"
         with open(path, "r", encoding="utf-8") as f:
@@ -31,6 +31,8 @@ def summarize_youtube_comments_by_id(video_id, country = "KR", category = "all")
     """
     try:
         openai.api_key = load_api_key()
+        # openai.api_key = "경로 지정이 힘들면 그냥 여기서 API key를 입력"
+
     except Exception as e:
         print(f"api key가 없는거 같습니다 :{e}")
         return "gpt api Key가 없습니다", -1, -1
