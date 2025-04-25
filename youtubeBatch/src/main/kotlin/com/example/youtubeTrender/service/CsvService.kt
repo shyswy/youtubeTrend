@@ -46,16 +46,6 @@ class CsvService {
 
             // DTO 리스트에 있는 각 객체에 대해 CSV 데이터 작성
             for (dto in dtoList) {
-                // 각 DTO 객체의 프로퍼티 값을 CSV 형식으로 변환
-//                val line = properties.joinToString(",") { prop ->
-//                    // 리플렉션을 사용하여 해당 프로퍼티의 값을 가져옴
-//                    val value = prop.get(dto)?.toString() ?: ""  // 값이 null일 경우 빈 문자열 사용
-//                    // 값에 줄바꿈(\n)이나 쉼표(,)가 있을 경우 CSV 포맷에 맞게 정리
-//                    value
-//                        .replace("\n", " ")  // 줄바꿈을 공백으로 변경
-//                        .replace(",", " ")   // 쉼표를 공백으로 변경
-//                }
-
                 val line = properties.joinToString(",") { prop ->
                     val rawValue = prop.get(dto)?.toString() ?: ""
                     val escapedValue = rawValue
@@ -66,7 +56,6 @@ class CsvService {
                         escapedValue
                     }
                 }
-
                 // 변환된 데이터를 CSV 파일에 한 줄씩 작성
                 writer.appendLine(line)
             }

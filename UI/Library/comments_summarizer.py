@@ -6,9 +6,16 @@ try:
 except ImportError:
     from word_visualization import read_file
 
-def load_api_key(path="./../../../../LG_bootcamp_openai_api_key.txt_dummy"):
-    with open(path, "r", encoding="utf-8") as f:
-        return f.read().strip()
+def load_api_key(path="./../../../LG_bootcamp_openai_api_key.txt"):
+    try:
+        path = "./../../../LG_bootcamp_openai_api_key.txt"
+        with open(path, "r", encoding="utf-8") as f:
+            return f.read().strip()
+    except:
+        path = "./../../../../LG_bootcamp_openai_api_key.txt"
+        with open(path, "r", encoding="utf-8") as f:
+            return f.read().strip()
+
 
 
 def summarize_youtube_comments_by_id(video_id, country = "KR", category = "all"):
@@ -76,7 +83,7 @@ def summarize_youtube_comments_by_id(video_id, country = "KR", category = "all")
             messages=[{"role": "user", "content": prompt}],
             temperature=0.3
         )
-        content = response['choices'][0]['message']['ceontnt'].strip()
+        content = response['choices'][0]['message']['content'].strip()
 
         # 정규식으로 점수 추출
         match = re.search(r'긍정\s*[:：]\s*(\d+)\s*/\s*부정\s*[:：]\s*(\d+)', content)
@@ -91,5 +98,5 @@ def summarize_youtube_comments_by_id(video_id, country = "KR", category = "all")
         return [f"- 요약 실패: {str(e)}", -1, -1]
 
 if __name__ == '__main__':
-    result = summarize_youtube_comments_by_id("yomKWG44odg", country = "KR", category = "all")
+    result = summarize_youtube_comments_by_id("Qhz2L8WzgIw", country = "KR", category = "all")
     print(result)
