@@ -247,7 +247,7 @@ styles = {
     },
     'filterLabel': {
         'color': '#ffffff',
-        'fontSize': '14px',
+        'fontSize': '16px',
         'fontWeight': '500',
         'marginRight': '8px',
         'opacity': '0.9'
@@ -468,13 +468,13 @@ app.layout = html.Div([
                     style={
                         'backgroundColor': 'rgba(31, 31, 31, 0.9)',
                         'color': '#ffffff',
-                        'border': '1px solid rgba(255, 255, 255, 0.1)',
+                        #'border': '1px solid rgba(255, 255, 255, 0.1)',
                         'borderRadius': '8px',
                         'padding': '8px 15px',
-                        'fontSize': '14px',
+                        'fontSize': '18px',
                         'width': '130px',
                         'fontFamily': "'Noto Sans KR', sans-serif",
-                        'fontWeight': '400'
+                        'fontWeight': '500'
                     },
                     className='custom-dropdown',
                     clearable=False,
@@ -490,13 +490,13 @@ app.layout = html.Div([
                     style={
                         'backgroundColor': 'rgba(31, 31, 31, 0.9)',
                         'color': '#ffffff',
-                        'border': '1px solid rgba(255, 255, 255, 0.1)',
+                        #'border': '1px solid rgba(255, 255, 255, 0.1)',
                         'borderRadius': '8px',
                         'padding': '8px 15px',
-                        'fontSize': '14px',
+                        'fontSize': '18px',
                         'width': '130px',
                         'fontFamily': "'Noto Sans KR', sans-serif",
-                        'fontWeight': '400'
+                        'fontWeight': '500'
                     },
                     className='custom-dropdown',
                     clearable=False,
