@@ -831,22 +831,26 @@ def update_word_cloud(n, video_id, selected_country , selected_category):
         print(f"Error in update_word_cloud: {str(e)}")
         return None 
 
-
-
-
-
-
-
-
-
-#버튼 블라인드용 콜백
+# 버튼 블라인드용 콜백
 @video_app.callback(
-    Output('show-summary-btn', 'style'),
+    [Output('show-summary-btn', 'style'),
+     Output('sentiment-gauge', 'className'),
+     Output('red-gauge', 'style'),
+     Output('blue-gauge', 'style'),
+     Output('predict_percentage', 'children')],
     Input('show-summary-btn', 'n_clicks'),
     prevent_initial_call=True
 )
-def hide_button_immediately(n_clicks):
-    return {'display': 'none'}
+def hide_button_and_fix_gauge(n_clicks):
+    # 기본 스타일에서 width만 업데이트
+    red_style = gauge_styles['red-gauge'].copy()
+    blue_style = gauge_styles['blue-gauge'].copy()
+    
+    # 비율을 80:20으로 설정
+    red_style['width'] = '80%'
+    blue_style['width'] = '20%'
+    
+    return {'display': 'none'}, 'fixed-gauge', red_style, blue_style, '긍정적인 반응!'
 
 # GPT 요약용 콜백
 @video_app.callback(
@@ -876,8 +880,6 @@ def show_summary(n_clicks, vidoe_id, country, category):
     }
 
     return summarize_youtube_comments_by_id(vidoe_id, country, category)[0], div_style
-
-
 
 if __name__ == '__main__':
     video_app.run(debug=True)

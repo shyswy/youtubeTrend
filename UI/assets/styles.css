@@ -18,4 +18,13 @@
     #blue-gauge {
         animation: blue-animation 4s ease-in-out infinite;
         animation-direction: alternate;
+    }
+
+    /* 고정된 게이지를 위한 새로운 클래스 */
+    .fixed-gauge #red-gauge {
+        animation: none;
+    }
+
+    .fixed-gauge #blue-gauge {
+        animation: none;
     } 
