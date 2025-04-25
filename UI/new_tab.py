@@ -9,6 +9,7 @@ import glob
 from Library.word_visualization import generate_Comments_WC
 import math
 import base64
+from Library.comments_summarizer import summarize_youtube_comments_by_id
 
 # 현재 스크립트의 디렉토리 경로를 가져옴
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -286,7 +287,8 @@ scrollbar_track_css = {
 video_app = dash.Dash(
     __name__, 
     requests_pathname_prefix='/new_tab/',
-    assets_folder='assets'  # assets 폴더 위치 지정
+    assets_folder='assets',  # assets 폴더 위치 지정
+    suppress_callback_exceptions=True
 )
 
 video_app.layout = html.Div([
@@ -358,7 +360,38 @@ video_app.layout = html.Div([
                 'fontSize': '20px',
                 'fontWeight': '600'
             }),
-            html.Div(id='comments-summary', style={
+            html.Div([
+                html.Div([
+                    html.Button("요약 보기", id='show-summary-btn', 
+                        style={
+                        'backgroundColor': '#3ea6ff',
+                        'color': 'white',
+                        'border': 'none',
+                        'padding': '10px 20px',
+                        'borderRadius': '8px',
+                        'fontSize': '14px',
+                        'fontWeight': '500',
+                        'cursor': 'pointer',
+                        'marginBottom': '10px',
+                        'boxShadow': '0 2px 10px rgba(0,0,0,0.15)',
+                        'display': 'block',  # 시작 시 보임
+                    }),
+                    
+                    html.Div(id='summary-textbox', children='', style={
+                        'display': 'none',  # 처음에는 안 보임
+                        'width': '1480px',
+                        'height': '50px',
+                        'backgroundColor': '#1e1e1e',
+                        'color': '#cccccc',
+                        'fontSize': '13px',
+                        'padding': '10px',
+                        'borderRadius': '10px',
+                        'border': '1px solid #444',
+                        'overflow': 'auto',
+                        'whiteSpace': 'pre-wrap'
+                    })
+                ]),
+                ],id='comments-summary', style={
                 'width': '1510px',
                 'height': '70px',
                 'backgroundColor': '#272727',
@@ -761,6 +794,7 @@ def display_video(search):
     
     return "", "동영상을 찾을 수 없습니다.", "", "", "", "", "", "", "", [], "", ""
 
+# 워드 클라우드 생성용 콜백
 @video_app.callback(
     Output('word-cloud-img', 'src'),
     [Input('init-callback-trigger', 'n_intervals')],
@@ -795,7 +829,55 @@ def update_word_cloud(n, video_id, selected_country , selected_category):
         return img_base64  # 이미 base64 URL이 포함되어 있으므로 그대로 반환
     except Exception as e:
         print(f"Error in update_word_cloud: {str(e)}")
-        return None    
+        return None 
+
+
+
+
+
+
+
+
+
+#버튼 블라인드용 콜백
+@video_app.callback(
+    Output('show-summary-btn', 'style'),
+    Input('show-summary-btn', 'n_clicks'),
+    prevent_initial_call=True
+)
+def hide_button_immediately(n_clicks):
+    return {'display': 'none'}
+
+# GPT 요약용 콜백
+@video_app.callback(
+    [Output('summary-textbox', 'children'),
+     Output('summary-textbox', 'style')],
+    Input('show-summary-btn', 'n_clicks'),
+    [State('videoId-value', 'children'),
+     State('country_code', 'children'),
+     State('category-value', 'children')],
+    prevent_initial_call=True
+)
+def show_summary(n_clicks, vidoe_id, country, category):
+    print("클릭 입력 감지 확인")
+    
+    div_style = {
+        'display': 'block',
+        'width': '1480px',
+        'height': '50px',
+        'backgroundColor': '#1e1e1e',
+        'color': '#cccccc',
+        'fontSize': '13px',
+        'padding': '10px',
+        'borderRadius': '10px',
+        'border': '1px solid #444',
+        'overflow': 'auto',
+        'whiteSpace': 'pre-wrap'
+    }
+
+    return summarize_youtube_comments_by_id(vidoe_id, country, category)[0], div_style
+
+
 
 if __name__ == '__main__':
     video_app.run(debug=True)
