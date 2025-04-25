@@ -71,6 +71,20 @@ dependencies {
 	// crawl
 	implementation("org.jsoup:jsoup:1.15.4") // 최신 버전 확인
 
+
+	// async ( webflux )
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.7.3") // Java 8+ 환경일 경우
+
+	// Spring 환경에서 사용할 경우 추가
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.3") // Reactor 연동 (Webflux 등)
+
+	// 비동기 http요청 ktor
+	implementation("io.ktor:ktor-client-core:2.3.0") // Ktor 클라이언트의 핵심 라이브러리
+	implementation("io.ktor:ktor-client-cio:2.3.0")  // CIO 엔진 (비동기 HTTP 요청을 위한 엔진)
+	implementation("io.ktor:ktor-client-json:2.3.0") // JSON 처리
+	implementation("io.ktor:ktor-client-serialization:2.3.0") // JSON 직렬화 지원
+
 }
 
 tasks.withType<KotlinCompile> {
