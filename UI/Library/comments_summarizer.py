@@ -12,7 +12,7 @@ def load_api_key(path="./../../../LG_bootcamp_openai_api_key.txt"):
         with open(path, "r", encoding="utf-8") as f:
             return f.read().strip()
     except:
-        path = "./../../../LG_bootcamp_openai_api_key.txt"
+        path = "./../../../../LG_bootcamp_openai_api_key.txt"
         with open(path, "r", encoding="utf-8") as f:
             return f.read().strip()
 
