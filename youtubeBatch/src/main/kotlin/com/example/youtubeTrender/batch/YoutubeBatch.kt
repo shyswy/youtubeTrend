@@ -16,6 +16,11 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+
 @Component
 class YoutubeBatch(
     private val youtubeService: YoutubeService,
@@ -34,6 +39,21 @@ class YoutubeBatch(
 
             val youtuberJob = async { youtuberService.asyncSave() }
             awaitAll(youtuberJob)
+        }
+
+        val dashIp = System.getenv("DASH_IP") ?: "localhost"
+        val dashPort = System.getenv("DASH_PORT") ?: "8050"
+        val dashUrl = "http://$dashIp:$dashPort/refresh"
+
+        val client = HttpClient(CIO)
+        val response: String = try {
+            val httpResponse: HttpResponse = client.get(dashUrl)
+            httpResponse.bodyAsText()
+        } catch (e: Exception) {
+            log.error("❌ Dash 리프레시 요청 실패: {}", e.message)
+            "요청 실패: ${e.message}"
+        } finally {
+            client.close()
         }
 
         log.info("🎉 Youtube 영상 및 댓글 수집 배치 종료: {}", LocalDateTime.now())

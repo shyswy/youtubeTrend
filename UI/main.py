@@ -1454,6 +1454,7 @@ server = app.server
 # Refresh 엔드포인트 정의
 @server.route('/refresh', methods=['GET'])
 def refresh_data():
+    print("[GET/refresh] request received")
     global df, weekly_df, crawled_df
     try:
         df, weekly_df = load_data()
