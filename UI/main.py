@@ -446,8 +446,13 @@ app.layout = html.Div([
     # 헤더
     html.Div([
         html.Div([
-            html.Span("📺", style=styles['headerIcon']),
-            html.H1("YouTube 인기 동영상 순위", style={'margin': '0', 'color': '#ffffff'})
+            html.Img(src=app.get_asset_url('logo_small.png'), style={
+                'height': '90px',
+                'width': 'auto',
+                'marginRight': '10px',
+                'verticalAlign': 'middle'
+            }),
+            html.H1("요즘 IN:Sight", style={'margin': '0', 'color': '#ffffff'})
         ], style=styles['headerTitle']),
         html.Div([
             html.Div([
@@ -1344,7 +1349,7 @@ def update_category_stats_chart(selected_country, selected_category):
             x=1
         ),
         margin=dict(t=30, b=30, l=30, r=30),
-        height=400
+        height=500
     )
     
     return fig
