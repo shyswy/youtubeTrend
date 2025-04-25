@@ -1,8 +1,8 @@
 package com.example.youtubeTrender.service
 
+import com.example.youtubeTrender.config.YoutubeConstants
 import com.example.youtubeTrender.dto.CommentDto
 import com.example.youtubeTrender.dto.VideoDto
-import com.example.youtubeTrender.util.RegionCategoryFetcher
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.youtube.YouTube
@@ -12,10 +12,21 @@ import org.springframework.stereotype.Service
 import kotlin.collections.component1
 import kotlin.collections.component2
 
+private const val LG_ELECTRONICS_US = "lg electronics"
+
+private const val LG_ELECTRONICS_KR = "LG전자"
+
+private const val WEEKLY_CSV_IDENTIFIER = "weekly"
+
 @Service
 class YoutubeService (
     private val csvService: CsvService
 ) {
+
+    private val LG_KEYWORD = mapOf(
+        "KR" to LG_ELECTRONICS_KR,
+        "US" to LG_ELECTRONICS_US,
+    )
 
     @Value("\${youtube.api-key}")
     private lateinit var apiKey: String
@@ -26,21 +37,32 @@ class YoutubeService (
         null
     ).setApplicationName("YoutubeTrender").build()
 
-
     fun save() {
-        val fetchFunc: (String, String, String?) -> List<VideoDto> =
-            { region, categoryName, categoryId ->
-                getPopularVideosByRegionAndCategory(region, categoryName, categoryId)
+        val popularVideoMap = YoutubeConstants.REGIONS.flatMap { region ->
+            // 카테고리 이름과 ID를 기반으로 하는 항목들을 맵핑
+            val categoryResults = YoutubeConstants.CATEGORY_MAP.map { (categoryName, categoryId) ->
+                val key = "${region}_${categoryName}"
+                key to getPopularVideosByRegionAndCategory(region, categoryName, categoryId)
             }
 
-        val popularVideoMap = RegionCategoryFetcher.fetchForAllRegionsAndCategoriesWithDefault(fetchFunc)
+            // defaultKey 추가
+            val weekKey = "${region}_weekly"
+            val weekTotalData = getPopularVideosByRegionAndCategory(region, "all", null)
+            categoryResults + (weekKey to weekTotalData)
+        }.toMap()
 
-        popularVideoMap.forEach { (key, videos) ->
+        val keyWorldVideoMap = YoutubeConstants.REGIONS.associate { region ->
+            "${region}_lge" to getTopVideosByKeyword(region, "lge" ,LG_KEYWORD[region]?: LG_ELECTRONICS_US)
+        }
+
+        val mergedVideoMap = popularVideoMap + keyWorldVideoMap
+
+        mergedVideoMap.forEach { (key, videos) ->
             val videoFileName = "${key}_video"
             csvService.writeDtoListToCsv(videos, videoFileName)
             println("✅ 저장 완료: $videoFileName.csv (${videos.size}개 영상)")
 
-            if ("weekly" in key) {
+            if (WEEKLY_CSV_IDENTIFIER in key) {
                 println("skip, 'weekly' doesn't make comment data")
                 return@forEach
             }
@@ -147,7 +169,7 @@ class YoutubeService (
         }
     }
 
-    fun getTopVideosByKeyword(keyword: String = "lg전자", countryCode: String = "KR", maxVideos: Long = 50): List<VideoDto> {
+    fun getTopVideosByKeyword(countryCode: String = "KR", categoryName: String? = LG_ELECTRONICS_KR,keyword: String = LG_ELECTRONICS_KR, maxVideos: Long = 50): List<VideoDto> {
         return try {
             // Step 1: Search for videos
             val searchRequest = youtube.search().list("snippet")
@@ -181,7 +203,7 @@ class YoutubeService (
                     title = snippet.title,
                     channelTitle = snippet.channelTitle,
                     categoryId = snippet.categoryId ?: "unknown",
-                    category = null, // 필요시 RegionCategoryFetcher 활용
+                    category = categoryName, // 필요시 RegionCategoryFetcher 활용
                     viewCount = statistics.viewCount?.toLong() ?: 0,
                     likeCount = statistics.likeCount?.toLong(),
                     description = snippet.description,
@@ -199,3 +221,76 @@ class YoutubeService (
     }
 }
 
+// async 로직
+//suspend fun asyncSave() = runBlocking {
+//    coroutineScope {
+//        // 지역+카테고리별 인기 영상 수집
+//        val popularVideoDeferred = YoutubeConstants.REGIONS.flatMap { region ->
+//            YoutubeConstants.CATEGORY_MAP.map { (categoryName, categoryId) ->
+//                val key = "${region}_${categoryName}"
+//                async {
+//                    key to getPopularVideosByRegionAndCategory(region, categoryName, categoryId)
+//                }
+//            } + listOf( // weekly 데이터도 함께 비동기 처리
+//                async {
+//                    val weekKey = "${region}_weekly"
+//                    val weekTotalData = getPopularVideosByRegionAndCategory(region, "all", null)
+//                    weekKey to weekTotalData
+//                }
+//            )
+//        }
+//
+//        // 지역별 키워드 검색 (ex: LG)
+//        val keywordVideoDeferred = YoutubeConstants.REGIONS.map { region ->
+//            async {
+//                val key = "${region}_lge"
+//                val keyword = LG_KEYWORD[region] ?: LG_ELECTRONICS_US
+//                key to getTopVideosByKeyword(region, keyword)
+//            }
+//        }
+//
+//        val popularVideoMap = popularVideoDeferred.awaitAll().toMap()
+//        val keywordVideoMap = keywordVideoDeferred.awaitAll().toMap()
+//        val mergedVideoMap = popularVideoMap + keywordVideoMap
+//
+//        // 댓글 조회 병렬 실행을 위한 세마포어 (동시 요청 10개 제한)
+//        val semaphore = Semaphore(permits = 10)
+//
+//        // 영상 및 댓글 저장 처리
+//        val saveJobs = mergedVideoMap.map { (key, videos) ->
+//            async {
+//                val videoFileName = "${key}_video"
+//                csvService.writeDtoListToCsv(videos, videoFileName)
+//                println("✅ 저장 완료: $videoFileName.csv (${videos.size}개 영상)")
+//
+//                if (WEEKLY_CSV_IDENTIFIER in key) {
+//                    println("skip, 'weekly' doesn't make comment data")
+//                    return@async
+//                }
+//
+//                println("getComments from $key")
+//                val commentResults = videos.map { video ->
+//                    async {
+//                        semaphore.withPermit {
+//                            try {
+//                                getComments(video.id)
+//                            } catch (e: Exception) {
+//                                println("❌ 댓글 조회 실패 - videoId: ${video.id}, 에러: ${e.message}")
+//                                emptyList()
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                val allComments = commentResults.awaitAll().flatten()
+//
+//                val commentFileName = "${key}_comments"
+//                csvService.writeDtoListToCsv(allComments, commentFileName)
+//                println("💬 댓글 저장 완료: $commentFileName.csv (${allComments.size}개 댓글)")
+//            }
+//        }
+//
+//        saveJobs.awaitAll()
+//    }
+//}
+//
