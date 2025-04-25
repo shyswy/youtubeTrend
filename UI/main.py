@@ -1446,6 +1446,23 @@ def update_hourly_views_chart(selected_country):
     
     return fig
 
+
+
+# Dash 및 Flask 구성
+server = app.server
+
+# Refresh 엔드포인트 정의
+@server.route('/refresh', methods=['GET'])
+def refresh_data():
+    global df, weekly_df, crawled_df
+    try:
+        df, weekly_df = load_data()
+        crawled_df = load_crawled_data()
+        return "success", 200
+    except Exception as e:
+        traceback.print_exc()
+        return f"Error occurred: {str(e)}", 500
+
 # 서버 설정
 application = DispatcherMiddleware(app.server, {
     '/new_tab': video_app.server
@@ -1458,3 +1475,4 @@ if __name__ == '__main__':
     except Exception as e:
         print("[dash server] error")
         traceback.print_exc()
+
