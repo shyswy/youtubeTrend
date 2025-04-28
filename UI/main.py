@@ -787,7 +787,7 @@ app.layout = html.Div([
             # 워드클라우드
             html.Div([
                 html.H4(id='wordcloud-title', style={
-                    'marginBottom': '8px',
+                    'marginBottom': '7px',  # 마진 증가
                     'marginTop': '8px',
                     'color': '#ffffff',
                     'fontWeight': '600'
@@ -797,15 +797,24 @@ app.layout = html.Div([
                         id='word-cloud-img',
                         style={
                             'width': '100%',
-                            'height': '375px',
+                            'height': '300px',
                             'objectFit': 'contain',
                             'border': '1px solid rgba(255, 255, 255, 0.1)',
                             'boxShadow': '2px 2px 10px rgba(0,0,0,0.1)',
                             'borderRadius': '10px',
-                            'backgroundColor': '#272727'
+                            'backgroundColor': '#272727',
+                            'padding': '10px',
+                            'marginTop': '20px'  # 상단 마진 추가
                         }
                     )
-                ], style={'textAlign': 'center'})
+                ], style={
+                    'textAlign': 'center',
+                    'height': '300px',
+                    'display': 'flex',
+                    'alignItems': 'center',
+                    'justifyContent': 'center',
+                    'paddingTop': '20px'  # 상단 패딩 추가
+                })
             ], style=styles['categoryPieChart']),
             
             # 주간 인기 동영상
@@ -1317,7 +1326,7 @@ def update_word_cloud(selected_country, selected_category):
         print(f"Generating word cloud for country: {country}, category: {category}")
         
         # 워드클라우드 이미지 생성
-        img_base64 = generate_Title_WC(country, category, (375,300))
+        img_base64 = generate_Title_WC(country, category, (350,250))  # 크기 조정
         if img_base64 is None:
             print("Word cloud generation returned None")
             return None
@@ -1391,7 +1400,10 @@ def update_category_stats_chart(selected_country, selected_category):
         x=stats.index,
         y=stats['views'],
         name='평균 조회수',
-        marker_color='#ff4444',
+        marker=dict(
+            color='#ff4444',
+            line=dict(width=0)  # 테두리 제거
+        ),
         text=stats['views'].apply(lambda x: f'{x:,.0f}'),
         textposition='auto',
         yaxis='y'
@@ -1402,9 +1414,9 @@ def update_category_stats_chart(selected_country, selected_category):
         x=stats.index,
         y=stats['likes'],
         name='평균 좋아요',
-        line=dict(color='#44ff44', width=3),
+        line=dict(color='#8c8c8c', width=2),  # 밝은 회색으로 변경
         mode='lines+markers',
-        marker=dict(size=8),
+        marker=dict(size=8, color='#8c8c8c'),  # 마커도 동일한 색상으로
         text=stats['likes'].apply(lambda x: f'{x:,.0f}'),
         textposition='top center',
         yaxis='y2'
@@ -1414,19 +1426,20 @@ def update_category_stats_chart(selected_country, selected_category):
     fig.update_layout(
         plot_bgcolor='#1f1f1f',
         paper_bgcolor='#1f1f1f',
-        font=dict(color='#ffffff'),
+        font=dict(color='#ffffff', size=14),
         xaxis=dict(
             title='카테고리',
             gridcolor='#272727',
             zerolinecolor='#272727',
-            tickfont=dict(color='#ffffff')
+            tickfont=dict(color='#ffffff', size=12),
+            title_font=dict(size=14)
         ),
         yaxis=dict(
             title='조회수',
             gridcolor='#272727',
             zerolinecolor='#272727',
-            tickfont=dict(color='#ffffff'),
-            titlefont=dict(color='#ff4444')
+            tickfont=dict(color='#ffffff', size=12),
+            title_font=dict(color='#ff4444', size=14)
         ),
         yaxis2=dict(
             title='좋아요',
@@ -1434,8 +1447,8 @@ def update_category_stats_chart(selected_country, selected_category):
             side='right',
             gridcolor='#272727',
             zerolinecolor='#272727',
-            tickfont=dict(color='#ffffff'),
-            titlefont=dict(color='#44ff44')
+            tickfont=dict(color='#ffffff', size=12),
+            title_font=dict(color='#8c8c8c', size=14)  # 축 제목 색상도 동일하게 변경
         ),
         legend=dict(
             bgcolor='#1f1f1f',
