@@ -91,7 +91,6 @@ class YoutuberService (
         ranking: String = "인기",
         duration: String = "일간"
     ): List<YoutuberInfo> {
-        println("getYoutuberRanking start@@@")
         println("category: $category, country: $country, ranking: $ranking, duration: $duration")
         val categoryKey = categoryType[category] ?: "all"
         val rankingKey = rankingType[ranking] ?: "popular"
