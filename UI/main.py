@@ -170,16 +170,23 @@ app.index_string = '''
                 100% { opacity: 0.3; }
             }
             .logo-glow {
-                filter: drop-shadow(0 0 12px #ffb347) drop-shadow(0 0 24px #ff5e62);
-                border-radius: 16px;
+                filter: drop-shadow(0 0 24px #ffb347) drop-shadow(0 0 48px #ff5e62);
+                border-radius: 50%;
+                animation: rocket-float 2s infinite ease-in-out;
+            }
+            @keyframes rocket-float {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-8px); }
             }
             .header-title-gradient {
-                background: linear-gradient(90deg, #ffb347 0%, #ff5e62 100%);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
+                font-family: 'Noto Sans KR', 'Roboto', sans-serif;
+                font-size: 2.7rem;
                 font-weight: 900;
-                text-shadow: 0 2px 16px #ffb34788, 0 0 2px #fff;
                 letter-spacing: 2px;
+                background: none !important;
+                -webkit-background-clip: unset !important;
+                -webkit-text-fill-color: unset !important;
+                text-shadow: none;
             }
             .dash-component {
                 background-color: rgba(31, 31, 31, 1) !important;
@@ -485,7 +492,23 @@ app.layout = html.Div([
                 'marginRight': '10px',
                 'verticalAlign': 'middle'
             }),
-            html.H1("요즘 IN:Sight", className='header-title-gradient', style={'margin': '0', 'color': '#ffffff'})
+            html.H1([
+                html.Span("요즘", style={
+                    'fontWeight': '800',
+                    'color': '#ff5e62',
+                    'fontSize': '2.7rem',
+                    'letterSpacing': '2px',
+                    'marginRight': '10px',
+                    'textShadow': '0 0 8px #ff5e62, 0 0 16px #ff5e62'
+                }),
+                html.Span("IN:Sight", style={
+                    'fontWeight': '900',
+                    'color': '#fff',
+                    'fontSize': '2.7rem',
+                    'letterSpacing': '2px',
+                    'textShadow': '0 0 12px #ff5e62, 0 0 24px #ff5e62, 0 0 32px #fff'
+                })
+            ], style={'margin': '0', 'lineHeight': '1.1'})
         ], style=styles['headerTitle']),
         html.Div([
             html.Div([
