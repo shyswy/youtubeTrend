@@ -584,10 +584,10 @@ def display_video(search):
                     else:
                         # 미국과 한국의 해당 카테고리 파일을 모두 찾기
                         video_file_paths = []
-                        country_code = country
-                        file_path = os.path.join(DATA_DIR, f'{country_code}_{mapped_category}_video.csv')
-                        if os.path.exists(file_path):
-                            video_file_paths.append(file_path)
+                        for country_code in ['US', 'KR']:
+                            file_path = os.path.join(DATA_DIR, f'{country_code}_{mapped_category}_video.csv')
+                            if os.path.exists(file_path):
+                                video_file_paths.append(file_path)
                     matching_files = None
                     
                     # video_id와 일치하는 파일 찾기
