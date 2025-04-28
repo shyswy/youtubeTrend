@@ -144,7 +144,7 @@ import pandas as pd
 import os
 
 def get_youtuber_Ranking(country, category):
-    print("크롤링 체크", country, category)
+    #print("크롤링 체크", country, category)
     COUNTRY_TYPE = {
         "전체": "US",
         "한국": "KR",

@@ -1538,7 +1538,7 @@ def refresh_data():
     try:
         df, weekly_df = load_data()
         return "success", 200
-    except Exception as e:s
+    except Exception as e:
         traceback.print_exc()
         return f"Error occurred: {str(e)}", 500
 
