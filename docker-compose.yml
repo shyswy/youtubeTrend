@@ -14,6 +14,8 @@ services:
       - STAGE=local
       - REGION=ap-northeast-2
       - CSV_DATA_PATH=/data
+      - DASH_IP=dash
+      - DASH_PORT=8050
     volumes:
       - ${PWD}/csv_data:/data:rw
       - ./youtubeBatch/src:/app/src:rw
