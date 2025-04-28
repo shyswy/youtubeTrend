@@ -161,8 +161,11 @@ def get_youtuber_Ranking(country, category):
 
     current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     csv_dir = os.path.join(current_dir, "youtube_data")
-
-    csv_path = os.path.join(csv_dir, f"{csv_country}_{category}_youtuber.csv")
+    try:
+        csv_path = os.path.join(csv_dir, f"{csv_country}_{csv_category}_youtuber.csv")
+    except Exception as e:
+        print(f"크롤링 중 path error: {str(e)}")
+        return None
     df = pd.read_csv(csv_path)
 
     # country가 'all'인 경우 전체 데이터를 반환하고,
