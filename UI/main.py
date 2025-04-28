@@ -84,14 +84,14 @@ def load_data():
     return pd.concat(all_data, ignore_index=True).drop_duplicates(subset='title') if all_data else pd.DataFrame(), pd.concat(weekly_data, ignore_index=True) if weekly_data else pd.DataFrame()
 
 # 크롤링 데이터 로드 함수 추가
-def load_crawled_data():
-    crawled_data = get_youtuber_Ranking()
+def load_crawled_data(country, category):
+    crawled_data = get_youtuber_Ranking(country, category)
     return pd.DataFrame(crawled_data)
 
 # 데이터 로드
 df, weekly_df = load_data()
 
-crawled_df = load_crawled_data()
+crawled_df = load_crawled_data("전체", "all")
 
 # Dash 앱 생성
 app = dash.Dash(__name__, 
@@ -1537,9 +1537,8 @@ def refresh_data():
     global df, weekly_df, crawled_df
     try:
         df, weekly_df = load_data()
-        crawled_df = load_crawled_data()
         return "success", 200
-    except Exception as e:
+    except Exception as e:s
         traceback.print_exc()
         return f"Error occurred: {str(e)}", 500
 
@@ -1547,6 +1546,19 @@ def refresh_data():
 application = DispatcherMiddleware(app.server, {
     '/new_tab': video_app.server
 })
+
+
+# 크롤링 데이터 업데이트용 콜백
+@app.callback(
+    Output('dummy-output-2', 'children'),
+    [Input('country-dropdown', 'value'),
+     Input('category-dropdown', 'value')]
+)
+def update_crwaled_data(selected_country, selected_category):
+    global crawled_df
+    crawled_df = load_crawled_data(selected_country, selected_category)
+    return None
+
 
 if __name__ == '__main__':
     print("[dash server] run")
