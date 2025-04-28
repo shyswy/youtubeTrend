@@ -15,6 +15,7 @@ import kotlinx.coroutines.runBlocking
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class YoutuberService (
@@ -56,6 +57,7 @@ class YoutuberService (
         "전체" to "total"
     )
 
+    @Transactional
     suspend fun asyncSave() = runBlocking {
         coroutineScope {
             val deferredList = YoutubeConstants.REGIONS.flatMap { region ->
