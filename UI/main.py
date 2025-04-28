@@ -870,21 +870,35 @@ app.layout = html.Div([
                     'color': '#ffffff',
                     'fontWeight': '600'
                 }),
-                dcc.Graph(id='category-pie-chart', style={'height': '400px'})
+                dcc.Graph(
+                    id='category-pie-chart',
+                    style={
+                        'height': '400px',
+                        'width': '100%',
+                        'margin': '0 auto',  # 가운데 정렬을 위한 마진 설정
+                        'display': 'flex',
+                        'justifyContent': 'center',
+                        'alignItems': 'center'
+                    }
+                )
             ], style={
                 'flex': '1',
                 'padding': '20px',
                 'backgroundColor': '#1f1f1f',
                 'borderRadius': '15px',
                 'boxShadow': '0 4px 8px rgba(0,0,0,0.1)',
-                'border': '1px solid rgba(255, 255, 255, 0.1)'
+                'border': '1px solid rgba(255, 255, 255, 0.1)',
+                'display': 'flex',
+                'flexDirection': 'column',
+                'alignItems': 'center'
             })
         ], style={
             'display': 'flex',
             'marginBottom': '30px',
             'gap': '20px',
             'maxWidth': '1600px',
-            'margin': '0 auto'
+            'margin': '0 auto',
+            'justifyContent': 'center'  # 전체 컨테이너 가운데 정렬
         })
     ], style={
         'padding': '30px',
@@ -1061,7 +1075,7 @@ def update_table_and_graph(selected_country, selected_category, active_cell, pag
     fig.update_layout(
         plot_bgcolor='#1f1f1f',
         paper_bgcolor='#1f1f1f',
-        font=dict(color='#ffffff'),
+        font=dict(color='#ffffff', size=14),
         xaxis=dict(
             gridcolor='#272727',
             zerolinecolor='#272727',
@@ -1081,6 +1095,15 @@ def update_table_and_graph(selected_country, selected_category, active_cell, pag
             font=dict(color='#ffffff')
         ),
     )
+
+    # 모든 트레이스의 마커 색상을 '#ff4444'로 변경
+    for trace in fig.data:
+        trace.update(
+            marker=dict(
+                color='#ff4444',
+                size=8
+            )
+        )
     
     return (table_data, fig, table_title, 
             selected_category, active_cell, page_info, total_pages)
@@ -1111,9 +1134,10 @@ def update_youtuber_table(n_intervals, current_data):
 # 콜백 함수
 @app.callback(
     Output('category-pie-chart', 'figure'),
-    [Input('country-dropdown', 'value')]
+    [Input('country-dropdown', 'value'),
+     Input('category-dropdown', 'value')]
 )
-def update_pie_chart(selected_country):
+def update_pie_chart(selected_country, selected_category):
     # 데이터 필터링
     filtered_df = df.copy()
     if selected_country != '전체':
@@ -1151,15 +1175,27 @@ def update_pie_chart(selected_country):
     # 카테고리 이름을 한글로 변환
     heatmap_data.columns = [category_names.get(category, category) for category in heatmap_data.columns]
     
+    # 데이터 정규화 (0-1 사이의 값으로 변환)
+    max_val = heatmap_data.values.max()
+    normalized_data = heatmap_data.values / max_val if max_val > 0 else heatmap_data.values
+    
     # 히트맵 생성
-    fig = go.Figure(data=go.Heatmap(
+    fig = go.Figure()
+    
+    # 히트맵 트레이스 추가
+    fig.add_trace(go.Heatmap(
         z=heatmap_data.values,
         x=heatmap_data.columns,
         y=heatmap_data.index,
-        colorscale='Viridis',
+        colorscale=[
+            [0, '#1f1f1f'],
+            [0.4, '#ff0000'],
+            [0.6, '#ff4444'],
+            [1, '#ffffff']
+        ],
         text=heatmap_data.values,
         texttemplate='%{text}',
-        textfont={'size': 10},
+        textfont={'size': 12},
         hovertemplate='시간대: %{y}<br>카테고리: %{x}<br>동영상 수: %{z}<extra></extra>'
     ))
     
@@ -1167,23 +1203,53 @@ def update_pie_chart(selected_country):
     fig.update_layout(
         plot_bgcolor='#1f1f1f',
         paper_bgcolor='#1f1f1f',
-        font=dict(color='#ffffff'),
-        margin=dict(l=0, r=0, t=30, b=0),
-        width=450,
-        height=375,
+        font=dict(color='#ffffff', size=14),
+        margin=dict(l=50, r=50, t=30, b=50),
+        width=800,
+        height=400,
         xaxis=dict(
             title='카테고리',
             gridcolor='#272727',
             zerolinecolor='#272727',
-            tickfont=dict(color='#ffffff')
+            tickfont=dict(color='#ffffff', size=12),
+            title_font=dict(size=14)
         ),
         yaxis=dict(
             title='시간대',
             gridcolor='#272727',
             zerolinecolor='#272727',
-            tickfont=dict(color='#ffffff')
+            tickfont=dict(color='#ffffff', size=12),
+            title_font=dict(size=14)
         )
     )
+    
+    # 텍스트 색상 조정
+    for i in range(len(heatmap_data.index)):
+        for j in range(len(heatmap_data.columns)):
+            value = normalized_data[i][j]
+            if value > 0.6:  # 밝은 색상일 때
+                fig.add_annotation(
+                    x=j,
+                    y=i,
+                    text=str(int(heatmap_data.values[i][j])),
+                    showarrow=False,
+                    font=dict(
+                        color='black',
+                        size=12,
+
+                    )
+                )
+            else:  # 어두운 색상일 때
+                fig.add_annotation(
+                    x=j,
+                    y=i,
+                    text=str(int(heatmap_data.values[i][j])),
+                    showarrow=False,
+                    font=dict(
+                        color='white',
+                        size=12,
+                    )
+                )
     
     return fig
 
