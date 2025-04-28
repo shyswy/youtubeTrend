@@ -27,4 +27,135 @@
 
     .fixed-gauge #blue-gauge {
         animation: none;
-    } 
+    }
+
+    /* 우주 배경 스타일 */
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background: linear-gradient(180deg, #0f1020 0%, #23234a 60%, #1a1a2e 100%);
+        /* overflow: hidden; */
+    }
+
+    @keyframes twinkle {
+        0% { opacity: 0.3; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.2); }
+        100% { opacity: 0.3; transform: scale(1); }
+    }
+
+    .star {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background-color: #fff;
+        border-radius: 50%;
+        animation: twinkle ease-in-out infinite;
+    }
+
+    /* 컴포넌트 스타일 */
+    .dash-component {
+        background-color: rgba(31, 31, 31, 1) !important;
+        /* backdrop-filter: blur(10px); */  /* 필요시 이 줄도 주석처리 */
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .chart-container {
+        background-color: rgba(39, 39, 39, 1) !important;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* 스크롤바 스타일 */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: rgba(31, 31, 31, 0.8);
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #272727;
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #333333;
+    }
+
+    .galaxy-star {
+        position: fixed;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .falling-star {
+        position: absolute;
+        width: 2px;
+        height: 80px;
+        background: linear-gradient(180deg, #fff 0%, #fff0 100%);
+        opacity: 0.8;
+        border-radius: 50%;
+        filter: drop-shadow(0 0 6px #fff) drop-shadow(0 0 12px #a0a0ff);
+        animation: fall-star linear infinite;
+    }
+
+    @keyframes fall-star {
+        0% {
+            transform: translateY(-100px) scaleX(0.7) rotate(-15deg);
+            opacity: 0.7;
+        }
+        10% {
+            opacity: 1;
+        }
+        90% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(110vh) scaleX(0.7) rotate(-15deg);
+            opacity: 0;
+        }
+    }
+
+    .twinkle-star {
+        position: fixed;
+        pointer-events: none;
+        z-index: 0;
+        border-radius: 50%;
+        background: white;
+        box-shadow: 0 0 6px 2px #fff, 0 0 12px 4px #a0a0ff;
+        opacity: 0.7;
+        animation: twinkle-star-anim 2.5s infinite;
+    }
+
+    .twinkle-star.big {
+        width: 4px !important;
+        height: 4px !important;
+        box-shadow: 0 0 16px 6px #fff, 0 0 32px 12px #a0a0ff;
+        opacity: 0.9;
+    }
+
+    .twinkle-star.blue {
+        background: #aeeaff;
+        box-shadow: 0 0 8px 2px #aeeaff, 0 0 16px 8px #3f6fff;
+    }
+
+    .twinkle-star.purple {
+        background: #e0aaff;
+        box-shadow: 0 0 8px 2px #e0aaff, 0 0 16px 8px #a259ff;
+    }
+
+    .twinkle-star.yellow {
+        background: #fffbe0;
+        box-shadow: 0 0 8px 2px #fffbe0, 0 0 16px 8px #ffe066;
+    }
+
+    @keyframes twinkle-star-anim {
+        0% { opacity: 0.3; }
+        50% { opacity: 1; }
+        100% { opacity: 0.3; }
+    }

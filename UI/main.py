@@ -84,14 +84,14 @@ def load_data():
     return pd.concat(all_data, ignore_index=True).drop_duplicates(subset='title') if all_data else pd.DataFrame(), pd.concat(weekly_data, ignore_index=True) if weekly_data else pd.DataFrame()
 
 # 크롤링 데이터 로드 함수 추가
-def load_crawled_data():
-    crawled_data = get_youtuber_Ranking()
+def load_crawled_data(country, category):
+    crawled_data = get_youtuber_Ranking(country, category)
     return pd.DataFrame(crawled_data)
 
 # 데이터 로드
 df, weekly_df = load_data()
 
-crawled_df = load_crawled_data()
+crawled_df = load_crawled_data("전체", "all")
 
 # Dash 앱 생성
 app = dash.Dash(__name__, 
@@ -154,6 +154,38 @@ app.index_string = '''
             ::-webkit-scrollbar-thumb:hover {
                 background: #333333;
             }
+            .twinkle-star {
+                position: fixed;
+                pointer-events: none;
+                z-index: 0;
+                border-radius: 50%;
+                background: white;
+                box-shadow: 0 0 6px 2px #fff, 0 0 12px 4px #a0a0ff;
+                opacity: 0.7;
+                animation: twinkle-star-anim 2.5s infinite;
+            }
+            @keyframes twinkle-star-anim {
+                0% { opacity: 0.3; }
+                50% { opacity: 1; }
+                100% { opacity: 0.3; }
+            }
+            .logo-glow {
+                filter: drop-shadow(0 0 12px #ffb347) drop-shadow(0 0 24px #ff5e62);
+                border-radius: 16px;
+            }
+            .header-title-gradient {
+                background: linear-gradient(90deg, #ffb347 0%, #ff5e62 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                font-weight: 900;
+                text-shadow: 0 2px 16px #ffb34788, 0 0 2px #fff;
+                letter-spacing: 2px;
+            }
+            .dash-component {
+                background-color: rgba(31, 31, 31, 1) !important;
+                /* backdrop-filter: blur(10px); */
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
         </style>
     </head>
     <body>
@@ -214,18 +246,15 @@ styles = {
         'display': 'flex',
         'alignItems': 'center',
         'gap': '15px',
-        'background': 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
         'padding': '20px 40px',
         'borderRadius': '16px',
         'boxShadow': '0 4px 20px rgba(0, 0, 0, 0.2)',
         'transition': 'all 0.3s ease',
-        'border': '1px solid rgba(255, 255, 255, 0.1)',
         'backdropFilter': 'blur(10px)'
     },
     'headerTitle:hover': {
         'transform': 'translateY(-2px)',
-        'boxShadow': '0 6px 25px rgba(0, 0, 0, 0.3)',
-        'borderColor': 'rgba(255, 255, 255, 0.2)'
+        'boxShadow': '0 6px 25px rgba(0, 0, 0, 0.3)'
     },
     'headerIcon': {
         'fontSize': '2.8rem',
@@ -235,10 +264,10 @@ styles = {
     'filterContainer': {
         'display': 'flex',
         'alignItems': 'center',
-        'gap': '20px',
-        'backgroundColor': 'rgba(39, 39, 39, 0.8)',
+        'gap': '15px',
+        'backgroundColor': 'rgba(39, 39, 39, 0.3)',
         'backdropFilter': 'blur(10px)',
-        'padding': '15px 25px',
+        'padding': '10px 20px',
         'borderRadius': '12px',
         'boxShadow': '0 4px 15px rgba(0, 0, 0, 0.2)',
         'border': '1px solid rgba(255, 255, 255, 0.1)',
@@ -316,22 +345,26 @@ styles = {
         'flex': '1',
         'padding': '25px',
         'borderRadius': '16px',
-        'backgroundColor': 'rgba(31, 31, 31, 0.8)',
+        'backgroundColor': 'rgba(31, 31, 31, 0.4)',
         'backdropFilter': 'blur(10px)',
         'boxShadow': '0 4px 15px rgba(0, 0, 0, 0.2)',
         'border': '1px solid rgba(255, 255, 255, 0.1)',
         'display': 'flex',
         'flexDirection': 'column',
-        'gap': '20px'
+        'gap': '20px',
+        'position': 'relative',
+        'zIndex': '1'
     },
     'rightPanel': {
         'width': '450px',
         'padding': '25px',
         'borderRadius': '16px',
-        'backgroundColor': 'rgba(31, 31, 31, 0.8)',
+        'backgroundColor': 'rgba(31, 31, 31, 0.4)',
         'backdropFilter': 'blur(10px)',
         'boxShadow': '0 4px 15px rgba(0, 0, 0, 0.2)',
-        'border': '1px solid rgba(255, 255, 255, 0.1)'
+        'border': '1px solid rgba(255, 255, 255, 0.1)',
+        'position': 'relative',
+        'zIndex': '1'
     },
     'videoList': {
         'marginBottom': '10px',
@@ -436,7 +469,7 @@ styles = {
     'bottomSection': {
         'padding': '20px',
         'borderRadius': '12px',
-        'backgroundColor': '#1f1f1f',
+        'backgroundColor': 'rgba(31, 31, 31, 0.97)',
         'marginBottom': '20px'
     }
 }
@@ -446,13 +479,13 @@ app.layout = html.Div([
     # 헤더
     html.Div([
         html.Div([
-            html.Img(src=app.get_asset_url('logo_small.png'), style={
+            html.Img(src=app.get_asset_url('logo_small.png'), className='logo-glow', style={
                 'height': '90px',
                 'width': 'auto',
                 'marginRight': '10px',
                 'verticalAlign': 'middle'
             }),
-            html.H1("요즘 IN:Sight", style={'margin': '0', 'color': '#ffffff'})
+            html.H1("요즘 IN:Sight", className='header-title-gradient', style={'margin': '0', 'color': '#ffffff'})
         ], style=styles['headerTitle']),
         html.Div([
             html.Div([
@@ -466,13 +499,13 @@ app.layout = html.Div([
                     ],
                     value='전체',
                     style={
-                        'backgroundColor': 'rgba(31, 31, 31, 0.9)',
+                        'backgroundColor': 'rgba(31, 31, 31, 0.4)',
                         'color': '#ffffff',
                         #'border': '1px solid rgba(255, 255, 255, 0.1)',
                         'borderRadius': '8px',
                         'padding': '8px 15px',
                         'fontSize': '18px',
-                        'width': '130px',
+                        'width': '160px',
                         'fontFamily': "'Noto Sans KR', sans-serif",
                         'fontWeight': '500'
                     },
@@ -488,13 +521,13 @@ app.layout = html.Div([
                     options=[{'label': v, 'value': k} for k, v in category_names.items()],
                     value='all',
                     style={
-                        'backgroundColor': 'rgba(31, 31, 31, 0.9)',
+                        'backgroundColor': 'rgba(31, 31, 31, 0.4)',
                         'color': '#ffffff',
                         #'border': '1px solid rgba(255, 255, 255, 0.1)',
                         'borderRadius': '8px',
-                        'padding': '8px 15px',
+                        'padding': '8px 8px',
                         'fontSize': '18px',
-                        'width': '130px',
+                        'width': '160px',
                         'fontFamily': "'Noto Sans KR', sans-serif",
                         'fontWeight': '500'
                     },
@@ -864,11 +897,14 @@ app.layout = html.Div([
             ], style={
                 'flex': '1',
                 'padding': '20px',
-                'backgroundColor': '#1f1f1f',
+                'backgroundColor': 'rgba(31, 31, 31, 0.4)',
+                'backdropFilter': 'blur(10px)',
                 'borderRadius': '15px',
                 'boxShadow': '0 4px 8px rgba(0,0,0,0.1)',
                 'marginRight': '20px',
-                'border': '1px solid rgba(255, 255, 255, 0.1)'
+                'border': '1px solid rgba(255, 255, 255, 0.1)',
+                'position': 'relative',
+                'zIndex': '1'
             }),
             
             # 히트맵
@@ -884,7 +920,7 @@ app.layout = html.Div([
                     style={
                         'height': '400px',
                         'width': '100%',
-                        'margin': '0 auto',  # 가운데 정렬을 위한 마진 설정
+                        'margin': '0 auto',
                         'display': 'flex',
                         'justifyContent': 'center',
                         'alignItems': 'center'
@@ -893,13 +929,16 @@ app.layout = html.Div([
             ], style={
                 'flex': '1',
                 'padding': '20px',
-                'backgroundColor': '#1f1f1f',
+                'backgroundColor': 'rgba(31, 31, 31, 0.4)',
+                'backdropFilter': 'blur(10px)',
                 'borderRadius': '15px',
                 'boxShadow': '0 4px 8px rgba(0,0,0,0.1)',
                 'border': '1px solid rgba(255, 255, 255, 0.1)',
                 'display': 'flex',
                 'flexDirection': 'column',
-                'alignItems': 'center'
+                'alignItems': 'center',
+                'position': 'relative',
+                'zIndex': '1'
             })
         ], style={
             'display': 'flex',
@@ -1537,7 +1576,6 @@ def refresh_data():
     global df, weekly_df, crawled_df
     try:
         df, weekly_df = load_data()
-        crawled_df = load_crawled_data()
         return "success", 200
     except Exception as e:
         traceback.print_exc()
@@ -1547,6 +1585,19 @@ def refresh_data():
 application = DispatcherMiddleware(app.server, {
     '/new_tab': video_app.server
 })
+
+
+# 크롤링 데이터 업데이트용 콜백
+@app.callback(
+    Output('dummy-output-2', 'children'),
+    [Input('country-dropdown', 'value'),
+     Input('category-dropdown', 'value')]
+)
+def update_crwaled_data(selected_country, selected_category):
+    global crawled_df
+    crawled_df = load_crawled_data(selected_country, selected_category)
+    return None
+
 
 if __name__ == '__main__':
     print("[dash server] run")
