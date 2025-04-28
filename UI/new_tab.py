@@ -19,7 +19,15 @@ youtube_styles = {
         'color': 'white',
         'minHeight': '100vh',
         'padding': '20px',
-        'fontFamily': "'Roboto', 'Noto Sans KR', sans-serif"
+        'fontFamily': "'Roboto', 'Noto Sans KR', sans-serif",
+        'position': 'fixed',
+        'top': '0',
+        'left': '0',
+        'right': '0',
+        'bottom': '0',
+        'width': '100%',
+        'zIndex': '9999',
+        'overflow': 'auto'
     },
     'header': {
         'backgroundColor': '#0f0f0f',
@@ -267,6 +275,9 @@ video_app.layout = html.Div([
             ::-webkit-scrollbar-track {
                 background-color: #272727;
                 border-radius: 4px;
+            }
+            .twinkle-star {
+                display: none !important;
             }
         </style>
     ''', dangerously_allow_html=True),
