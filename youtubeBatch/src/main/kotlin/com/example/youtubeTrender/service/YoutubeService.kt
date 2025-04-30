@@ -142,6 +142,7 @@ class YoutubeService (
                 .setVideoId(videoId)
                 .setMaxResults(100)
                 .setTextFormat("plainText")
+                .setOrder("relevance")
                 .setKey(apiKey)
 
             val response = request.execute()
