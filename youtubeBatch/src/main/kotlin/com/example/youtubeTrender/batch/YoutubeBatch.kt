@@ -1,10 +1,7 @@
 package com.example.youtubeTrender.batch
 
-import com.example.youtubeTrender.dto.YoutuberInfo
-import com.example.youtubeTrender.service.CsvService
 import com.example.youtubeTrender.service.YoutubeService
 import com.example.youtubeTrender.service.YoutuberService
-import com.example.youtubeTrender.util.RegionCategoryFetcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll

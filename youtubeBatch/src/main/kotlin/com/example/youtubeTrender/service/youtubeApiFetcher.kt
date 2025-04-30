@@ -10,6 +10,7 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 
+// for test
 @Service
 class YoutubeApiFetcher {
 
@@ -18,15 +19,15 @@ class YoutubeApiFetcher {
 
     fun fetchAndSaveAll() {
         val endpoints = listOf(
-//            "videos" to "https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&chart=mostPopular&regionCode=KR&maxResults=5&key=$apiKey",
-//            "channels" to "https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=UC_x5XG1OV2P6uZZ5FSM9Ttw&key=$apiKey",
-//            "search" to "https://www.googleapis.com/youtube/v3/search?part=snippet&q=kpop&type=video&maxResults=5&key=$apiKey",
-//            "playlists" to "https://www.googleapis.com/youtube/v3/playlists?part=snippet&channelId=UC_x5XG1OV2P6uZZ5FSM9Ttw&maxResults=5&key=$apiKey",
-//            "playlistItems" to "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=PLBCF2DAC6FFB574DE&maxResults=5&key=$apiKey",
-//            "commentThreads" to "https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=Ks-_Mh1QhMc&maxResults=5&key=$apiKey",
-//            "videoCategories" to "https://www.googleapis.com/youtube/v3/videoCategories?part=snippet&regionCode=KR&key=$apiKey",
-//            "subscriptions" to "https://www.googleapis.com/youtube/v3/subscriptions?part=snippet&channelId=UC_x5XG1OV2P6uZZ5FSM9Ttw&maxResults=5&key=$apiKey",
-//            "activities" to "https://www.googleapis.com/youtube/v3/activities?part=snippet&channelId=UC_x5XG1OV2P6uZZ5FSM9Ttw&maxResults=5&key=$apiKey",
+            "videos" to "https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&chart=mostPopular&regionCode=KR&maxResults=5&key=$apiKey",
+            "channels" to "https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=UC_x5XG1OV2P6uZZ5FSM9Ttw&key=$apiKey",
+            "search" to "https://www.googleapis.com/youtube/v3/search?part=snippet&q=kpop&type=video&maxResults=5&key=$apiKey",
+            "playlists" to "https://www.googleapis.com/youtube/v3/playlists?part=snippet&channelId=UC_x5XG1OV2P6uZZ5FSM9Ttw&maxResults=5&key=$apiKey",
+            "playlistItems" to "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=PLBCF2DAC6FFB574DE&maxResults=5&key=$apiKey",
+            "commentThreads" to "https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=Ks-_Mh1QhMc&maxResults=5&key=$apiKey",
+            "videoCategories" to "https://www.googleapis.com/youtube/v3/videoCategories?part=snippet&regionCode=KR&key=$apiKey",
+            "subscriptions" to "https://www.googleapis.com/youtube/v3/subscriptions?part=snippet&channelId=UC_x5XG1OV2P6uZZ5FSM9Ttw&maxResults=5&key=$apiKey",
+            "activities" to "https://www.googleapis.com/youtube/v3/activities?part=snippet&channelId=UC_x5XG1OV2P6uZZ5FSM9Ttw&maxResults=5&key=$apiKey",
             "channelList" to "https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&order=viewCount&maxResults=10&key=$apiKey",
         )
 

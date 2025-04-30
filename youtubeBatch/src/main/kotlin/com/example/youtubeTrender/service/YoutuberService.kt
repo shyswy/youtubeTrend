@@ -1,7 +1,7 @@
 package com.example.youtubeTrender.service
 
 import com.example.youtubeTrender.config.YoutubeConstants
-import com.example.youtubeTrender.dto.YoutuberInfo
+import com.example.youtubeTrender.dto.YoutuberDto
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -90,7 +90,7 @@ class YoutuberService (
         country: String = "korea",
         ranking: String = "인기",
         duration: String = "일간"
-    ): List<YoutuberInfo> {
+    ): List<YoutuberDto> {
         println("category: $category, country: $country, ranking: $ranking, duration: $duration")
         val categoryKey = categoryType[category] ?: "all"
         val rankingKey = rankingType[ranking] ?: "popular"
@@ -108,7 +108,7 @@ class YoutuberService (
         return fetchRankingDataAsync(document, url)
     }
 
-    suspend fun fetchRankingDataAsync(document: Document, url: String): List<YoutuberInfo> = coroutineScope {
+    suspend fun fetchRankingDataAsync(document: Document, url: String): List<YoutuberDto> = coroutineScope {
         println("🔄 Fetching: $url")
         val rows = document.select(".chart__row")
 
@@ -129,7 +129,7 @@ class YoutuberService (
                     item
                 } catch (e: Exception) {
                     println("[Error] Row $index: ${e.message}")
-                    YoutuberInfo(null, null, null, null, null, null)
+                    YoutuberDto(null, null, null, null, null, null)
                 }
             }
         }
@@ -143,7 +143,7 @@ class YoutuberService (
         return Jsoup.parse(html.bodyAsText())
     }
 
-    private fun parseRow(row: Element): YoutuberInfo {
+    private fun parseRow(row: Element): YoutuberDto {
         val rank = row.selectFirst("td.rank div.current")?.text()
 
         val logoTd = row.selectFirst("td.logo")
@@ -160,7 +160,7 @@ class YoutuberService (
             thumbnailUrl = "https:$thumbnailUrl"
         }
 
-        return YoutuberInfo(
+        return YoutuberDto(
             rank = rank,
             channelName = channelName,
             channelLink = channelLink?.let { "https://youtube.com$it" },
