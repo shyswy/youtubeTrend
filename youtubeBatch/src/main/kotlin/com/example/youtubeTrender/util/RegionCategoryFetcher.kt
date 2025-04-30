@@ -2,6 +2,7 @@ package com.example.youtubeTrender.util
 
 import com.example.youtubeTrender.config.YoutubeConstants
 
+// run function at all region and category
 // temporary deprecated
 object RegionCategoryFetcher {
     fun <T> fetchForAllRegionsAndCategories(

@@ -1,6 +1,6 @@
 package com.example.youtubeTrender.dto
 
-data class YoutuberInfo(
+data class YoutuberDto(
     val rank: String?,
     val channelName: String?,
     val channelLink: String?,
