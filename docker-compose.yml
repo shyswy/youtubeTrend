@@ -16,7 +16,7 @@ services:
       - CSV_DATA_PATH=/data
       - DASH_IP=dash
       - DASH_PORT=8050
-      - BATCH_JOB_FIXED_RATE= 600000
+      - BATCH_JOB_FIXED_RATE=14400000
     volumes:
       - ${PWD}/csv_data:/data:rw
       - ./youtubeBatch/src:/app/src:rw
