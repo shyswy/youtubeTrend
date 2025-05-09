@@ -12,9 +12,12 @@ class BatchScheduler(
     private val jobLauncher: JobLauncher,
     private val youtubeCollectJob: Job
 ) {
+
+    @Value("\${BATCH_JOB_FIXED_RATE:600000}")  // 기본값을 설정하고 환경변수에서 값을 읽음
+    private lateinit var fixedRate: String
     // 데이터 양이 많을 경우, chunk-based processing과 같은 기법을 사용하여 성능을 최적화
     // https://king-ja.tistory.com/81.  Quartz 등 스케쥴러로 수정 시 retry 등 디테일 처리 가능.
-    @Scheduled(fixedRate = 3600000)
+    @Scheduled(fixedRate = fixedRate.toLong())
     fun runYoutubeCollectJob() {
         val jobParameters = org.springframework.batch.core.JobParametersBuilder()
             .addLong("timestamp", System.currentTimeMillis())
@@ -22,5 +25,6 @@ class BatchScheduler(
 
         println("⏰ YoutubeCollectJob 시작: ${LocalDateTime.now()}")
         jobLauncher.run(youtubeCollectJob, jobParameters)
+        println("⏰ YoutubeCollectJob 종료: ${LocalDateTime.now()}")
     }
 }

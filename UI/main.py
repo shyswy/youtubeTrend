@@ -1599,6 +1599,7 @@ def refresh_data():
     global df, weekly_df, crawled_df
     try:
         df, weekly_df = load_data()
+        crawled_df = load_crawled_data("전체", "all")
         return "success", 200
     except Exception as e:
         traceback.print_exc()

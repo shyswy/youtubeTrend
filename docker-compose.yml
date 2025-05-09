@@ -16,11 +16,13 @@ services:
       - CSV_DATA_PATH=/data
       - DASH_IP=dash
       - DASH_PORT=8050
+      - BATCH_JOB_FIXED_RATE= 600000
     volumes:
       - ${PWD}/csv_data:/data:rw
       - ./youtubeBatch/src:/app/src:rw
     working_dir: /app
-    command: ['java', '-jar', '/app/app.jar']
+    command: ['sh', '-c', 'sleep 60 && java -jar /app/app.jar']
+    # command: ['java', '-jar', '/app/app.jar']
     networks:
       - infra-net
 
@@ -36,7 +38,8 @@ services:
       - PYTHONUNBUFFERED=1
       - DASH_HOST=0.0.0.0
     volumes:
-      - ${PWD}/csv_data:/youtube_data:rw
+      # - ${PWD}/csv_data:/youtube_data:rw
+      - ${PWD}/csv_data:/app/youtube_data:rw
       - ./UI/Font:/app/Font
     working_dir: /app
     command: python main.py
